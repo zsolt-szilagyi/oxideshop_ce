@@ -4377,8 +4377,8 @@ class Unit_Models_oxbasketTest extends OxidTestCase
      */
     public function testForBugEntries5795_6204_6283()
     {
-        $regularArticleId = '1952'; // 6 EUR
-        $discountedArticleId = '2024'; //11 EUR
+        $regularArticleId = '1951'; // 14 EUR
+        $discountedArticleId = '1126'; //34 EUR
 
         $this->oVoucherSerie->oxvoucherseries__oxdiscounttype = new oxField('percent', oxField::T_RAW);
         $this->oVoucherSerie->save();
@@ -4407,8 +4407,8 @@ class Unit_Models_oxbasketTest extends OxidTestCase
 
         $vats = $basket->getProductVats(false);
 
-        $this->assertEquals(2.54, $vats[19]);
-        $this->assertEquals(13.36, $basket->getNettoSum());
+        $this->assertEquals(7.12, oxRegistry::getUtils()->fRound($vats[19]));
+        $this->assertEquals(37.48, oxRegistry::getUtils()->fRound($basket->getNettoSum()));
     }
 
     /**
