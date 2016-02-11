@@ -752,7 +752,7 @@ class Unit_Views_oxlocatorTest extends OxidTestCase
 
         if ($this->getTestConfig()->getShopEdition() == 'EE') {
             $query = "Insert into oxcategories (`OXID`,`OXROOTID`,`OXTITLE`,`OXACTIVE`,`OXPRICEFROM`," .
-                "`OXPRICETO`,`OXLONGDESC`,`OXLONGDESC_1`,`OXLONGDESC_2`,`OXLONGDESC_3`)
+                "`OXPRICETO`,`OXLONGDESC_DE`,`OXLONGDESC_EN`,`OXLONGDESC_FR`,`OXLONGDESC`)
                        values ('test','test','test','1','10','50','','','','')";
         } else {
             $query = "Insert into oxcategories (`OXID`,`OXROOTID`,`OXTITLE`, `OXACTIVE`, `OXPRICEFROM`, `OXPRICETO`) " .
@@ -781,7 +781,7 @@ class Unit_Views_oxlocatorTest extends OxidTestCase
 
         if ($this->getTestConfig()->getShopEdition() == 'EE') {
             $query = "Insert into oxcategories (`OXID`,`OXROOTID`,`OXTITLE`,`OXACTIVE`,`OXPRICEFROM`," .
-                "`OXPRICETO`,`OXLONGDESC`,`OXLONGDESC_1`,`OXLONGDESC_2`,`OXLONGDESC_3`)
+                "`OXPRICETO`,`OXLONGDESC_DE`,`OXLONGDESC_EN`,`OXLONGDESC_FR`,`OXLONGDESC`)
                        values ('test','test','test','1','10','50','','','','')";
         } else {
             $query = "Insert into oxcategories (`OXID`,`OXROOTID`,`OXTITLE`, `OXACTIVE`, `OXPRICEFROM`, `OXPRICETO`) " .

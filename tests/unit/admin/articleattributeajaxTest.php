@@ -192,11 +192,11 @@ class Unit_Admin_ArticleAttributeAjaxTest extends OxidTestCase
         $this->setRequestParameter("attr_oxid", $sAttrOxid);
         $this->setRequestParameter("attr_value", $sAttrValue);
 
-        $this->assertEquals(0, oxDb::getDb()->getOne("select count(oxid) from oxobject2attribute where oxvalue='$sAttrValue'"));
+        $this->assertEquals(0, oxDb::getDb()->getOne("select count(oxid) from oxobject2attribute where oxvalue_de='$sAttrValue'"));
 
         $oView = oxNew('article_attribute_ajax');
         $oView->saveAttributeValue();
-        $this->assertEquals(1, oxDb::getDb()->getOne("select count(oxid) from oxobject2attribute where oxvalue='$sAttrValue'"));
+        $this->assertEquals(1, oxDb::getDb()->getOne("select count(oxid) from oxobject2attribute where oxvalue_de='$sAttrValue'"));
     }
 
 }

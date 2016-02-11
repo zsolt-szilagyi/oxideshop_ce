@@ -119,7 +119,7 @@ class News_Main extends oxAdminDetails
 
         //$aParams = $oNews->ConvertNameArray2Idx( $aParams);
 
-        $oNews->setLanguage(0);
+        $oNews->setLanguage();
         $oNews->assign($aParams);
         $oNews->setLanguage($this->_iEditLang);
         $oNews->save();
@@ -169,7 +169,7 @@ class News_Main extends oxAdminDetails
         }
 
         //$aParams = $oNews->ConvertNameArray2Idx( $aParams);
-        $oNews->setLanguage(0);
+        $oNews->setLanguage();
         $oNews->assign($aParams);
 
         // apply new language

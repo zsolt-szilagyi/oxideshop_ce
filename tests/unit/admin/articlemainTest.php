@@ -32,7 +32,7 @@ class Unit_Admin_ArticleMainTest extends OxidTestCase
     public function setUp()
     {
         $this->addToDatabase("replace into oxcategories set oxid='_testCategory1', oxshopid='1', oxtitle='_testCategory1'", 'oxcategories');
-        $this->addToDatabase("replace into oxarticles set oxid='_testArticle1', oxshopid='" . $this->getShopId() . "', oxtitle='_testArticle1'", 'oxarticles');
+        $this->addToDatabase("replace into oxarticles set oxid='_testArticle1', oxshopid='" . $this->getShopId() . "', oxtitle_de='_testArticle1'", 'oxarticles');
     }
 
     /**

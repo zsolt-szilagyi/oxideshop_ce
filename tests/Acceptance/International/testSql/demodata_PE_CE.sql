@@ -22,7 +22,7 @@ UPDATE oxuser
   WHERE oxid='oxdefaultadmin';
 
 #Articles demodata
-REPLACE INTO `oxarticles` (`OXID`,   `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXTITLE_de`,                 `OXSHORTDESC_de`,                `OXPRICE`, `OXPRICEA`, `OXPRICEB`, `OXPRICEC`, `OXTPRICE`, `OXUNITNAME`, `OXUNITQUANTITY`, `OXVAT`, `OXWEIGHT`, `OXSTOCK`, `OXSTOCKFLAG`, `OXSTOCKTEXT_de`, `OXNOSTOCKTEXT_De`, `OXDELIVERY`, `OXINSERT`,   `OXTIMESTAMP`,        `OXLENGTH`, `OXWIDTH`, `OXHEIGHT`, `OXSEARCHKEYS_de`,`OXISSEARCH`, `OXVARNAME_de`,          `OXVARSTOCK`, `OXVARCOUNT`, `OXVARSELECT`, `OXVARMINPRICE`,   `OXVARMAXPRICE`,     `OXVARNAME_en`,             `OXVARSELECT_en`,  `OXTITLE_en`,                `OXSHORTDESC_en`,                       `OXSEARCHKEYS_en`, `OXBUNDLEID`, `OXSTOCKTEXT_en`,     `OXNOSTOCKTEXT_en`,         `OXSORT`, `OXVENDORID`,      `OXMANUFACTURERID`, `OXMINDELTIME`, `OXMAXDELTIME`, `OXDELTIMEUNIT`) VALUES
+REPLACE INTO `oxarticles` (`OXID`,   `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXTITLE_DE`,                 `OXSHORTDESC_DE`,                `OXPRICE`, `OXPRICEA`, `OXPRICEB`, `OXPRICEC`, `OXTPRICE`, `OXUNITNAME`, `OXUNITQUANTITY`, `OXVAT`, `OXWEIGHT`, `OXSTOCK`, `OXSTOCKFLAG`, `OXSTOCKTEXT_DE`, `OXNOSTOCKTEXT_De`, `OXDELIVERY`, `OXINSERT`,   `OXTIMESTAMP`,        `OXLENGTH`, `OXWIDTH`, `OXHEIGHT`, `OXSEARCHKEYS_DE`,`OXISSEARCH`, `OXVARNAME_DE`,          `OXVARSTOCK`, `OXVARCOUNT`, `OXVARSELECT`, `OXVARMINPRICE`,   `OXVARMAXPRICE`,     `OXVARNAME_EN`,             `OXVARSELECT_EN`,  `OXTITLE_EN`,                `OXSHORTDESC_EN`,                       `OXSEARCHKEYS_EN`, `OXBUNDLEID`, `OXSTOCKTEXT_EN`,     `OXNOSTOCKTEXT_EN`,         `OXSORT`, `OXVENDORID`,      `OXMANUFACTURERID`, `OXMINDELTIME`, `OXMAXDELTIME`, `OXDELTIMEUNIT`) VALUES
                          ('1000',   'oxbaseshop', '',            1,         '1000',     '[DE 4] Test product 0 šÄßüл', 'Test product 0 short desc [DE]', 50,        35,         45,         55,         0,         'kg',          2,                NULL,    2,          15,        1,            'In stock [DE]', 'Out of stock [DE]', '0000-00-00', '2008-02-04', '2008-02-04 17:07:48', 1,          2,         2,         'search1000',     1,           '',                        0,            0,           '',             50,                0,                   '',                        '',                'Test product 0 [EN] šÄßüл', 'Test product 0 short desc [EN] šÄßüл', 'šÄßüл1000',      '',           'In stock [EN] šÄßüл', 'Out of stock [EN] šÄßüл',  0,       'testdistributor', 'testmanufacturer',  1,              1,             'DAY'),
                          ('1001',   'oxbaseshop', '',            1,         '1001',     '[DE 1] Test product 1 šÄßüл', 'Test product 1 short desc [DE]', 100,       0,          0,          0,          150,       '',            0,                10,      0,          0,         1,            '',              '',                  '2008-01-01', '2008-02-04', '2008-02-04 17:35:49', 0,          0,         0,         'search1001',     1,           '',                        0,            0,           '',             100,               0,                   '',                        '',                'Test product 1 [EN] šÄßüл', 'Test product 1 short desc [EN] šÄßüл', 'šÄßüл1001',      '',           '',                    '',                         0,       'testdistributor', 'testmanufacturer',  0,              1,             'WEEK'),
                          ('1002',   'oxbaseshop', '',            1,         '1002',     '[DE 2] Test product 2 šÄßüл', 'Test product 2 short desc [DE]', 55,        0,          0,          0,          0,         '',            0,                NULL,    0,          0,         1,            'In stock [DE]', 'Out of stock [DE]', '0000-00-00', '2008-02-04', '2008-02-04 17:18:18', 0,          0,         0,         'search1002',     1,           'variants [DE]',           10,           2,           '',             55,                67,                  'variants [EN] šÄßüл',     '',                'Test product 2 [EN] šÄßüл', 'Test product 2 short desc [EN] šÄßüл', 'šÄßüл1002',      '',           'In stock [EN] šÄßüл', 'Out of stock [EN] šÄßüл',  0,       'testdistributor', 'testmanufacturer',  1,              1,             'MONTH'),
@@ -38,7 +38,7 @@ REPLACE INTO `oxarticles` (`OXID`,   `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OX
                          ('10016',  'oxbaseshop', '',            0,         '10016',    '15 DE product šÄßüл',         '10 DE description',              1.9,       0,          0,          0,          0,         '',            0,                NULL,    0,          0,         1,            '',              '',                  '0000-00-00', '2008-04-03', '2008-04-03 12:50:20', 0,          0,         0,         '',               1,           '',                        0,            0,           '',             1.9,               0,                   '',                        '',                '10 EN product šÄßüл',       '15 EN description šÄßüл',              '',               '',           '',                    '',                         0,       '',                '',                  0,              0,             '');
 REPLACE INTO `oxfiles` (`OXID`, `OXARTID`, `OXFILENAME`, `OXPURCHASEDONLY`) VALUES ('1000l', '1002-1', 'testFile3', '1');
 #demodata for multidimensional variants
-REPLACE INTO `oxarticles` (`OXID`,    `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXPRICE`, `OXSTOCK`, `OXSTOCKFLAG`, `OXINSERT`,   `OXTIMESTAMP`,         `OXVARSELECT_de`,           `OXVARSELECT_en`,       `OXSUBCLASS`, `OXSORT`) VALUES
+REPLACE INTO `oxarticles` (`OXID`,    `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXPRICE`, `OXSTOCK`, `OXSTOCKFLAG`, `OXINSERT`,   `OXTIMESTAMP`,         `OXVARSELECT_DE`,           `OXVARSELECT_EN`,       `OXSUBCLASS`, `OXSORT`) VALUES
                          ('1001432', 'oxbaseshop', '10014',       1,         '10014-3-2', 15,        3,         1,            '2008-04-03', '2008-04-03 12:50:20', 'M | black | material [DE]', 'L | black | material', 'oxarticle',   3002),
                          ('1001424', 'oxbaseshop', '10014',       1,         '10014-2-4', 15,        0,         1,            '2008-04-03', '2008-04-03 12:50:20', 'M | red [DE]',              'M | red',              'oxarticle',   2004),
                          ('1001422', 'oxbaseshop', '10014',       1,         '10014-2-2', 15,        0,         3,            '2008-04-03', '2008-04-03 12:50:20', 'M | black | material [DE]', 'M | black | material', 'oxarticle',   2002),
@@ -53,13 +53,13 @@ REPLACE INTO `oxarticles` (`OXID`,    `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `O
                          ('1001433', 'oxbaseshop', '10014',       1,         '10014-3-3', 15,        3,         1,            '2008-04-03', '2008-04-03 12:50:20', 'L | white [DE]',            'L | white',            'oxarticle',   3003);
 
 #persparam
-REPLACE INTO `oxarticles` (`OXID`,  `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXTITLE_de`,      `OXSHORTDESC_de`,  `OXPRICE`, `OXSTOCKFLAG`, `OXINSERT`,   `OXTIMESTAMP`,        `OXISSEARCH`, `OXVARMINPRICE`, `OXTITLE_en`,        `OXSHORTDESC_en`,  `OXSORT`, `OXISCONFIGURABLE`) VALUES
+REPLACE INTO `oxarticles` (`OXID`,  `OXSHOPID`,   `OXPARENTID`, `OXACTIVE`, `OXARTNUM`, `OXTITLE_DE`,      `OXSHORTDESC_DE`,  `OXPRICE`, `OXSTOCKFLAG`, `OXINSERT`,   `OXTIMESTAMP`,        `OXISSEARCH`, `OXVARMINPRICE`, `OXTITLE_EN`,        `OXSHORTDESC_EN`,  `OXSORT`, `OXISCONFIGURABLE`) VALUES
                          ('20016', 'oxbaseshop', '',            1,         '20016',    'perspara DE_prod', 'perspara DE_desc', 1.9,       1,            '2008-04-03', '2008-04-03 12:50:20', 1,            1.9,            'perspara EN_prod', 'perspara EN_desc',  0,       1);
 REPLACE INTO `oxartextends` (`OXID`,  `OXLONGDESC`, `OXTAGS`) VALUES
                            ('20016', '',           '');
 
 #Articles long desc
-REPLACE INTO `oxartextends` (`OXID`,   `OXLONGDESC_de`,                              `OXLONGDESC_en`,                                      `OXTAGS_de`,           `OXTAGS_en`) VALUES
+REPLACE INTO `oxartextends` (`OXID`,   `OXLONGDESC_DE`,                              `OXLONGDESC_EN`,                                      `OXTAGS_DE`,           `OXTAGS_EN`) VALUES
                            ('1000',   '<p>Test product 0 long description [DE]</p>', '<p>Test product 0 long description [EN] šÄßüл</p>', 'tag_,0___,[DE],tag_', '[EN],0___,tag_,šÄßüл,tag_'),
                            ('1001',   '<p>Test product 1 long description [DE]</p>', '<p>Test product 1 long description [EN] šÄßüл</p>', 'tag_,1___,[DE],tag_', '[EN],1___,tag_,šÄßüл,tag_'),
                            ('1002',   '<p>Test product 2 long description [DE]</p>', '<p>Test product 2 long description [EN] šÄßüл</p>', 'tag_,2___,[DE],tag_', '[EN],2___,tag_,šÄßüл,tag_'),
@@ -75,7 +75,7 @@ REPLACE INTO `oxartextends` (`OXID`,   `OXLONGDESC_de`,                         
                            ('10016',  '',                                            '',                                                  '',                    'tag_,šÄßüл');
 
 #Attributes demodata
-REPLACE INTO `oxattribute` (`OXID`,           `OXSHOPID`,   `OXTITLE_de`,                 `OXTITLE_en`,                  `OXPOS`) VALUES
+REPLACE INTO `oxattribute` (`OXID`,           `OXSHOPID`,   `OXTITLE_DE`,                 `OXTITLE_EN`,                  `OXPOS`) VALUES
                           ('testattribute1', 'oxbaseshop', 'Test attribute 1 [DE] šÄßüл', 'Test attribute 1 [EN] šÄßüл', 1),
                           ('testattribute2', 'oxbaseshop', 'Test attribute 2 [DE] šÄßüл', 'Test attribute 2 [EN] šÄßüл', 3),
                           ('testattribute3', 'oxbaseshop', 'Test attribute 3 [DE] šÄßüл', 'Test attribute 3 [EN] šÄßüл', 2),
@@ -90,7 +90,7 @@ REPLACE INTO `oxattribute` (`OXID`,           `OXSHOPID`,   `OXTITLE_de`,       
 UPDATE `oxattribute` SET `OXDISPLAYINBASKET` = 0;
 
 #Categories demodata
-REPLACE INTO `oxcategories` (`OXID`,          `OXPARENTID`,   `OXLEFT`, `OXRIGHT`, `OXROOTID`,     `OXSORT`, `OXACTIVE`, `OXSHOPID`,   `OXTITLE_de`,                `OXDESC_de`,                 `OXLONGDESC_de`,             `OXDEFSORT`, `OXDEFSORTMODE`, `OXPRICEFROM`, `OXPRICETO`, `OXACTIVE_en`, `OXTITLE_en`,                  `OXDESC_en`,                        `OXLONGDESC_en`,                    `OXVAT`, `OXSHOWSUFFIX`) VALUES
+REPLACE INTO `oxcategories` (`OXID`,          `OXPARENTID`,   `OXLEFT`, `OXRIGHT`, `OXROOTID`,     `OXSORT`, `OXACTIVE`, `OXSHOPID`,   `OXTITLE_DE`,                `OXDESC_DE`,                 `OXLONGDESC_DE`,             `OXDEFSORT`, `OXDEFSORTMODE`, `OXPRICEFROM`, `OXPRICETO`, `OXACTIVE_EN`, `OXTITLE_EN`,                  `OXDESC_EN`,                        `OXLONGDESC_EN`,                    `OXVAT`, `OXSHOWSUFFIX`) VALUES
                            ('testcategory0', 'oxrootid',      1,        4,        'testcategory0', 1,        1,         'oxbaseshop', 'Test category 0 [DE] šÄßüл', 'Test category 0 desc [DE]', 'Category 0 long desc [DE]', 'oxartnum',   0,               0,             0,           1,           'Test category 0 [EN] šÄßüл', 'Test category 0 desc [EN] šÄßüл', 'Category 0 long desc [EN] šÄßüл',  5,       1),
                            ('testcategory1', 'testcategory0', 2,        3,        'testcategory0', 2,        1,         'oxbaseshop', 'Test category 1 [DE] šÄßüл', 'Test category 1 desc [DE]', 'Category 1 long desc [DE]', 'oxartnum',   1,               0,             0,           1,           'Test category 1 [EN] šÄßüл', 'Test category 1 desc [EN] šÄßüл', 'Category 1 long desc [EN] šÄßüл',  NULL,    1),
                            ('testcat1',      'oxrootid',      1,        2,        'testcat1',      2,        0,         'oxbaseshop', '1 [DE] category šÄßüл',      '',                          '',                          '',           0,               0,             0,           0,           '[last] [EN] category šÄßüл', '',                                 '',                                NULL,    1),
@@ -104,7 +104,7 @@ REPLACE INTO `oxcategories` (`OXID`,          `OXPARENTID`,   `OXLEFT`, `OXRIGHT
                            ('testpricecat',  'oxrootid',      1,        2,        'testpricecat',  99999,    1,         'oxbaseshop', 'price šÄßüл [DE]',           'price category [DE]',       '',                          '',           0,               49,            60,          1,           'price [EN] šÄßüл',           'price category [EN] šÄßüл',       '',                                 NULL,    1);
 
 #Delivery set demodata
-REPLACE INTO `oxdeliveryset` (`OXID`,       `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de                    `OXTITLE_en`) VALUES
+REPLACE INTO `oxdeliveryset` (`OXID`,       `OXSHOPID`,  `OXACTIVE`, `OXTITLE_DE`,                  `OXTITLE_EN`) VALUES
                             ('testdelset', 'oxbaseshop', 1,         'Test S&H set [DE] šÄßüл',      'Test S&H set [EN] šÄßüл'),
                             ('testshset1', 'oxbaseshop', 0,         '1 DE test S&H set šÄßüл',      '[last] EN test S&H set šÄßüл'),
                             ('testshset2', 'oxbaseshop', 0,         '2 DE test S&H set šÄßüл',      '3 EN test S&H set šÄßüл'),
@@ -115,8 +115,8 @@ REPLACE INTO `oxdeliveryset` (`OXID`,       `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de
                             ('testshset8', 'oxbaseshop', 0,         '7 DE test S&H set šÄßüл',      '7 EN test S&H set šÄßüл');
 
 #Delivery demodata
-#UPDATE `oxdelivery` SET `OXTITLE_en` = `OXTITLE`;
-REPLACE INTO `oxdelivery` (`OXID`,       `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de`,                       `OXTITLE_en`,                         `OXADDSUMTYPE`, `OXADDSUM`, `OXDELTYPE`, `OXPARAM`, `OXPARAMEND`, `OXFIXED`, `OXSORT`, `OXFINALIZE`) VALUES
+#UPDATE `oxdelivery` SET `OXTITLE_EN` = `OXTITLE`;
+REPLACE INTO `oxdelivery` (`OXID`,       `OXSHOPID`,  `OXACTIVE`, `OXTITLE_DE`,                       `OXTITLE_EN`,                         `OXADDSUMTYPE`, `OXADDSUM`, `OXDELTYPE`, `OXPARAM`, `OXPARAMEND`, `OXFIXED`, `OXSORT`, `OXFINALIZE`) VALUES
                          ('testdel',    'oxbaseshop', 1,         'Test delivery category [DE] šÄßüл', 'Test delivery category [EN] šÄßüл', 'abs',           1.5,       'a',          1,         99999,        0,         9998,     1),
                          ('testdelart', 'oxbaseshop', 1,         'Test delivery product [DE] šÄßüл',  'Test delivery product [EN] šÄßüл',  '%',             1,         'a',          1,         99999,        0,         9999,     0),
                          ('testsh1',    'oxbaseshop', 0,         '1 DE S&H šÄßüл',                    '[last] EN S&H šÄßüл',               'abs',           10,        'w',          15,        999,          2,         4,        0),
@@ -154,7 +154,7 @@ REPLACE INTO `oxvouchers` (`OXDATEUSED`, `OXRESERVED`, `OXVOUCHERNR`, `OXVOUCHER
                          ('0000-00-00',  0,           'test222',     'testvoucher2',     'testcoucher013');
 
 #News demodata
-REPLACE INTO `oxnews` (`OXID`,       `OXSHOPID`,  `OXACTIVE_de`, `OXDATE`,     `OXSHORTDESC_de`              `OXLONGDESC_de`,                `OXACTIVE_en`, `OXSHORTDESC_en`,               `OXLONGDESC_en`) VALUES
+REPLACE INTO `oxnews` (`OXID`,       `OXSHOPID`,  `OXACTIVE_DE`, `OXDATE`,     `OXSHORTDESC_DE`,             `OXLONGDESC_DE`,                `OXACTIVE_EN`, `OXSHORTDESC_EN`,               `OXLONGDESC_EN`) VALUES
                      ('testnews1',  'oxbaseshop', 1,            '2008-01-01', 'Test news 1 [DE] šÄßüл',      '<p>Test news text 1 [DE]</p>', 1,           'Test news 1 [EN] šÄßüл',      '<p>Test news text 1 [EN] šÄßüл</p>'),
                      ('testnews2',  'oxbaseshop', 1,            '2008-01-02', 'Test news 2 [DE] šÄßüл',      '<p>Test news text 2 [DE]</p>', 1,           'Test news 2 [EN] šÄßüл',      '<p>Test news text 2 [EN] šÄßüл</p>'),
                      ('testnews3',  'oxbaseshop', 0,            '2007-11-02', '1 [DE] Test news šÄßüл',      '<p>Test news text</p>',        0,           '[last] [EN] Test news šÄßüл', '<p>Test news text</p>'),
@@ -188,7 +188,7 @@ REPLACE INTO `oxuser` (`OXID`,     `OXACTIVE`, `OXRIGHTS`, `OXSHOPID`,   `OXUSER
                      ('testuser7', 0,         'user',     'oxbaseshop', 'example06@oxid-esales.dev',    '82763a21b58be2f21e9bae3ebca59fec', '7573657274657374',   18,        '',        '',                   '5useršÄßüл',     '5UserSurnamešÄßüл', '7 Street.šÄßüл',  '1',          '',                            '1 City šÄßüл',      'a7c40f631fc920687.20179984', '222000', '333333',      '',            'Mr',     1000,    '2008-04-15 10:34:56', '2007-06-20 00:00:00', '',            '',            '0000-00-00');
 
 #Select list demodata
-REPLACE INTO `oxselectlist` (`OXID`,          `OXSHOPID`,   `OXTITLE_de`,                     `OXIDENT`,              `OXVALDESC_de`,                                                                   `OXTITLE_en`,                      `OXVALDESC_en`) VALUES
+REPLACE INTO `oxselectlist` (`OXID`,          `OXSHOPID`,   `OXTITLE_DE`,                     `OXIDENT`,              `OXVALDESC_DE`,                                                                   `OXTITLE_EN`,                      `OXVALDESC_EN`) VALUES
                            ('testsellist',   'oxbaseshop', 'test selection list [DE] šÄßüл', 'test sellist šÄßüл',   'selvar1 [DE]!P!1__@@selvar2 [DE]__@@selvar3 [DE]!P!-2__@@selvar4 [DE]!P!2%__@@', 'test selection list [EN] šÄßüл', 'selvar1 [EN] šÄßüл!P!1__@@selvar2 [EN] šÄßüл__@@selvar3 [EN] šÄßüл!P!-2__@@selvar4 [EN] šÄßüл!P!2%__@@'),
                            ('testsellist1',  'oxbaseshop', '1 [DE] sellist šÄßüл',           '1 sellist šÄßüл',      '',                                                                               '[last] [EN] sellist šÄßüл',      ''),
                            ('testsellist2',  'oxbaseshop', '2 [DE] sellist šÄßüл',           '6 sellist šÄßüл',      '',                                                                               '7 [EN] sellist šÄßüл',           ''),
@@ -202,7 +202,7 @@ REPLACE INTO `oxselectlist` (`OXID`,          `OXSHOPID`,   `OXTITLE_de`,       
                            ('testsellist10', 'oxbaseshop', '[last] [DE] sellist šÄßüл',      '7 sellist šÄßüл',      '',                                                                               '9 [EN] sellist šÄßüл',           '');
 
 #Vendors demodata
-REPLACE INTO `oxvendor` (`OXID`,             `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de`,                 `OXSHORTDESC_de`,                      `OXTITLE_en`,                   `OXSHORTDESC_en`,                          `OXSHOWSUFFIX`) VALUES
+REPLACE INTO `oxvendor` (`OXID`,             `OXSHOPID`,  `OXACTIVE`, `OXTITLE_DE`,                 `OXSHORTDESC_DE`,                      `OXTITLE_EN`,                   `OXSHORTDESC_EN`,                          `OXSHOWSUFFIX`) VALUES
                        ('testdistributor',  'oxbaseshop', 1,         'Distributor [DE] šÄßüл',      'Distributor description [DE]',       'Distributor [EN] šÄßüл',      'Distributor description [EN] šÄßüл',      1),
                        ('testdistributor1', 'oxbaseshop', 0,         '1 DE distributor šÄßüл',      '[last] DE distributor description',  '[last] EN distributor šÄßüл', '1 EN distributor description šÄßüл',      1),
                        ('testdistributor2', 'oxbaseshop', 0,         '2 DE distributor šÄßüл',      '4 DE distributor description',       '4 EN distributor šÄßüл',      '2 EN distributor description šÄßüл',      1),
@@ -214,7 +214,7 @@ REPLACE INTO `oxvendor` (`OXID`,             `OXSHOPID`,  `OXACTIVE`, `OXTITLE_d
                        ('testdistributor3', 'oxbaseshop', 0,         '3 DE distributor šÄßüл',      '5 DE distributor description',       '5 EN distributor šÄßüл',      '3 EN distributor description šÄßüл',      1);
 
 #Manufacturers demodata
-REPLACE INTO `oxmanufacturers` (`OXID`,              `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de`,                  `OXSHORTDESC_de`,                     `OXTITLE_en`,                    `OXSHORTDESC_en`,                           `OXSHOWSUFFIX`) VALUES
+REPLACE INTO `oxmanufacturers` (`OXID`,              `OXSHOPID`,  `OXACTIVE`, `OXTITLE_DE`,                  `OXSHORTDESC_DE`,                     `OXTITLE_EN`,                    `OXSHORTDESC_EN`,                           `OXSHOWSUFFIX`) VALUES
                               ('testmanufacturer',  'oxbaseshop', 1,         'Manufacturer [DE] šÄßüл',      'Manufacturer description [DE]',      'Manufacturer [EN] šÄßüл',      'Manufacturer description [EN] šÄßüл',      1),
                               ('testmanufacturer1', 'oxbaseshop', 0,         '1 DE manufacturer šÄßüл',      '[last] DE manufacturer description', '[last] EN manufacturer šÄßüл', '1 EN manufacturer description šÄßüл',      1),
                               ('testmanufacturer2', 'oxbaseshop', 0,         '2 DE manufacturer šÄßüл',      '4 DE manufacturer description',      '4 EN manufacturer šÄßüл',      '2 EN manufacturer description šÄßüл',      1),
@@ -226,7 +226,7 @@ REPLACE INTO `oxmanufacturers` (`OXID`,              `OXSHOPID`,  `OXACTIVE`, `O
                               ('testmanufacturer3', 'oxbaseshop', 0,         '3 DE manufacturer šÄßüл',      '5 DE manufacturer description',      '5 EN manufacturer šÄßüл',      '3 EN manufacturer description šÄßüл',      1);
 
 #Gift wrapping demodata
-REPLACE INTO `oxwrapping` (`OXID`,         `OXSHOPID`,  `OXACTIVE`, `OXACTIVE_de`, `OXACTIVE_en`, `OXACTIVE_fr`, `OXTYPE`, `OXNAME_de`                      `OXNAME_en`,                    `OXPRICE`) VALUES
+REPLACE INTO `oxwrapping` (`OXID`,         `OXSHOPID`,  `OXACTIVE`, `OXACTIVE_DE`, `OXACTIVE_EN`, `OXACTIVE_FR`, `OXTYPE`, `OXNAME_DE`,                     `OXNAME_EN`,                    `OXPRICE`) VALUES
                          ('testwrapping', 'oxbaseshop', 1,          1,             1,             1,             'WRAP',   'Test wrapping [DE] šÄßüл',      'Test wrapping [EN] šÄßüл',      0.9),
                          ('testcard',     'oxbaseshop', 1,          1,             1,             1,             'CARD',   'Test card [DE] šÄßüл',          'Test card [EN] šÄßüл',          0.2),
                          ('testwrap2',    'oxbaseshop', 0,          0,             0,             0,             'WRAP',   '2 DE Gift Wrapping šÄßüл',      '4 EN Gift Wrapping šÄßüл',      2),
@@ -236,7 +236,7 @@ REPLACE INTO `oxwrapping` (`OXID`,         `OXSHOPID`,  `OXACTIVE`, `OXACTIVE_de
                          ('testwrap5',    'oxbaseshop', 0,          0,             0,             0,             'WRAP',   '[last] DE Gift Wrapping šÄßüл', '2 EN Gift Wrapping šÄßüл',      5);
 
 #Payments demodata
-REPLACE INTO `oxpayments` (`OXID`,         `OXACTIVE`, `OXDESC_de`,                    `OXADDSUM`, `OXADDSUMTYPE`, `OXFROMBONI`, `OXFROMAMOUNT`, `OXTOAMOUNT`, `OXVALDESC_de`,          `OXCHECKED`, `OXDESC_en`,                       `OXVALDESC_en`,                  `OXLONGDESC_de`                  `OXLONGDESC_en`,                        `OXSORT`) VALUES
+REPLACE INTO `oxpayments` (`OXID`,         `OXACTIVE`, `OXDESC_DE`,                    `OXADDSUM`, `OXADDSUMTYPE`, `OXFROMBONI`, `OXFROMAMOUNT`, `OXTOAMOUNT`, `OXVALDESC_DE`,          `OXCHECKED`, `OXDESC_EN`,                       `OXVALDESC_EN`,                  `OXLONGDESC_DE`,                `OXLONGDESC_EN`,                        `OXSORT`) VALUES
                          ('testpayment',   1,         'Test payment method [DE] šÄßüл', 0.7,       'abs',           0,            55,             99999,       'payment field [DE]__@@', 0,          'Test payment method [EN] šÄßüл', 'payment field [EN] šÄßüл__@@', 'Short payment description [DE]', 'Short payment description [EN] šÄßüл', 0),
                          ('testpayment3',  0,         '3 DE test payment šÄßüл',        0,         'abs',           0,            0,              0,           '',                       0,          '2 EN test payment šÄßüл',        '',                             '',                               '',                                     1),
                          ('testpayment2',  0,         '2 DE test payment šÄßüл',        0,         'abs',           0,            0,              0,           '',                       0,          '3 EN test payment šÄßüл',        '',                             '',                               '',                                     2),
@@ -250,7 +250,7 @@ REPLACE INTO `oxpayments` (`OXID`,         `OXACTIVE`, `OXDESC_de`,             
                          ('testpayment10', 0,         '9 DE test payment šÄßüл',        0,         'abs',           0,            0,              0,           '',                       0,          '9 EN test payment šÄßüл',        '',                             '',                               '',                                     10);
 
 #Discount demodata
-REPLACE INTO `oxdiscount` (`OXID`,            `OXSHOPID`,  `OXACTIVE`, `OXTITLE_de`,                       `OXTITLE_en`,                       `OXAMOUNT`, `OXAMOUNTTO`, `OXPRICETO`, `OXPRICE`, `OXADDSUMTYPE`, `OXADDSUM`, `OXITMARTID`, `OXITMAMOUNT`, `OXITMMULTIPLE`) VALUES
+REPLACE INTO `oxdiscount` (`OXID`,            `OXSHOPID`,  `OXACTIVE`, `OXTITLE_DE`,                       `OXTITLE_EN`,                       `OXAMOUNT`, `OXAMOUNTTO`, `OXPRICETO`, `OXPRICE`, `OXADDSUMTYPE`, `OXADDSUM`, `OXITMARTID`, `OXITMAMOUNT`, `OXITMMULTIPLE`) VALUES
                          ('testcatdiscount', 'oxbaseshop', 1,         'discount for category [DE] šÄßüл', 'discount for category [EN] šÄßüл',  1,          999999,       0,           0,        'abs',           5,         '',            0,             0),
                          ('testartdiscount', 'oxbaseshop', 1,         'discount for product [DE] šÄßüл',  'discount for product [EN] šÄßüл',   0,          0,            999999,      100,      '%',             10,        '',            0,             0),
                          ('testitmdiscount', 'oxbaseshop', 1,         'Itm discount [DE] šÄßüл',          'Itm discount [EN] šÄßüл',           5,          999999,       0,           0,        'itm',           0,         '1003',        1,             0),
@@ -261,7 +261,7 @@ REPLACE INTO `oxdiscount` (`OXID`,            `OXSHOPID`,  `OXACTIVE`, `OXTITLE_
                          ('testdiscount5',   'oxbaseshop', 0,         '[last] DE test discount šÄßüл',    '1 EN test discount šÄßüл',          1,          999999,       0,           0,        'abs',           10,        '',            0,             0);
 
 #Links demodata
-REPLACE INTO `oxlinks` (`OXID`,      `OXSHOPID`,  `OXACTIVE`, `OXURL`,                    `OXURLDESC_de                        `OXURLDESC_en`,                        `OXINSERT`) VALUES
+REPLACE INTO `oxlinks` (`OXID`,      `OXSHOPID`,  `OXACTIVE`, `OXURL`,                    `OXURLDESC_DE`,                       `OXURLDESC_EN`,                        `OXINSERT`) VALUES
                       ('testlink',  'oxbaseshop', 1,         'http://www.google.com',    'Demo link description [DE] šÄßüл',   'Demo link description [EN] šÄßüл',   '2008-01-01 00:00:01'),
                       ('testlink1', 'oxbaseshop', 0,         'http://www.1google.com',   '1 [DE] link description šÄßüл',      '4 [EN] link description šÄßüл',      '2008-01-01 00:00:04'),
                       ('testlink2', 'oxbaseshop', 0,         'http://www.2google.com',   '2 [DE] link description šÄßüл',      '5 [EN] link description šÄßüл',      '2008-02-01 00:00:01'),
@@ -279,7 +279,7 @@ REPLACE INTO `oxgbentries` (`OXID`,           `OXSHOPID`,   `OXUSERID`,       `O
                           ('testguestbook2', 'oxbaseshop', 'oxdefaultadmin', 'Demo guestbook entry [DE] šÄßüл', '2008-01-02 00:00:01', 1,          1);
 
 #Countries demodata
-REPLACE INTO `oxcountry` (`OXID`,        `OXACTIVE`, `OXTITLE_de`                   `OXISOALPHA2`, `OXISOALPHA3`, `OXUNNUM3`, `OXORDER`, `OXSHORTDESC_de`,             `OXTITLE_en`,                    `OXSHORTDESC_en`,                     `OXVATSTATUS`) VALUES
+REPLACE INTO `oxcountry` (`OXID`,        `OXACTIVE`, `OXTITLE_DE`,                  `OXISOALPHA2`, `OXISOALPHA3`, `OXUNNUM3`, `OXORDER`, `OXSHORTDESC_DE`,             `OXTITLE_EN`,                    `OXSHORTDESC_EN`,                     `OXVATSTATUS`) VALUES
                         ('testcountry1', 0,         '1 DE test Country šÄßüл',      '',           '111',         '',          0,        '[last] DE test Country desc', '[last] EN test Country šÄßüл', '1 EN test Country desc šÄßüл',       0),
                         ('testcountry2', 0,         '[last] DE test Country šÄßüл', '',           '000',         '',          0,        '1 DE test Country desc',      '1 EN test Country šÄßüл',      '[last] EN test Country desc šÄßüл',  0);
 
@@ -312,7 +312,7 @@ REPLACE INTO `oxactions2article` (`OXID`,                       `OXSHOPID`,   `O
                                 ('fa647a821f27dbb38.79902594', 'oxbaseshop', 'oxtopstart',   '1001',     0);
 
 #Article2Attribute
-REPLACE INTO `oxobject2attribute` (`OXID`,                       `OXOBJECTID`, `OXATTRID`,       `OXVALUE`,           `OXPOS`, `OXVALUE_en`) VALUES
+REPLACE INTO `oxobject2attribute` (`OXID`,                       `OXOBJECTID`, `OXATTRID`,       `OXVALUE`,           `OXPOS`, `OXVALUE_EN`) VALUES
                                  ('aad47a8511f54e023.54090494', '1000',       'testattribute1', 'attr value 1 [DE]',  0,      'attr value 1 [EN] šÄßüл'),
                                  ('aad47a8511f556f17.20889862', '1001',       'testattribute1', 'attr value 11 [DE]', 0,      'attr value 11 [EN] šÄßüл'),
                                  ('aad47a85125a41ed7.53096100', '1000',       'testattribute2', 'attr value 2 [DE]',  0,      'attr value 2 [EN] šÄßüл'),
@@ -431,7 +431,7 @@ REPLACE INTO `oxreviews` (`OXID`,       `OXACTIVE`, `OXOBJECTID`, `OXTYPE`,    `
                         ('testreview9', 0,         '1002-2',     'oxarticle', 'review for var2 šÄßüл',            'testuser', '2009-01-15 14:36:56', 1,        0);
 
 #user group demodata
-REPLACE INTO `oxgroups` (`OXID`,      `OXACTIVE`, `OXTITLE_d                `OXTITLE_en`) VALUES
+REPLACE INTO `oxgroups` (`OXID`,      `OXACTIVE`, `OXTITLE_DE`,             `OXTITLE_EN`) VALUES
                        ('testgroup1', 0,         '1 user Group šÄßüл',      '1 user Group šÄßüл'),
                        ('testgroup2', 0,         '2 user Group šÄßüл',      '2 user Group šÄßüл'),
                        ('testgroup3', 0,         '3 user Group šÄßüл',      '3 user Group šÄßüл'),
@@ -439,7 +439,7 @@ REPLACE INTO `oxgroups` (`OXID`,      `OXACTIVE`, `OXTITLE_d                `OXT
                        ('testgroup5', 0,         '[last] user Group šÄßüл', '[last] user Group šÄßüл');
 
 #CMS pages demodata
-REPLACE INTO `oxcontents` (`OXID`,         `OXLOADID`,          `OXSHOPID`,  `OXSNIPPET`, `OXTYPE`, `OXACTIVE_de`, `OXACTIVE_en`, `OXTITLE_de`,                `OXCONTENT_de`,             `OXTITLE_en`,                 `OXCONTENT_en`,                    `OXCATID`,                    `OXFOLDER`) VALUES
+REPLACE INTO `oxcontents` (`OXID`,         `OXLOADID`,          `OXSHOPID`,  `OXSNIPPET`, `OXTYPE`, `OXACTIVE_DE`, `OXACTIVE_EN`, `OXTITLE_DE`,                `OXCONTENT_DE`,             `OXTITLE_EN`,                 `OXCONTENT_EN`,                    `OXCATID`,                    `OXFOLDER`) VALUES
                          ('testcontent1', '[last]testcontent', 'oxbaseshop', 0,           2,        0,             0,             '1 [DE] content šÄßüл',      '<p>content [DE] 1</p>',    '[last] [EN] content šÄßüл', '<p>content [EN] 1  šÄßüл</p>',   'testcategory0',              'CMSFOLDER_USERINFO'),
                          ('testcontent2', '1testcontent',      'oxbaseshop', 0,           2,        0,             0,             '[last] [DE] content šÄßüл', '<p>content [DE] last</p>', '3 [EN] content šÄßüл',      '<p>content [EN] last šÄßüл</p>', 'testcategory1',              'CMSFOLDER_USERINFO'),
                          ('testcontent3', 't3testcontent',     'oxbaseshop', 0,           3,        0,             0,             'T2 [DE] content šÄßüл',     '',                         'T4 [EN] content šÄßüл',     '',                               '8a142c3e4143562a5.46426637', 'CMSFOLDER_USERINFO'),
@@ -535,30 +535,30 @@ REPLACE INTO `oxreviews` (`OXID`,           `OXACTIVE`, `OXOBJECTID`, `OXTYPE`, 
 
 #updating smtp and email information
 UPDATE `oxshops` SET `OXPRODUCTIVE` = 0, `OXINFOEMAIL` = 'example_test@oxid-esales.dev', `OXORDEREMAIL` = 'example_test@oxid-esales.dev', `OXOWNEREMAIL` = 'example_test@oxid-esales.dev', `OXSMTP` = 'localhost', `OXDEFCAT` = '' WHERE `OXID` = 'oxbaseshop';
-UPDATE `oxcountry` SET `OXVATSTATUS` = 0 WHERE `OXTITLE_en` = 'Austria';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Germany';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Austria';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Switzerland';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Liechtenstein';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Italy';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Luxembourg';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'France';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Sweden';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Finland';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'United Kingdom';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Ireland';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Netherlands';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Belgium';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Portugal';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Spain';
-UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_en` = 'Greece';
+UPDATE `oxcountry` SET `OXVATSTATUS` = 0 WHERE `OXTITLE_EN` = 'Austria';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Germany';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Austria';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Switzerland';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Liechtenstein';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Italy';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Luxembourg';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'France';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Sweden';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Finland';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'United Kingdom';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Ireland';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Netherlands';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Belgium';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Portugal';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Spain';
+UPDATE `oxcountry` SET `OXACTIVE` = 1 WHERE `OXTITLE_EN` = 'Greece';
 
 #additional for features testing
 #UPDATE `oxconfig` SET `OXVARVALUE` = '' WHERE `OXVARNAME` = 'blCheckForUpdates';
 #UPDATE `oxconfig` SET `OXVARVALUE` = '' WHERE `OXVARNAME` = 'blLoadDynContents';
 
 #adding states for germany
-REPLACE INTO `oxstates` (`OXID`, `OXCOUNTRYID`, `OXTITLE_de`, `OXISOALPHA2`, `OXTITLE_en`, `OXTITLE_fr`, `OXTITLE`) VALUES
+REPLACE INTO `oxstates` (`OXID`, `OXCOUNTRYID`, `OXTITLE_DE`, `OXISOALPHA2`, `OXTITLE_EN`, `OXTITLE_FR`, `OXTITLE`) VALUES
 ('BB', 'a7c40f631fc920687.20179984', 'Brandenburg', 'BB', 'Brandenburg', '', ''),
 ('BE', 'a7c40f631fc920687.20179984', 'Berlin', 'BE', 'Berlin', '', ''),
 ('BW', 'a7c40f631fc920687.20179984', 'Baden-Württemberg', 'BW', 'Baden-Wurttemberg', '', ''),

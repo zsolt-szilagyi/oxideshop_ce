@@ -144,7 +144,7 @@ class Discount_Main extends oxAdminDetails
         }
 
         //$aParams = $oAttr->ConvertNameArray2Idx( $aParams);
-        $oDiscount->setLanguage(0);
+        $oDiscount->setLanguage();
         $oDiscount->assign($aParams);
         $oDiscount->setLanguage($this->_iEditLang);
         $oDiscount = oxRegistry::get("oxUtilsFile")->processFiles($oDiscount);
@@ -183,7 +183,7 @@ class Discount_Main extends oxAdminDetails
         }
 
         //$aParams = $oAttr->ConvertNameArray2Idx( $aParams);
-        $oAttr->setLanguage(0);
+        $oAttr->setLanguage();
         $oAttr->assign($aParams);
         $oAttr->setLanguage($this->_iEditLang);
         $oAttr = oxRegistry::get("oxUtilsFile")->processFiles($oAttr);

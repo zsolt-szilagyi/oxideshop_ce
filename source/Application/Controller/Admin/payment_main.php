@@ -116,7 +116,7 @@ class Payment_Main extends oxAdminDetails
             //$aParams = $oPayment->ConvertNameArray2Idx( $aParams);
         }
 
-        $oPayment->setLanguage(0);
+        $oPayment->setLanguage();
         $oPayment->assign($aParams);
 
         // setting add sum calculation rules
@@ -166,7 +166,7 @@ class Payment_Main extends oxAdminDetails
             //$aParams = $oObj->ConvertNameArray2Idx( $aParams);
         }
 
-        $oObj->setLanguage(0);
+        $oObj->setLanguage();
         $oObj->assign($aParams);
 
         // apply new language

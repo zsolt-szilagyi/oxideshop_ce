@@ -100,7 +100,7 @@ class Category_Text extends oxAdminDetails
             return;
         }
 
-        $oCategory->setLanguage(0);
+        $oCategory->setLanguage();
         $oCategory->assign($aParams);
         $oCategory->setLanguage($iCatLang);
         $oCategory->save();

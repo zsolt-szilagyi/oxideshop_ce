@@ -101,7 +101,7 @@ class Country_Main extends oxAdminDetails
         }
 
         //$aParams = $oCountry->ConvertNameArray2Idx( $aParams);
-        $oCountry->setLanguage(0);
+        $oCountry->setLanguage();
         $oCountry->assign($aParams);
         $oCountry->setLanguage($this->_iEditLang);
         $oCountry = oxRegistry::get("oxUtilsFile")->processFiles($oCountry);
@@ -134,7 +134,7 @@ class Country_Main extends oxAdminDetails
             //$aParams = $oCountry->ConvertNameArray2Idx( $aParams);
         }
 
-        $oCountry->setLanguage(0);
+        $oCountry->setLanguage();
         $oCountry->assign($aParams);
         $oCountry->setLanguage($this->_iEditLang);
 

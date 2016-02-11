@@ -143,7 +143,7 @@ class Delivery_Main extends oxAdminDetails
             return;
         }
 
-        $oDelivery->setLanguage(0);
+        $oDelivery->setLanguage();
         $oDelivery->assign($aParams);
         $oDelivery->setLanguage($this->_iEditLang);
         $oDelivery = oxRegistry::get("oxUtilsFile")->processFiles($oDelivery);
@@ -184,7 +184,7 @@ class Delivery_Main extends oxAdminDetails
             return;
         }
 
-        $oDelivery->setLanguage(0);
+        $oDelivery->setLanguage();
         $oDelivery->assign($aParams);
         $oDelivery->setLanguage($this->_iEditLang);
         $oDelivery = oxRegistry::get("oxUtilsFile")->processFiles($oDelivery);

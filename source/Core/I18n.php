@@ -75,7 +75,7 @@ class I18n extends \oxBase
      */
     public function setLanguage($iLang = null)
     {
-        $this->_iLanguage = (string) $iLang;
+        $this->_iLanguage = $iLang;
         // reset
         $this->_sViewTable = false;
     }

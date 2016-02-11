@@ -151,7 +151,7 @@ class Article_Extend extends oxAdminDetails
             $this->_aViewData["errorsavingtprice"] = 1;
         }
 
-        $oArticle->setLanguage(0);
+        $oArticle->setLanguage();
         $oArticle->assign($aParams);
         $oArticle->setLanguage($this->_iEditLang);
         $oArticle = oxRegistry::get("oxUtilsFile")->processFiles($oArticle);
@@ -235,7 +235,7 @@ class Article_Extend extends oxAdminDetails
             foreach ($aMediaUrls as $sMediaId => $aMediaParams) {
                 $oMedia = oxNew("oxMediaUrl");
                 if ($oMedia->load($sMediaId)) {
-                    $oMedia->setLanguage(0);
+                    $oMedia->setLanguage();
                     $oMedia->assign($aMediaParams);
                     $oMedia->setLanguage($this->_iEditLang);
                     $oMedia->save();

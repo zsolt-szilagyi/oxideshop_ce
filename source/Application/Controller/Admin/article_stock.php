@@ -106,7 +106,7 @@ class Article_Stock extends oxAdminDetails
         $oArticle = oxNew("oxArticle");
         $oArticle->loadInLang($this->_iEditLang, $soxId);
 
-        $oArticle->setLanguage(0);
+        $oArticle->setLanguage();
 
         // checkbox handling
         if (!$oArticle->oxarticles__oxparentid->value && !isset($aParams['oxarticles__oxremindactive'])) {

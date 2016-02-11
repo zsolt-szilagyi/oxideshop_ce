@@ -154,7 +154,7 @@ class Content_Main extends oxAdminDetails
 
         //$aParams = $oContent->ConvertNameArray2Idx( $aParams);
 
-        $oContent->setLanguage(0);
+        $oContent->setLanguage();
         $oContent->assign($aParams);
         $oContent->setLanguage($this->_iEditLang);
         $oContent->save();
@@ -192,7 +192,7 @@ class Content_Main extends oxAdminDetails
             $aParams['oxcontents__oxid'] = null;
         }
 
-        $oContent->setLanguage(0);
+        $oContent->setLanguage();
         $oContent->assign($aParams);
 
         // apply new language

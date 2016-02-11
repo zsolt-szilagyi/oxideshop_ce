@@ -107,7 +107,7 @@ class Wrapping_Main extends oxAdminDetails
             return;
         }
 
-        $oWrapping->setLanguage(0);
+        $oWrapping->setLanguage();
         $oWrapping->assign($aParams);
         $oWrapping->setLanguage($this->_iEditLang);
 
@@ -147,7 +147,7 @@ class Wrapping_Main extends oxAdminDetails
             return;
         }
 
-        $oWrapping->setLanguage(0);
+        $oWrapping->setLanguage();
         $oWrapping->assign($aParams);
         $oWrapping->setLanguage($this->_iEditLang);
 

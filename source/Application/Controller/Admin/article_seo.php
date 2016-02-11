@@ -517,7 +517,7 @@ class Article_Seo extends Object_Seo
 
         $sQ = "select oxfixed from oxseo where
                    oxseo.oxobjectid = " . $oDb->quote($sId) . " and
-                   oxseo.oxshopid = '{$iShopId}' and oxseo.oxlang = {$iLang} and oxparams = " . $oDb->quote($sParam);
+                   oxseo.oxshopid = '{$iShopId}' and oxseo.oxlang = '{$iLang}' and oxparams = " . $oDb->quote($sParam);
 
         return (bool) oxDb::getDb()->getOne($sQ, false, false);
     }

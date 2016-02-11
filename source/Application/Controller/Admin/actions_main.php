@@ -148,7 +148,7 @@ class Actions_Main extends oxAdminDetails
             $aParams['oxactions__oxactive'] = 0;
         }
 
-        $oPromotion->setLanguage(0);
+        $oPromotion->setLanguage();
         $oPromotion->assign($aParams);
         $oPromotion->setLanguage($this->_iEditLang);
         $oPromotion = oxRegistry::get("oxUtilsFile")->processFiles($oPromotion);

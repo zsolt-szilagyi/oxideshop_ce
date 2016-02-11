@@ -100,7 +100,7 @@ class UserGroup_Main extends oxAdminDetails
             $aParams['oxgroups__oxid'] = null;
         }
 
-        $oGroup->setLanguage(0);
+        $oGroup->setLanguage();
         $oGroup->assign($aParams);
         $oGroup->setLanguage($this->_iEditLang);
         $oGroup->save();

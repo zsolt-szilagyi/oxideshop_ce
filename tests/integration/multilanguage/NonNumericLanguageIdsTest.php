@@ -305,7 +305,7 @@ class Integration_Multilanguage_NonNumericLanguageIdsTest extends MultilanguageT
         $this->assertEquals('de', $languageAbbreviation);
 
         $viewNameGenerator = oxRegistry::get('oxTableViewNameGenerator');
-        $viewName = $viewNameGenerator->getViewName('oxshops', 'de', 'oxbaseshop');
+        $viewName = $viewNameGenerator->getViewName('oxshops', 'de', $this->shopId);
         $this->assertEquals('oxv_oxshops_de', $viewName);
     }
 
@@ -368,7 +368,7 @@ class Integration_Multilanguage_NonNumericLanguageIdsTest extends MultilanguageT
         $selectFields = $shop->getSelectFields();
         $this->assertFalse(strpos($selectFields, '_fr'));
 
-        $shop->load('oxbaseshop');
+        $shop->load($this->shopId);
         $this->assertSame('Ihre Bestellung bei OXID eSales', $shop->oxshops__oxordersubject->value);
     }
 
@@ -378,15 +378,15 @@ class Integration_Multilanguage_NonNumericLanguageIdsTest extends MultilanguageT
     public function testShopSaveMultilingualObject()
     {
         $shop = $this->getProxyClass('oxShop');
-        $shop->load('oxbaseshop');
+        $shop->load($this->shopId);
         $this->assertSame('Ihre Bestellung bei OXID eSales', $shop->oxshops__oxordersubject->value);
 
         $shop->oxshops__oxordersubject = new oxField('test text');
         $shop->save('test text');
-        $shop->load('oxbaseshop');
+        $shop->load($this->shopId);
         $this->assertSame('test text', $shop->oxshops__oxordersubject->value);
 
-        $query = "SELECT oxordersubject, oxordersubject_de, oxordersubject_en FROM oxshops WHERE oxid = 'oxbaseshop'";
+        $query = "SELECT oxordersubject, oxordersubject_de, oxordersubject_en FROM oxshops WHERE oxid = '" . $this->shopId . "'";
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getArray($query);
 
         $expected = array( 'oxordersubject'    => '',
@@ -403,7 +403,7 @@ class Integration_Multilanguage_NonNumericLanguageIdsTest extends MultilanguageT
     {
         $shop = $this->getProxyClass('oxShop');
 
-        $shop->loadInLang('en','oxbaseshop');
+        $shop->loadInLang('en',$this->shopId);
         $this->assertSame('Your order at OXID eShop', $shop->oxshops__oxordersubject->value);
     }
 

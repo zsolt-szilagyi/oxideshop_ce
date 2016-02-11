@@ -191,7 +191,7 @@ class Article_Main extends oxAdminDetails
             }
         }
 
-        $oArticle->setLanguage(0);
+        $oArticle->setLanguage();
         //triming spaces from article title (M:876)
         if (isset($aParams['oxarticles__oxtitle'])) {
             $aParams['oxarticles__oxtitle'] = trim($aParams['oxarticles__oxtitle']);

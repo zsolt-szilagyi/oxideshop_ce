@@ -114,7 +114,7 @@ class Attribute_Main extends oxAdminDetails
             return;
         }
 
-        $oAttr->setLanguage(0);
+        $oAttr->setLanguage();
         $oAttr->assign($aParams);
         $oAttr->setLanguage($this->_iEditLang);
         $oAttr = oxRegistry::get("oxUtilsFile")->processFiles($oAttr);
@@ -148,7 +148,7 @@ class Attribute_Main extends oxAdminDetails
             return;
         }
 
-        $oAttr->setLanguage(0);
+        $oAttr->setLanguage();
         $oAttr->assign($aParams);
 
         // apply new language

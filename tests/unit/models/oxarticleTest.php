@@ -4894,6 +4894,7 @@ class Unit_Models_oxArticleTest extends OxidTestCase
      */
     public function testGetLinkSeoDe()
     {
+        $this->setConfigParam('iDefSeoLang', 'de');
         oxTestModules::addFunction("oxutilsserver", "getServerVar", "{ \$aArgs = func_get_args(); if ( \$aArgs[0] === 'HTTP_HOST' ) { return '" . $this->getConfig()->getShopUrl() . "'; } elseif ( \$aArgs[0] === 'SCRIPT_NAME' ) { return ''; } else { return \$_SERVER[\$aArgs[0]]; } }");
         oxTestModules::addFunction("oxutils", "seoIsActive", "{return true;}");
 
@@ -5327,6 +5328,7 @@ class Unit_Models_oxArticleTest extends OxidTestCase
      */
     public function testGetLinkWithLanguage()
     {
+        $this->setConfigParam('iDefSeoLang', 'de');
         $this->setRequestParameter('pgNr', 10);
         $this->setRequestParameter('cnid', 'yyy');
 

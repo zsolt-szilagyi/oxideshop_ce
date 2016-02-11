@@ -111,7 +111,7 @@ class Vendor_Main extends oxAdminDetails
             return;
         }
 
-        $oVendor->setLanguage(0);
+        $oVendor->setLanguage();
         $oVendor->assign($aParams);
         $oVendor->setLanguage($this->_iEditLang);
         $oVendor = oxRegistry::get("oxUtilsFile")->processFiles($oVendor);
@@ -148,7 +148,7 @@ class Vendor_Main extends oxAdminDetails
             return;
         }
 
-        $oVendor->setLanguage(0);
+        $oVendor->setLanguage();
         $oVendor->assign($aParams);
         $oVendor->setLanguage($this->_iEditLang);
         $oVendor = oxRegistry::get("oxUtilsFile")->processFiles($oVendor);

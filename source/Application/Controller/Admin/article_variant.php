@@ -148,7 +148,7 @@ class Article_Variant extends oxAdminDetails
             return;
         }
 
-        $oArticle->setLanguage(0);
+        $oArticle->setLanguage();
         $oArticle->assign($aParams);
         $oArticle->setLanguage($this->_iEditLang);
 
@@ -263,7 +263,7 @@ class Article_Variant extends oxAdminDetails
             $oArticle->loadInLang($this->_iEditLang, $soxId);
         }
 
-        $oArticle->setLanguage(0);
+        $oArticle->setLanguage();
         $oArticle->assign($aParams);
         $oArticle->setLanguage($this->_iEditLang);
         $oArticle->save();

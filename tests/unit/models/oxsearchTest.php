@@ -277,7 +277,7 @@ class Unit_Models_oxsearchTest extends OxidTestCase
         $sArticleTable.oxactiveto > '" . date('Y-m-d H:i:s') . "' ) ) and ( $sArticleTable.oxstockflag != 2 or ( $sArticleTable.oxstock +
         $sArticleTable.oxvarstock ) > 0 ) ) and $sArticleTable.oxparentid = '' and $sArticleTable.oxissearch = 1
         and ( ( $sArticleTable.oxtitle like '%bar%' or  $sArticleTable.oxshortdesc like '%bar%' or $sArticleTable.oxsearchkeys like '%bar%' or
-        $sArticleTable.oxartnum like '%bar%' or oxartextends.oxtags like '%bar%' ) )";
+        $sArticleTable.oxartnum like '%bar%' or oxartextends.oxtags_de like '%bar%' ) )";
 
         $aAll = oxDB::getDb()->getAll($sQ);
 

@@ -97,7 +97,7 @@ class News_Text extends oxAdminDetails
             return;
         }
 
-        $oNews->setLanguage(0);
+        $oNews->setLanguage();
         $oNews->assign($aParams);
         $oNews->setLanguage($iNewsLang);
 

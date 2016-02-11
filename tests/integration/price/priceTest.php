@@ -55,6 +55,14 @@ class Integration_Price_PriceTest extends Integration_Price_BaseTestCase
         parent::tearDown();
     }
 
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+
+        $dbMetaDataHandler = oxNew('oxDbMetadataHandler');
+        $dbMetaDataHandler->updateViews();
+    }
+
     /**
      * Resets db tables, required configs
      */

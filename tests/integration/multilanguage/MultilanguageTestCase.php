@@ -26,6 +26,8 @@ require_once realpath(dirname(__FILE__)) . '/helpers/LanguageMainHelper.php';
 
 abstract class MultilanguageTestCase extends UnitTestCase
 {
+    protected $shopId = 'oxbaseshop';
+
     /**
      * Original tables and fields.
      *
@@ -40,6 +42,11 @@ abstract class MultilanguageTestCase extends UnitTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        if ('EE' == $this->getTestConfig()->getShopEdition() ) {
+            $this->shopId = '1';
+            $this->setConfigParam('blAllowSharedEdit', 1);
+        }
 
         $this->prepareDatabase();
         $this->setTestLanguageConfiguration();

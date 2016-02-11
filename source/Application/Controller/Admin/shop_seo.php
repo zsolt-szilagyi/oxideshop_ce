@@ -109,7 +109,7 @@ class Shop_Seo extends Shop_Config
         if ($oShop->loadInLang($this->_iEditLang, $this->getEditObjectId())) {
 
             //assigning values
-            $oShop->setLanguage(0);
+            $oShop->setLanguage();
             $oShop->assign(oxRegistry::getConfig()->getRequestParameter('editval'));
             $oShop->setLanguage($this->_iEditLang);
             $oShop->save();

@@ -113,7 +113,7 @@ class DeliverySet_Main extends oxAdminDetails
         }
 
         //$aParams = $oDelSet->ConvertNameArray2Idx( $aParams);
-        $oDelSet->setLanguage(0);
+        $oDelSet->setLanguage();
         $oDelSet->assign($aParams);
         $oDelSet->setLanguage($this->_iEditLang);
         $oDelSet = oxRegistry::get("oxUtilsFile")->processFiles($oDelSet);
@@ -146,7 +146,7 @@ class DeliverySet_Main extends oxAdminDetails
             //$aParams = $oDelSet->ConvertNameArray2Idx( $aParams);
         }
 
-        $oDelSet->setLanguage(0);
+        $oDelSet->setLanguage();
         $oDelSet->assign($aParams);
 
         //Disable editing for derived articles

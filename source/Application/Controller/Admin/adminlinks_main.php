@@ -129,7 +129,7 @@ class Adminlinks_Main extends oxAdminDetails
 
         //$aParams = $oLinks->ConvertNameArray2Idx( $aParams);
 
-        $oLinks->setLanguage(0);
+        $oLinks->setLanguage();
         $oLinks->assign($aParams);
         $oLinks->setLanguage($iEditLanguage);
         $oLinks->save();
@@ -169,7 +169,7 @@ class Adminlinks_Main extends oxAdminDetails
             return;
         }
 
-        $oLinks->setLanguage(0);
+        $oLinks->setLanguage();
         $oLinks->assign($aParams);
 
         // apply new language

@@ -47,8 +47,6 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
             array($shopUrl . '?fnc=%67etshopversion'),
             array($shopUrl . '?fnc=getCharSet'),
             array($shopUrl . '?fnc=getShopFullEdition'),
-            array($shopUrl . '?fnc=isMall'),
-            array($shopUrl . '?fnc=getCacheLifeTime'),
             array($shopUrl . '?fnc=addGlobalParams')
         );
     }
@@ -61,6 +59,10 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
      */
     public function testRequestFunctionThatResultsInNoValidNewActionGetsRedirectedToStart($sForbiddenUrl)
     {
+        if ( 0 != $this->getConfig()->getConfigParam('iDebug')) {
+            $this->markTestSkipped('Shop does not redirect in debugmode.');
+        }
+
         $shopUrl = $this->getConfig()->getShopMainUrl();
 
         $result = $this->callPage($sForbiddenUrl);
@@ -68,6 +70,24 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
         $location = "Location: " .  $shopUrl . 'index.php?force_sid=' . $this->extractSessionId($result) .
                      "&cl=start&redirected=1\r\n";
         $this->assertContains($location, $result, 'User should be redirected to shop front page.');
+    }
+
+    /**
+     * Test case that a function's return value is no callable new action.
+     * When shop is in debugmode -1, exception is displayed.
+     *
+     * @dataProvider providerRequestFunctionThatResultsInNoValidNewActionGetsRedirectedToStart
+     */
+    public function testRequestFunctionThatResultsInNoValidNewActionDebugModeException($sForbiddenUrl)
+    {
+        if ( 0 == $this->getConfig()->getConfigParam('iDebug')) {
+            $this->markTestSkipped('Test is only for debugmode.');
+        }
+
+        $result = $this->callPage($sForbiddenUrl);
+
+        $message = '->_executeNewAction';
+        $this->assertContains($message, $result, 'User should see an error message.');
     }
 
     /**
@@ -119,10 +139,10 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
      */
     public function test_configCalled_notAccessed()
     {
-        $sShopUrl = $this->getConfig()->getShopMainUrl();
-        $sResult = $this->_getPageResult('/config.inc.php');
-        $sLocation = "Location: " . $sShopUrl . "index.php\r\n";
-        $this->assertContains($sLocation, $sResult, 'User should be redirected to same URL without forbidden parameter.');
+        $shopUrl = $this->getConfig()->getShopMainUrl();
+        $result = $this->_getPageResult('/config.inc.php');
+        $location = "Location: " . $shopUrl . "index.php\r\n";
+        $this->assertContains($location, $result, 'User should be redirected to same URL without forbidden parameter.');
     }
 
     public function providerForbiddenFilesAccessibility()
@@ -145,9 +165,9 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
      */
     public function testCheckForbiddenFilesAccessibility($sFilePath)
     {
-        $sResultPage = $this->_getPageResult($sFilePath);
+        $resultPage = $this->_getPageResult($sFilePath);
 
-        $this->assertContains('Forbidden', $sResultPage, 'User should see forbidden page message.');
+        $this->assertContains('Forbidden', $resultPage, 'User should see forbidden page message.');
     }
 
     public function providerCheckAllowedFilesAccessibility()
@@ -165,21 +185,21 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
      */
     public function testCheckAllowedFilesAccessibility($sFilePath)
     {
-        $sResultPage = $this->_getPageResult($sFilePath);
+        $resultPage = $this->_getPageResult($sFilePath);
 
-        $this->assertNotContains('Forbidden', $sResultPage, "User shouldn't see forbidden page message.");
+        $this->assertNotContains('Forbidden', $resultPage, "User shouldn't see forbidden page message.");
     }
 
     /**
-     * @param string $sShopUrl shop url to call.
+     * @param string $shopUrl shop url to call.
      *
      * @return string
      */
-    private function callPage($sShopUrl)
+    private function callPage($shopUrl)
     {
         $oCurl = oxNew('oxCurl');
         $oCurl->setOption('CURLOPT_HEADER', true);
-        $oCurl->setUrl($sShopUrl);
+        $oCurl->setUrl($shopUrl);
 
         return $oCurl->execute();
     }
@@ -191,10 +211,10 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
      */
     private function _getPageResult($sFilePath)
     {
-        $sShopUrl = $this->getConfig()->getShopMainUrl();
-        $sResultPage = $this->callPage($sShopUrl . $sFilePath);
+        $shopUrl = $this->getConfig()->getShopMainUrl();
+        $resultPage = $this->callPage($shopUrl . $sFilePath);
 
-        return $sResultPage;
+        return $resultPage;
     }
 
     /**
@@ -210,4 +230,5 @@ class Integration_RestrictedAddress_RestrictedAddressTest extends OxidTestCase
         $parts = explode(';', $parts[1]);
         return trim($parts[0]);
     }
+
 }

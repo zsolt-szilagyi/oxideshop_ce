@@ -274,7 +274,7 @@ class Unit_Core_oxbaseTest extends OxidTestCase
 
     public function getArticlesViewName()
     {
-        $articlesViewName = $this->getConfig()->getEdition() === 'EE' ? 'oxv_oxarticles_de' : 'oxv_oxarticles';
+        $articlesViewName = $this->getConfig()->getEdition() === 'EE' ? 'oxv_oxarticles_1' : 'oxv_oxarticles';
         return $articlesViewName;
     }
 

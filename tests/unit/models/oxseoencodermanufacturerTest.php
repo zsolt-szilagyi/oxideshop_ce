@@ -99,6 +99,7 @@ class Unit_Models_oxSeoEncoderManufacturerTest extends OxidTestCase
 
     public function testGetManufacturerUrlExistingManufacturerWithLangParam()
     {
+        $this->setConfigParam('iDefSeoLang', 'de');
         oxTestModules::addFunction("oxutilsserver", "getServerVar", "{ \$aArgs = func_get_args(); if ( \$aArgs[0] === 'HTTP_HOST' ) { return '" . $this->getConfig()->getShopUrl() . "'; } elseif ( \$aArgs[0] === 'SCRIPT_NAME' ) { return ''; } else { return \$_SERVER[\$aArgs[0]]; } }");
 
         $vendorId = $this->getTestConfig()->getShopEdition() == 'EE' ? '2536d76675ebe5cb777411914a2fc8fb' : 'ee4948794e28d488cf1c8101e716a3f4';
@@ -108,7 +109,7 @@ class Unit_Models_oxSeoEncoderManufacturerTest extends OxidTestCase
         $manufacturer->loadInLang('en', $vendorId);
 
         $encoder = oxNew('oxSeoEncoderManufacturer');
-        $this->assertEquals($this->getConfig()->getShopUrl() . $link, $encoder->getManufacturerUrl($manufacturer, 0));
+        $this->assertEquals($this->getConfig()->getShopUrl() . $link, $encoder->getManufacturerUrl($manufacturer, 'de'));
     }
 
     public function testGetManufacturerUrlExistingManufacturerEngWithLangParam()

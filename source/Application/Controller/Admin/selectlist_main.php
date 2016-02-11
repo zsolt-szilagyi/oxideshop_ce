@@ -142,7 +142,7 @@ class SelectList_Main extends oxAdminDetails
         }
 
         //$aParams = $oAttr->ConvertNameArray2Idx( $aParams);
-        $oAttr->setLanguage(0);
+        $oAttr->setLanguage();
         $oAttr->assign($aParams);
 
         //#708
@@ -195,7 +195,7 @@ class SelectList_Main extends oxAdminDetails
         parent::save();
 
         //$aParams = $oObj->ConvertNameArray2Idx( $aParams);
-        $oObj->setLanguage(0);
+        $oObj->setLanguage();
         $oObj->assign($aParams);
 
         // apply new language

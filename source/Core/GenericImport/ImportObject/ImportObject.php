@@ -141,7 +141,7 @@ abstract class ImportObject
         }
 
         if ($shopObject instanceof oxI18n) {
-            $shopObject->setLanguage(0);
+            $shopObject->setLanguage();
             $shopObject->setEnableMultilang(false);
         }
 
@@ -376,7 +376,7 @@ abstract class ImportObject
         if ($objectName) {
             $shopObject = oxNew($objectName, 'core');
             if ($shopObject instanceof oxI18n) {
-                $shopObject->setLanguage(0);
+                $shopObject->setLanguage();
                 $shopObject->setEnableMultilang(false);
             }
         } else {

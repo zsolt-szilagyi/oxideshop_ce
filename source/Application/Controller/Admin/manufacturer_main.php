@@ -112,7 +112,7 @@ class Manufacturer_Main extends oxAdminDetails
         }
 
         //$aParams = $oManufacturer->ConvertNameArray2Idx( $aParams);
-        $oManufacturer->setLanguage(0);
+        $oManufacturer->setLanguage();
         $oManufacturer->assign($aParams);
         $oManufacturer->setLanguage($this->_iEditLang);
         $oManufacturer = oxRegistry::get("oxUtilsFile")->processFiles($oManufacturer);
@@ -150,7 +150,7 @@ class Manufacturer_Main extends oxAdminDetails
         }
 
         //$aParams = $oManufacturer->ConvertNameArray2Idx( $aParams);
-        $oManufacturer->setLanguage(0);
+        $oManufacturer->setLanguage();
         $oManufacturer->assign($aParams);
         $oManufacturer->setLanguage($this->_iEditLang);
         $oManufacturer = oxRegistry::get("oxUtilsFile")->processFiles($oManufacturer);
