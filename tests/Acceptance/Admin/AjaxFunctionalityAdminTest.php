@@ -33,7 +33,7 @@ class AjaxFunctionalityAdminTest extends AdminTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->getTranslator()->setLanguage(1);
+        $this->getTranslator()->setLanguage('en');
     }
 
     /**

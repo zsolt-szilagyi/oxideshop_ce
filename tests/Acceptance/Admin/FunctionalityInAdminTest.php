@@ -34,7 +34,7 @@ class FunctionalityInAdminTest extends AdminTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->getTranslator()->setLanguage(1);
+        $this->getTranslator()->setLanguage('de');
     }
 
     /**
@@ -874,7 +874,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $this->clickAndWait("link=%HOME%");
         //LT lang
         $this->switchLanguage("Lietuviu");
-        $this->getTranslator()->setLanguage( 2 );
+        $this->getTranslator()->setLanguage('lt');
         $this->searchFor("1001");
         $this->assertEquals("1 Hits for [LT] \"1001\"", $this->getHeadingText("//h1"));
         $this->clickAndWait("searchList_1");

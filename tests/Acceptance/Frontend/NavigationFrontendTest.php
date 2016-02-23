@@ -34,7 +34,7 @@ class NavigationFrontendTest extends FrontendTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->getTranslator()->setLanguage( 1 );
+        $this->getTranslator()->setLanguage('en');
     }
 
     /**
@@ -65,7 +65,7 @@ class NavigationFrontendTest extends FrontendTestCase
         $this->assertElementPresent("//ul[@id='languages']/li[3]//*[text()='English']");
 
         $this->clickAndWait("//ul[@id='languages']/li[2]/a");
-        $this->getTranslator()->setLanguage( 0 );
+        $this->getTranslator()->setLanguage('de');
         $this->assertFalse($this->isVisible("//ul[@id='languages']"));
         $this->assertElementPresent("//p[@id='languageTrigger']//*[text()='Deutsch']");
 

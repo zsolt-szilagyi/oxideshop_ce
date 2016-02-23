@@ -550,7 +550,8 @@ INSERT INTO `oxconfig` (`OXID`, `OXSHOPID`, `OXMODULE`, `OXVARNAME`, `OXVARTYPE`
 ('l8g957be9e7b13412960c7670f71ba31', 'oxbaseshop', '', 'sAdditionalServVATCalcMethod', 'str', 0x55ca40ff0d0a72f5b908f2),
 ('fecfcd8dbd01a491a94557448425acc8', 'oxbaseshop', '', 'blShowTSInternationalFeesMessage', 'bool', 0x07),
 ('32ddeaf2694e06b47b6ff74eafc69b65', 'oxbaseshop', '', 'sParcelService', 'str', 0x00d0e1ae33bb246b4db7d698833845bc01ce92a99a0169defbf5a3ebd40c370b8263a44651fab2043cb8477f7af1a7b1cc420c85d267015673643809e17dbd8c188fcaff8fc6),
-('1eada690d18be312ef5e49b8451440e7', 'oxbaseshop', '', 'blShowTSCODMessage', 'bool', 0x07);
+('1eada690d18be312ef5e49b8451440e7', 'oxbaseshop', '', 'blShowTSCODMessage', 'bool', 0x07),
+('e7da95ec58e2f1f2e534ea0fbbadc3e2', 'oxbaseshop', '', 'iDefSeoLang', 'str', 0xCE92);
 
 -- default unconfigurable values to fallback if theme does not provide alternatives
 INSERT INTO `oxconfig` (`OXID`, `OXSHOPID`, `OXMODULE`, `OXVARNAME`, `OXVARTYPE`, `OXVARVALUE`) VALUES
@@ -1327,7 +1328,7 @@ CREATE TABLE `oxgroups` (
 #
 # Data for table `oxgroups`
 #
-INSERT INTO `oxgroups` (`OXID`, `OXACTIVE`, `OXTITLE`, `OXTITLE_DE`, `OXTITLE_EN`, `OXTITLE_FR`) VALUES
+INSERT INTO `oxgroups` (`OXID`, `OXACTIVE`, `OXTITLE_DE`, `OXTITLE_EN`, `OXTITLE_FR`, `OXTITLE`) VALUES
 ('oxidblacklist', 1, 'Blacklist', 'Blacklist', '', ''),
 ('oxidsmallcust', 1, 'Geringer Umsatz', 'Less Turnover', '', ''),
 ('oxidmiddlecust', 1, 'Mittlerer Umsatz', 'Medium Turnover', '', ''),

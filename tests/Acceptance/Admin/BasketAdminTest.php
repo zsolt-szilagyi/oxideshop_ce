@@ -148,7 +148,7 @@ class BasketAdminTest extends AdminTestCase
             'OXCURRATE' => 1,
             'OXFOLDER' => 'ORDERFOLDER_NEW',
             'OXTRANSSTATUS' => 'OK',
-            'OXLANG' => 1,
+            'OXLANG' => 'en',
             'OXDELTYPE' => 'testdelset',
             'OXTIMESTAMP' => '2014-03-07 09:27:13',
             'OXISNETTOMODE' => '0',

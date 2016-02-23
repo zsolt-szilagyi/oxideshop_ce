@@ -71,7 +71,7 @@ class InternationalTest extends AcceptanceTestCase
     public function clearCookies()
     {
         parent::clearCookies();
-        $this->getTranslator()->setLanguage(0);
+        $this->getTranslator()->setLanguage('de');
     }
 
     /**

@@ -148,7 +148,7 @@ class Object_Seo extends oxAdminDetails
 
         $sQ = "select oxfixed from oxseo where
                    oxseo.oxobjectid = " . oxDb::getDb()->quote($this->getEditObjectId()) . " and
-                   oxseo.oxshopid = '{$iShopId}' and oxseo.oxlang = {$iLang} and oxparams = '' ";
+                   oxseo.oxshopid = '{$iShopId}' and oxseo.oxlang = '{$iLang}' and oxparams = '' ";
 
         return (bool) oxDb::getDb()->getOne($sQ, false, false);
     }
