@@ -1465,8 +1465,8 @@ class SearchAndSortingAdminTest extends AdminTestCase
     public function testSortPromotions()
     {
         $futureTime = date("Y-m-d", mktime(0, 0, 0, date("m"),date("d")+1,date("Y")));
-        $this->executeSql( "UPDATE `oxactions` SET `OXACTIVETO` = '".$futureTime."' WHERE `OXTITLE_1` like 'Current%'" );
-        $this->executeSql( "UPDATE `oxactions` SET `OXACTIVEFROM` = '".$futureTime."', `OXACTIVETO` = '".$futureTime."' WHERE `OXTITLE_1` like 'Upcoming%'" );
+        $this->executeSql( "UPDATE `oxactions` SET `OXACTIVETO` = '".$futureTime."' WHERE `OXTITLE_EN` like 'Current%'" );
+        $this->executeSql( "UPDATE `oxactions` SET `OXACTIVEFROM` = '".$futureTime."', `OXACTIVETO` = '".$futureTime."' WHERE `OXTITLE_EN` like 'Upcoming%'" );
         $this->loginAdmin("Customer Info", "Promotions");
         $this->assertEquals("English", $this->getSelectedLabel("changelang"));
         $this->changeListSorting("link=Name");

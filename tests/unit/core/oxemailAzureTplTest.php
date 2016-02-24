@@ -594,6 +594,8 @@ class Unit_Core_oxemailAzureTplTest extends OxidTestCase
      */
     public function testSendSuggestMail()
     {
+        $this->setConfigParam('iDefSeoLang', 'en');
+
         $oParams = new stdClass();
         $oParams->rec_email = 'username@useremail.nl';
         $oParams->rec_name = 'testUserFName testUserLName';
