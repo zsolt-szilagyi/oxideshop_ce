@@ -28,6 +28,13 @@ use OxidEsales\Eshop\Tests\Acceptance\FrontendTestCase;
 class ProductInfoFrontendTest extends FrontendTestCase
 {
     /**
+     * Language id.
+     *
+     * @var string
+     */
+    protected $translateLanguageId = 'en';
+
+    /**
      * Orders: buying more items than available
      *
      * @group product

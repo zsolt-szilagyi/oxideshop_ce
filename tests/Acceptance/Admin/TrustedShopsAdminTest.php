@@ -54,8 +54,8 @@ class TrustedShopsAdminTest extends AdminTestCase
 
         //trusted shops setup in admin
         $this->loginAdminTs();
-        $this->assertElementPresent("aShopID_TrustedShops[0]");
-        $this->type("aShopID_TrustedShops[0]", $this->getLoginDataByName('trustedShopsIdForLanguageDe'));
+        $this->assertElementPresent("aShopID_TrustedShops[de]");
+        $this->type("aShopID_TrustedShops[de]", $this->getLoginDataByName('trustedShopsIdForLanguageDe'));
         $this->check("//input[@name='tsTestMode' and @value='true']");
         $this->check("//input[@name='tsSealActive' and @value='true']");
 
@@ -68,11 +68,11 @@ class TrustedShopsAdminTest extends AdminTestCase
         $this->assertEquals("Credit Card / Debit Card", $this->getSelectedLabel("paymentids[testpayment]"));
         $this->assertEquals("on", $this->getValue("//input[@name='tsSealActive' and @value='true']"));
         $this->assertEquals("on", $this->getValue("//input[@name='tsTestMode' and @value='true']"));
-        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[0]"));
-        $this->type("aShopID_TrustedShops[0]", "nonExisting");
+        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[de]"));
+        $this->type("aShopID_TrustedShops[de]", "nonExisting");
         $this->clickAndWait("save");
         $this->assertTextPresent("The certificate does not exist");
-        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[0]"));
+        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[de]"));
     }
 
     /**
@@ -89,15 +89,15 @@ class TrustedShopsAdminTest extends AdminTestCase
 
         //setupping ts
         $this->loginAdminTs();
-        $this->type("aShopID_TrustedShops[0]", $this->getLoginDataByName('trustedShopsIdForLanguageDe'));
-        $this->type("aTsUser[0]", "testExcellencePartner");
-        $this->type("aTsPassword[0]", "test12345678");
+        $this->type("aShopID_TrustedShops[de]", $this->getLoginDataByName('trustedShopsIdForLanguageDe'));
+        $this->type("aTsUser[de]", "testExcellencePartner");
+        $this->type("aTsPassword[de]", "test12345678");
         $this->check("//input[@name='tsTestMode' and @value='true']");
         $this->clickAndWait("save");
         $this->assertTextNotPresent("Invalid Trusted Shops ID", "Invalid Trusted Shops ID for testing");
-        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[0]"));
-        $this->assertEquals("testExcellencePartner", $this->getValue("aTsUser[0]"));
-        $this->assertEquals("test12345678", $this->getValue("aTsPassword[0]"));
+        $this->assertEquals($this->getLoginDataByName('trustedShopsIdForLanguageDe'), $this->getValue("aShopID_TrustedShops[de]"));
+        $this->assertEquals("testExcellencePartner", $this->getValue("aTsUser[de]"));
+        $this->assertEquals("test12345678", $this->getValue("aTsPassword[de]"));
         //$this->assertElementPresent("//div[@id='liste']/table/tbody/tr[2]/td[@class='active']");
         $this->check("//input[@name='tsSealActive' and @value='true']");
         $this->check("//input[@name='tsTestMode' and @value='true']");

@@ -29,12 +29,38 @@ use OxidEsales\Eshop\Tests\Acceptance\AdminTestCase;
 class FunctionalityInAdminTest extends AdminTestCase
 {
     /**
+     * Language id.
+     *
+     * @var string
+     */
+    protected $translateLanguageId = 'en';
+
+    /**
+     * Original tables and fields.
+     *
+     * @var array
+     */
+    protected $originalTables = array();
+    protected $originalFields = array();
+
+    /**
      * Sets default language to English.
      */
     protected function setUp()
     {
         parent::setUp();
-        $this->getTranslator()->setLanguage('de');
+        $this->getTranslator()->setLanguage($this->translateLanguageId);
+        $this->prepareDatabase();
+    }
+
+    /**
+     * Fixture tearDown.
+     */
+    protected function tearDown()
+    {
+        $this->restoreDatabase();
+
+        parent::tearDown();
     }
 
     /**
@@ -1739,7 +1765,7 @@ class FunctionalityInAdminTest extends AdminTestCase
 
         $this->assertContains("window.emosPropertiesEvent(emospro);", $htmlSource);
         $this->assertContains('emospro.content = "Start";', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         //category page
@@ -1747,7 +1773,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $htmlSource = $this->getHtmlSource();
         $this->assertContains("window.emosPropertiesEvent(emospro);", $htmlSource);
         $this->assertContains('emospro.content', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         //details page
@@ -1755,7 +1781,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $htmlSource = $this->getHtmlSource();
         $this->assertContains("window.emosPropertiesEvent(emospro);", $htmlSource);
         $this->assertContains('emospro.content', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         $this->assertContains('emospro.ec_Event = [["view","1000","Test', $htmlSource);
@@ -1764,7 +1790,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $this->clickAndWait("//dl[@id='footerServices']//a[text()='%ACCOUNT%']");
         $htmlSource = $this->getHtmlSource();
         $this->assertContains('emospro.content = "Login\/Formular\/Login";', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         $this->type("loginUser", "example_test@oxid-esales.dev");
@@ -1772,7 +1798,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $this->clickAndWait("loginButton");
         $htmlSource = $this->getHtmlSource();
         $this->assertContains('emospro.content = "Login\/Uebersicht";', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         $this->assertContains('emospro.login = [["' . md5('example_test@oxid-esales.dev') . '"', $htmlSource);
@@ -1780,7 +1806,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $this->openBasket();
         $htmlSource = $this->getHtmlSource();
         $this->assertContains('emospro.content = "Shop\/Kaufprozess\/Warenkorb";', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
         $this->assertContains('emospro.orderProcess = "1_Warenkorb";', $htmlSource);
@@ -1788,7 +1814,7 @@ class FunctionalityInAdminTest extends AdminTestCase
         $this->clickAndWait("link=Privacy Policy");
         $htmlSource = $this->getHtmlSource();
         $this->assertContains('emospro.content = "Info\/Sicherheit";', $htmlSource);
-        $this->assertContains('emospro.langid = 1;', $htmlSource);
+        $this->assertContains('emospro.langid = "en";', $htmlSource);
         $this->assertContains('emospro.pageId', $htmlSource);
         $this->assertContains('emospro.siteid', $htmlSource);
     }
@@ -1836,6 +1862,45 @@ class FunctionalityInAdminTest extends AdminTestCase
             foreach ($orders as $order) {
                 $this->callShopSC("oxOrder", "save", $order[0], array("oxshopid" => $testConfig->getShopId()), null, 1);
             }
+        }
+    }
+
+    /**
+     * Restore database to whatever state it was in at beginning of this test.
+     */
+    private function restoreDatabase()
+    {
+        $dbMetaDataHandler = oxNew('oxDbMetaDataHandler');
+        $allTables = $dbMetaDataHandler->getAllTables();
+        $excessTables = array_diff($allTables, $this->originalTables);
+
+        foreach ($excessTables as $table) {
+            $query = "DROP TABLE " . $table;
+            oxDb::getDb()->execute($query);
+        }
+
+        foreach ($this->originalTables as $table) {
+            $fields = array_keys($dbMetaDataHandler->getFields($table));
+            $excessFields = array_diff($fields, $this->originalFields[$table]);
+
+            if (!empty($excessFields)) {
+                $query = "ALTER TABLE $table DROP COLUMN " . implode(', DROP COLUMN ', $excessFields);
+                oxDb::getDb()->execute($query);
+            }
+        }
+        $dbMetaDataHandler->updateViews();
+    }
+
+    /**
+     * Restore database to whatever state it was in at beginning of this test.
+     */
+    private function prepareDatabase()
+    {
+        $dbMetaDataHandler = oxNew('oxDbMetaDataHandler');
+        $this->originalTables = $dbMetaDataHandler->getAllTables();
+
+        foreach ($this->originalTables as $table) {
+            $this->originalFields[$table] = array_keys($dbMetaDataHandler->getFields($table));
         }
     }
 }
