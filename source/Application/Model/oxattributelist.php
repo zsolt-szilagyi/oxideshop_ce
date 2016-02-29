@@ -192,7 +192,7 @@ class oxAttributeList extends oxList
                        "FROM $sAttTbl as att, $sO2ATbl as o2a ,$sC2ATbl as c2a " .
                        "WHERE att.oxid = o2a.oxattrid AND c2a.oxobjectid = $sActCatQuoted AND c2a.oxattrid = att.oxid AND o2a.oxvalue !='' AND o2a.oxobjectid IN ($sArtIds) " .
                        "ORDER BY c2a.oxsort , att.oxpos, att.oxtitle, o2a.oxvalue";
-
+syslog(10, $sSelect);
             $rs = $oDb->select($sSelect);
 
             if ($rs != false && $rs->recordCount() > 0) {

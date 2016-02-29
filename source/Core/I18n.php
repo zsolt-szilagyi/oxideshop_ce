@@ -316,10 +316,12 @@ class I18n extends \oxBase
 
         //we have an array of fields, lets remove multilanguage fields
         foreach ($aWorkingFields as $sName => $sVal) {
-            if ($this->_getFieldLang($sName)) {
-                unset($aWorkingFields[$sName]);
+            $fieldLanguage = $this->_getFieldLang($sName);
+            if (!$fieldLanguage || ($this->getLanguage() == $fieldLanguage) ) {
+                $coreName = str_ireplace('_' . $fieldLanguage, '', $sName);
+                $aWorkingFields[$coreName] = $this->_getFieldStatus($sName);
             } else {
-                $aWorkingFields[$sName] = $this->_getFieldStatus($sName);
+                unset($aWorkingFields[$sName]);
             }
         }
 
@@ -386,9 +388,9 @@ class I18n extends \oxBase
     protected function _getUpdateFieldsForTable($sTable, $blUseSkipSaveFields = true)
     {
         $sCoreTable = $this->getCoreTableName();
-
         $blSkipMultilingual = false;
         $blSkipCoreFields = false;
+        $languageIdentifier = null;
 
         if ($sTable != $sCoreTable) {
             $blSkipCoreFields = true;
@@ -396,6 +398,8 @@ class I18n extends \oxBase
         if ($this->_blEmployMultilanguage) {
             if ($sTable != $this->getLanguageTableName($sCoreTable, $this->getLanguage())) {
                 $blSkipMultilingual = true;
+            } else {
+                $languageIdentifier = 'oxlang';
             }
         }
 
@@ -408,7 +412,7 @@ class I18n extends \oxBase
                     if ($blSkipMultilingual && $this->isMultilingualField($sKey)) {
                         continue;
                     }
-                    if ($blSkipCoreFields && !$this->isMultilingualField($sKey)) {
+                    if ($blSkipCoreFields && !$this->isMultilingualField($sKey) && !empty($languageIdentifier)) {
                         continue;
                     }
                 } else {
@@ -432,10 +436,13 @@ class I18n extends \oxBase
             $oField = $this->$sLongName;
 
             if (!$blUseSkipSaveFields || ($blUseSkipSaveFields && !in_array($sKeyLowercase, $this->_aSkipSaveFields))) {
-                $sKey = $this->getUpdateSqlFieldName($sKey);
                 $sSql .= (($blSep) ? ',' : '') . $sKey . " = " . $this->_getUpdateFieldValue($sKey, $oField);
                 $blSep = true;
             }
+        }
+
+        if (!empty($languageIdentifier)) {
+            $sSql .= (($blSep) ? ',' : '') . $languageIdentifier . " = '{$this->getLanguage()}'";
         }
 
         return $sSql;
@@ -592,16 +599,16 @@ class I18n extends \oxBase
      */
     protected function _getAllFields($blReturnSimple = false)
     {
-        if ($this->_blEmployMultilanguage) {
-            return parent::_getAllFields($blReturnSimple);
-        } else {
-            $sViewName = $this->getViewName();
-            if (!$sViewName) {
+        $viewName = getViewName($this->getCoreTableName(), -1, -1);
+
+        if (!$this->_blEmployMultilanguage) {
+            $viewName = $this->getViewName();
+            if (!$viewName) {
                 return array();
             }
-
-            return $this->_getTableFields($sViewName, $blReturnSimple);
         }
+
+        return $this->_getTableFields($viewName, $blReturnSimple);
     }
 
     /**
@@ -617,7 +624,11 @@ class I18n extends \oxBase
     protected function _addField($sName, $sStatus, $sType = null, $sLength = null)
     {
         if ($this->_blEmployMultilanguage && !is_null($this->_getFieldLang($sName))) {
-            return;
+            if (strtolower(oxRegistry::getLang()->getBaseLanguage()) == strtolower($this->_getFieldLang($sName))){
+                $sName = preg_replace('/_([a-zA-Z1-9_]+)$/', '', $sName);
+            } else {
+                return;
+            }
         }
 
         return parent::_addField($sName, $sStatus, $sType, $sLength);
@@ -636,7 +647,7 @@ class I18n extends \oxBase
      */
     protected function _canFieldBeNull($sFieldName)
     {
-        $sFieldName = preg_replace('/_\d{1,2}$/', '', $sFieldName);
+        $sFieldName = preg_replace('/_([a-zA-Z1-9_]+)$/', '', $sFieldName);
 
         return parent::_canFieldBeNull($sFieldName);
     }

@@ -25,6 +25,13 @@ require_once 'MultilanguageTestCase.php';
 class Integration_Multilanguage_NonNumericLanguageIdsTest extends MultilanguageTestCase
 {
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->markTestSkipped('Deprecated test, replaced by RestructuredMultilanguageTablesTest.');
+    }
+
     /**
      * Test getting language table names.
      */

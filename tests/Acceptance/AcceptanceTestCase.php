@@ -51,5 +51,51 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
                 $this->importSql($sTestSuitePath . '/demodata_EE_mall.sql');
             }
         }
+
     }
+
+    /**
+     * Sets up shop before running test case.
+     * Does not use setUpBeforeClass to keep this method non-static.
+     *
+     * @param string $testSuitePath
+     */
+    public function setUpTestsSuite($testSuitePath)
+    {
+        parent::setUpTestsSuite($testSuitePath);
+
+        $this->restructureDatabase();
+    }
+
+    protected function tearDown()
+    {
+        $this->removeExtensionTables();
+
+        parent::tearDown();
+    }
+
+
+    /**
+     * Restructure database after all test data is added.
+     * TODO: change to adapted test data
+     */
+    protected function restructureDatabase()
+    {
+        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
+        $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
+        $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/restructured_database.sql');
+        $serviceCaller->callService('ShopPreparation', 1);
+    }
+
+    /**
+     * Remove *_multilang tables.
+     */
+    protected function removeExtensionTables()
+    {
+        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
+        $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
+        $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/drop_extension_tables.sql');
+        $serviceCaller->callService('ShopPreparation', 1);
+    }
+
 }

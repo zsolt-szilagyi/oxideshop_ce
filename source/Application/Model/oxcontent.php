@@ -149,7 +149,7 @@ class oxContent extends oxI18n implements oxIUrl
         if ($sLoadId == 'oxcredits') {
 
             // fetching column names
-            $sColQ = "SHOW COLUMNS FROM oxcontents WHERE field LIKE  'oxcontent%'";
+            $sColQ = "SHOW COLUMNS FROM {$sTable} WHERE field LIKE  'oxcontent%'";
             $aCols = oxDb::getDb()->getAll($sColQ);
 
             // building subquery
@@ -160,7 +160,7 @@ class oxContent extends oxI18n implements oxIUrl
             foreach ($aCols as $iKey => $aCol) {
                 $sContQ = sprintf($sContQ, $aCol[0], $aCol[0], $iCount != $iKey ? $sPattern : "''");
             }
-            $sContQ .= " FROM oxcontents WHERE oxloadid = '{$sLoadId}' AND oxshopid = '{$sShopId}'";
+            $sContQ .= " FROM {$sTable} WHERE oxloadid = '{$sLoadId}' AND oxshopid = '{$sShopId}'";
 
             $sSelect = $this->buildSelectString($aParams);
             $sSelect = str_replace("`{$sTable}`.`oxcontent`", "( $sContQ ) as oxcontent", $sSelect);

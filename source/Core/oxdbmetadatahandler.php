@@ -26,13 +26,13 @@
  */
 class oxDbMetaDataHandler extends oxSuperCfg
 {
+    const MULTILANG_TABLE_POSTFIX = '_multilang';
 
     /**
      *
      * @var array
      */
     protected $_aDbTablesFields = null;
-
 
     /**
      *
@@ -58,6 +58,12 @@ class oxDbMetaDataHandler extends oxSuperCfg
      * @var array
      */
     protected $forceOriginalFields = array('OXID');
+
+    /**
+     * Fields in *_multilang that are not for multilanguage content.
+     * @var array
+     */
+    protected $noMultilanguageFields = array('OXID', 'OXLANG', 'OXTIMESTAMP');
 
     /**
      *  Get table fields
@@ -140,6 +146,19 @@ class oxDbMetaDataHandler extends oxSuperCfg
     }
 
     /**
+     * Get extension table name containing the multilanguage data.
+     *
+     * @param $table
+     *
+     * @return string
+     */
+    public function getLanguageExtensionTableName($table)
+    {
+        $result = $this->getCoreTableName($table) . self::MULTILANG_TABLE_POSTFIX;
+        return $result;
+    }
+
+    /**
      * return all DB tables for the language sets
      *
      * @param string $table table name to check
@@ -148,160 +167,12 @@ class oxDbMetaDataHandler extends oxSuperCfg
      */
     public function getAllMultiTables($table)
     {
-        $result = $this->getLanguageSetTables($table);
-        array_shift($result); //first array element is for core table itself
+        $result = array();
+        $multilanguageTable = $this->getLanguageExtensionTableName($table);
+        if ($this->tableExists($multilanguageTable)) {
+            $result[] = $multilanguageTable;
+        }
         return $result;
-    }
-
-    /**
-     * Get sql for new multi-language table set creation
-     *
-     * @param string $coreTable core table name
-     * @param string $tableSet  table set to be created
-     *
-     * @return string
-     *
-     */
-    protected function _getCreateTableSetSql($coreTable, $tableSet)
-    {
-        $result = oxDb::getDb()->getAll("show create table {$coreTable}");
-        $collation = $this->getConfig()->isUtf() ? '' : 'COLLATE latin1_general_ci';
-        $query = "CREATE TABLE `{$tableSet}` (" .
-                 "`OXID` char(32) $collation NOT NULL, " .
-                 "PRIMARY KEY (`OXID`)" .
-                 ") " . strstr($result [0][1], 'ENGINE=');
-
-        return $query;
-    }
-
-    /**
-     * Get sql for new multi-language field creation
-     *
-     * @param string $sTable     core table name
-     * @param string $sField     field name
-     * @param string $sNewField  new field name
-     * @param string $sPrevField previous field in table
-     * @param string $sTableSet  table to change (if not set take core table)
-     *
-     * @return string
-     */
-    public function getAddFieldSql($sTable, $sField, $sNewField, $sPrevField, $sTableSet = null)
-    {
-        if (!$sTableSet) {
-            $sTableSet = $sTable;
-        }
-        $aRes = oxDb::getDb()->getAll("show create table {$sTable}");
-        $sTableSql = $aRes[0][1];
-
-        // removing comments;
-        $sTableSql = preg_replace('/COMMENT \\\'.*?\\\'/', '', $sTableSql);
-        preg_match("/.*,\s+(['`]?" . preg_quote($sField, '/') . "['`]?\s+[^,]+),.*/", $sTableSql, $aMatch);
-        $sFieldSql = $aMatch[1];
-
-        $sSql = "";
-        if (!empty($sFieldSql)) {
-            $sFieldSql = preg_replace("/" . preg_quote($sField, '/') . "/", $sNewField, $sFieldSql);
-            $sSql = "ALTER TABLE `$sTableSet` ADD " . $sFieldSql;
-            if ($this->tableExists($sTableSet) && $this->fieldExists($sPrevField, $sTableSet)) {
-                $sSql .= " AFTER `$sPrevField`";
-            }
-        }
-
-        return $sSql;
-    }
-
-
-    /**
-     * Get sql for new multi-language field index creation
-     *
-     * @param string $sTable    core table name
-     * @param string $sField    field name
-     * @param string $sNewField new field name
-     * @param string $sTableSet table to change (if not set take core table)
-     *
-     * @return string
-     */
-    public function getAddFieldIndexSql($sTable, $sField, $sNewField, $sTableSet = null)
-    {
-        $aRes = oxDb::getDb()->getAll("show create table {$sTable}");
-
-        $sTableSql = $aRes[0][1];
-
-        preg_match_all("/([\w]+\s+)?\bKEY\s+(`[^`]+`)?\s*\([^)]+\)/iU", $sTableSql, $aMatch);
-        $aIndex = $aMatch[0];
-
-        $blUsingTableSet = $sTableSet ? true : false;
-
-        if (!$sTableSet) {
-            $sTableSet = $sTable;
-        }
-
-        $aIndexSql = array();
-        $aSql = array();
-        if (count($aIndex)) {
-            foreach ($aIndex as $sIndexSql) {
-                if (preg_match("/\([^)]*\b" . $sField . "\b[^)]*\)/i", $sIndexSql)) {
-
-                    //removing index name - new will be added automaticly
-                    $sIndexSql = preg_replace("/(.*\bKEY\s+)`[^`]+`/", "$1", $sIndexSql);
-
-                    if ($blUsingTableSet) {
-                        // replacing multiple fields to one (#3269)
-                        $sIndexSql = preg_replace("/\([^\)]+\)/", "(`$sNewField`)", $sIndexSql);
-                    } else {
-                        //replacing previous field name with new one
-                        $sIndexSql = preg_replace("/\b" . $sField . "\b/", $sNewField, $sIndexSql);
-                    }
-
-                    $aIndexSql[] = "ADD " . $sIndexSql;
-                }
-            }
-            if (count($aIndexSql)) {
-                $aSql = array("ALTER TABLE `$sTableSet` " . implode(", ", $aIndexSql));
-            }
-        }
-
-        return $aSql;
-    }
-
-    /**
-     * @deprecated in b-dev
-     *
-     * Get max language ID used in shop. For checking is used table "oxarticle"
-     * field "oxtitle"
-     *
-     * @return int
-     */
-    public function getCurrentMaxLangId()
-    {
-        if (isset($this->_iCurrentMaxLangId)) {
-            return $this->_iCurrentMaxLangId;
-        }
-
-        $sTable = $sTableSet = "oxarticles";
-        $sField = $sFieldSet = "oxtitle";
-        $iLang = 0;
-        while ($this->tableExists($sTableSet) && $this->fieldExists($sFieldSet, $sTableSet)) {
-            $iLang++;
-            $sTableSet = getLangTableName($sTable, $iLang);
-            $sFieldSet = $sField . '_' . $iLang;
-        }
-
-        $this->_iCurrentMaxLangId = --$iLang;
-
-        return $this->_iCurrentMaxLangId;
-    }
-
-    /**
-     * @deprecated in b-dev
-     *
-     * Get next available language ID
-     *
-     * @return int
-     */
-    public function getNextLangId()
-    {
-        return $this->getCurrentMaxLangId() + 1;
     }
 
     /**
@@ -313,31 +184,44 @@ class oxDbMetaDataHandler extends oxSuperCfg
      */
     public function getMultilangFields($table)
     {
-        $fields = $this->getFields($table);
-        $multiLanguageFields = array();
-
-        foreach ($fields as $field) {
-            if (preg_match("/({$table}\.)?(?<field>[^_]+)_([a-zA-Z0-9_]+)?$/", $field, $matches)) {
-                $multiLanguageFields[$matches['field']] = $matches['field'];
+        $result = array();
+        $multilanguageTable = $this->getLanguageExtensionTableName($table);
+        if ($this->tableExists($multilanguageTable)) {
+            $result = $this->getFields($multilanguageTable);
+            foreach ($this->noMultilanguageFields as $field)
+            {
+                if (array_key_exists($field, $result)) {
+                    unset($result[$field]);
+                }
             }
         }
-        $multiLanguageFields = array_keys($multiLanguageFields);
-
-        return $multiLanguageFields;
+        $result = array_keys($result);
+        return $result;
     }
 
+    /**
+     * Get unpostfixed fields to postfixed fields relation.
+     *
+     * @param $table
+     *
+     * @return array
+     */
     public function getSinglelangFields($table, $languageId)
     {
         $table = strtolower($table);
-        $languageTable = $this->getTableSetForLanguageAbbreviation($languageId, $table);
+        $fields = array();
+        $languageTable = $table;
 
-        $baseFields = $this->getFields($table);
-        $languageFields = $this->getFields($languageTable);
+        //core table handling
+        if (false === strpos($table, 'oxv_')) {
+            $languageTable = $this->getLanguageExtensionTableName($table);
+            $baseFields = $this->getFields($table);
+            $languageFields = $this->getFields($languageTable);
+            $fields = array_merge($baseFields, $languageFields);
+        } else {
+            $fields = $this->getFields($table);
+        }
 
-        //Some fields (for example OXID) must be taken from core table.
-        $languageFields = $this->filterCoreFields($languageFields);
-
-        $fields = array_merge($baseFields, $languageFields);
         $singleLanguageFields = array();
 
         foreach ($fields as $fieldName => $field) {
@@ -357,68 +241,20 @@ class oxDbMetaDataHandler extends oxSuperCfg
     }
 
     /**
-     * @deprecated in b-dev
-     *
-     * Add new multi-languages fields to table. Duplicates all multi-language
-     * fields and fields indexes with next available language ID
-     *
-     * @param string $table table name
-     */
-    public function addNewMultilangField($table)
-    {
-        $newLang = $this->getNextLangId();
-        $this->ensureMultiLanguageFields($table, $newLang);
-    }
-
-    /**
      * Resetting all multi-language fields with specific language id
      * to default value in selected table
      *
-     * @param int    $iLangId    Language id
-     * @param string $sTableName Table name
+     * @param string $languageId
+     * @param string $tableName
      *
      * @return null
      */
-    public function resetMultilangFields($iLangId, $sTableName)
+    public function resetMultilangFields($languageId, $tableName)
     {
-        $aSql = array();
+        $languageTable = $this->getLanguageExtensionTableName($tableName);
 
-        $aFields = $this->getMultilangFields($sTableName);
-        if (is_array($aFields) && count($aFields) > 0) {
-            foreach ($aFields as $sFieldName) {
-                $sFieldName = $sFieldName . "_" . $iLangId;
-
-                if ($this->fieldExists($sFieldName, $sTableName)) {
-                    //resetting field value to default
-                    $aSql[] = "UPDATE {$sTableName} SET {$sFieldName} = DEFAULT;";
-                }
-            }
-        }
-
-        if (!empty($aSql)) {
-            $this->executeSql($aSql);
-        }
-    }
-
-    /**
-     * @deprecated in b-dev
-     *
-     * Add new language to database. Scans all tables and adds new
-     * multi-language fields
-     */
-    public function addNewLangToDb()
-    {
-        //reset max count
-        $this->_iCurrentMaxLangId = null;
-
-        $aTable = $this->getAllTables();
-
-        foreach ($aTable as $sTableName) {
-            $this->addNewMultilangField($sTableName);
-        }
-
-        //updating views
-        $this->updateViews();
+        $query = "DELETE FROM {$languageTable} WHERE OXLANG = '{$languageId}'";
+        $this->executeSql($query);
     }
 
     /**
@@ -429,12 +265,9 @@ class oxDbMetaDataHandler extends oxSuperCfg
      */
     public function addNewLanguageToDb($languageId)
     {
+        //when adding a multilanguage table, related <table>_multilang table needs
+        //to be created as well, this needs to be done manually for now
         $this->safeGuardAdditionalMultiLanguageTables();
-        $allTables = $this->getAllTables();
-
-        foreach ($allTables as $table) {
-            $this->ensureMultiLanguageFields($table, $languageId);
-        }
 
         //updating views
         $this->updateViews();
@@ -527,198 +360,6 @@ class oxDbMetaDataHandler extends oxSuperCfg
     }
 
     /**
-     * Get last multilanguage field abbreviation.
-     *
-     * @param $table
-     *
-     * @return string
-     */
-    public function getPreviousMultilanguageField($table, $matchField)
-    {
-        $match = null;
-        if (!$this->tableExists($table)){
-            return $match;
-        }
-
-        $allFields = $this->getFields($table);
-        $matchField = strtoupper($matchField) . '_';
-        $match = null;
-
-        foreach ($allFields as $key => $field) {
-            if (false !== strpos($key, $matchField)) {
-                $match = $key;
-            }
-        }
-        return $match;
-    }
-
-    /**
-     * Determine which set table has a free slot for a new language abbreviation.
-     */
-    public function getNextFreeSlotInTableSet($table = 'oxarticles', $field = 'oxtitle')
-    {
-        $result = null;
-        $map = $this->getLanguage2TableSetMap($table, $field);
-        $languagesPerTable = getLanguagesPerTable();
-
-        //core table is first in line and this one already contains the template multilanguage fields (OXTITLE etc.)
-        $languageCount = array($table => 1);
-
-        foreach ($map as $languageAbbreviation => $setTable) {
-            $languageCount[$setTable] += 1;
-        }
-
-        foreach ($languageCount as $setTable => $counted) {
-            if ($languagesPerTable > $counted){
-                $result = $setTable;
-                break;
-            }
-        }
-
-        if (is_null($result)) {
-            $result = $this->getNextLanguageSetTable($table);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Figure out which set the language is assigned or should be assigned to.
-     *
-     * @param $languageAbbreviation
-     *
-     * @return null| string
-     */
-    public function getTableSetForLanguageAbbreviation($languageAbbreviation, $table = 'oxarticles')
-    {
-        $return = null;
-        $multilanguageFields = $this->getMultilangFields($table);
-        $field = strtolower($multilanguageFields[0]);
-        $languageAbbreviation = strtolower($languageAbbreviation);
-
-        $map = $this->getLanguage2TableSetMap($table, $field);
-        if (isset($map[$languageAbbreviation])) {
-            $return = $map[$languageAbbreviation];
-        }
-
-        if (is_null($return)) {
-            $return = $this->getNextFreeSlotInTableSet($table, $field);
-        }
-
-        return $return;
-    }
-
-    /**
-     * Get language abbreviation to table set relation.
-     *
-     * @param string $coreTable
-     * @param string $coreField
-     *
-     * @return array
-     */
-    public function getLanguage2TableSetMap($coreTable = 'oxarticles', $coreField = 'oxtitle')
-    {
-        $language2TableSet = array();
-        $existingTableSets = $this->getLanguageSetTables($coreTable);
-        $coreField = strtolower($coreField);
-
-        foreach ($existingTableSets as $tableSet) {
-            $language2TableSet = array_merge($language2TableSet, $this->getTableSetLanguages($tableSet, $coreField));
-        }
-
-        return $language2TableSet;
-    }
-
-    /**
-     * Get existing language set tables.
-     *
-     * @return array
-     */
-    public function getLanguageSetTables($table = 'oxarticles')
-    {
-        $suffix = getLanguageTableSuffix();
-        $counter = 1;
-
-        $tables = array(0 => $table);
-        $tableSet = $table . $suffix . $counter;
-
-        while ($this->tableExists($tableSet)) {
-            $tables[$counter] = $tableSet;
-            $counter++;
-            $tableSet = $table . $suffix . $counter;
-        }
-
-        return $tables;
-    }
-
-    /**
-     * Get name of next table set to be created.
-     *
-     * @return array
-     */
-    public function getNextLanguageSetTable($table = 'oxarticles')
-    {
-        $existingTableSets = $this->getLanguageSetTables($table);
-        $lastTableName = array_pop($existingTableSets);
-        $suffix = getLanguageTableSuffix();
-
-        $temporary = explode($suffix, $lastTableName);
-        $counter = (int) $temporary[1];
-        $counter++;
-
-        $result = $table . $suffix . $counter;
-        return $result;
-    }
-
-    /**
-     * Get all language abbreviations that are already available in a set table.
-     *
-     * @param $tableSet
-     * @param $coreField
-     *
-     * @return array
-     */
-    protected function getTableSetLanguages($tableSet, $coreField)
-    {
-        $result = array();
-        $rawFields = oxDb::getDb()->MetaColumns($tableSet);
-        if (!is_array($rawFields)) {
-            return $result;
-        }
-
-        foreach ($rawFields as $fieldObject) {
-            $field = strtolower($fieldObject->name);
-            if (0 === strpos($field, $coreField . '_')) {
-                $temp = explode('_', $field);
-                $temp = explode($temp[0] . '_', $field);
-                if (!empty($temp[1])) {
-                    $result[$temp[1]] = $tableSet;
-                }
-            }
-        }
-        return $result;
-    }
-
-
-    /**
-     * Make sure that e.g. OXID is always used from core table when creating views.
-     * Otherwise we might have unwanted side effects from rows with OXIDs null in view tables.
-     *
-     * @param $fields Language fields array we need to filter for core fields.
-     *
-     * @return array
-     */
-    protected function filterCoreFields($fields)
-    {
-        foreach ($this->forceOriginalFields as $fieldname) {
-            if (array_key_exists($fieldname, $fields)) {
-                unset($fields[$fieldname]);
-            }
-        }
-        return $fields;
-    }
-
-    /**
      * Ensure that all *_set* tables for all tables in config parameter 'aMultiLangTables'
      * are created.
      *
@@ -731,57 +372,12 @@ class oxDbMetaDataHandler extends oxSuperCfg
             return; //nothing to do
         }
 
-        $languages = array_keys($this->getLanguage2TableSetMap());
-
         foreach ($multiLanguageTables as $table) {
-            if ($this->tableExists($table)) {
-                //run over all languageIds that have fields for core tables (and their set tables)
-                foreach ($languages as $languageId) {
-                    $this->ensureMultiLanguageFields($table, $languageId);
-                }
+            $extensionTable = $this->getLanguageExtensionTableName($table);
+            if (!$this->tableExists($extensionTable)) {
+                throw new oxException('Missing table ' . $extensionTable);
             }
         }
-    }
-
-    /**
-     * Make sure that all *_set* tables with all required multilanguage fields are created.
-     *
-     * @param $table
-     * @param $languageAbbreviation
-     *
-     * @return null
-     */
-    protected function ensureMultiLanguageFields($table, $languageAbbreviation)
-    {
-        $multilanguageFields = $this->getMultilangFields($table);
-        $tableSet = $this->getTableSetForLanguageAbbreviation($languageAbbreviation, $table);
-        $abbreviations = array_keys($this->getLanguage2TableSetMap($table, $multilanguageFields[0]));
-        $firstAbbreviation = array_shift($abbreviations);
-        $queries = array();
-
-        if (is_array($multilanguageFields) && count($multilanguageFields) > 0) {
-
-            if (!$this->tableExists($tableSet)) {
-                $queries[] = $this->_getCreateTableSetSql($table, $tableSet);
-            }
-
-            foreach ($multilanguageFields as $field) {
-                $newFieldName = strtoupper($field . "_" . $languageAbbreviation);
-                $previousField = $this->getPreviousMultilanguageField($tableSet, $field);
-                $templateField = strtoupper($field . "_" . $firstAbbreviation);
-
-                if (!$this->tableExists($tableSet) || !$this->fieldExists($newFieldName, $tableSet)) {
-
-                    //getting add field sql
-                    $queries[] = $this->getAddFieldSql($table, $templateField, $newFieldName, $previousField, $tableSet);
-
-                    //getting add index sql on added field
-                    $queries = array_merge($queries, (array) $this->getAddFieldIndexSql($table, $templateField, $newFieldName, $tableSet));
-                }
-            }
-        }
-
-        $this->executeSql($queries);
     }
 
     /**
@@ -798,25 +394,24 @@ class oxDbMetaDataHandler extends oxSuperCfg
     }
 
     /**
-     * Check if language
-     * id matches field language.
+     * Get core table name from table name
      *
-     * @param $field
-     * @param $languageId
-     *
-     * @return bool
+     * @param $tableName
      */
-    protected function doesFieldLanguageMatch($field, $languageId)
+    protected function getCoreTableName($tableName)
     {
-        $return = false;
-        $tmp = explode('.', $field);
+        //TODO: use preg_match instead of explode
+        $tmp = explode('oxv_', $tableName);
         $raw = $tmp[count($tmp)-1];
-        $tmp = explode('_', $raw);
-        $core = $tmp[0];
-        $tmp = explode($core . '_', $raw);
-        if( $languageId == $tmp[count($tmp)-1] ) {
-            $return = true;
-        }
+        $tmp = explode('_',$raw);
+
+        return $tmp[0];
+    }
+
+    public function getTableSetForLanguageAbbreviation($languageAbbreviation, $table = 'oxarticles')
+    {
+        $coreTableName = $this->getCoreTableName($table);
+        $return = $this->getLanguageExtensionTableName($coreTableName);
         return $return;
     }
 }

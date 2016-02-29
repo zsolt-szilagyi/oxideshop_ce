@@ -42,6 +42,13 @@ class oxShop extends oxI18n
     protected $_blMultiShopInheritCategories = false;
 
     /**
+     * Fields that are used in *_multilang table but should show up in the views.
+     *
+     * @var array
+     */
+    protected $skipExtensionTableFields = array('OXLANG');
+
+    /**
      * Database tables setter.
      *
      * @param array $aTables
@@ -198,47 +205,59 @@ class oxShop extends oxI18n
     /**
      * Returns table field name mapping sql section for single language views
      *
-     * @param string $sTable Table name
-     * @param int    $iLang  Language id
+     * @param string $table     Table name
      *
      * @return string
      */
-    protected function _getViewSelect($sTable, $iLang)
+    protected function _getSingleLanguageViewSelect($table)
     {
-        $oMetaData = oxNew('oxDbMetaDataHandler');
-        $aFields = $oMetaData->getSinglelangFields($sTable, $iLang);
-        foreach ($aFields as $sCoreField => $sField) {
-            if ($sCoreField !== $sField) {
-                $aFields[$sCoreField] = $sField . ' AS ' . $sCoreField;
+        $fields = array();
+        $metaData = oxNew('oxDbMetaDataHandler');
+        $extensionTable = $metaData->getLanguageExtensionTableName($table);
+        $tables = array($table);
+        if ($metaData->tableExists($extensionTable)) {
+            $tables[] = $extensionTable;
+        }
+
+        foreach ($tables as $tableKey => $tableName) {
+            $tableFields = $metaData->getFields($tableName);
+            foreach ($tableFields as $coreField => $field) {
+                $skipField = (0 < $tableKey) && in_array($coreField, $this->skipExtensionTableFields);
+                if (!isset($fields[$coreField]) && !$skipField) {
+                    $fields[$coreField] = $field;
+                }
             }
         }
 
-        return implode(',', $aFields);
+        return implode(',', $fields);
     }
 
     /**
      * Returns table fields sql section for multiple language views
      *
-     * @param string $sTable table name
+     * @param string $table table name
      *
      * @return string
      */
-    protected function _getViewSelectMultilang($sTable)
+    protected function _getViewSelectAll($table)
     {
-        $aFields = array();
+        $metaData = oxNew('oxDbMetaDataHandler');
+        $extensionTable = $metaData->getLanguageExtensionTableName($table);
+        $fields = $metaData->getFields($table);
+        $extensionFields = $metaData->tableExists($extensionTable) ? $metaData->getFields($extensionTable) : array();
 
-        $oMetaData = oxNew('oxDbMetaDataHandler');
-        $aTables = array_merge(array($sTable), $oMetaData->getAllMultiTables($sTable));
-        foreach ($aTables as $sTableKey => $sTableName) {
-            $aTableFields = $oMetaData->getFields($sTableName);
-            foreach ($aTableFields as $sCoreField => $sField) {
-                if (!isset($aFields[$sCoreField])) {
-                    $aFields[$sCoreField] = $sField;
+        $languageIds = oxRegistry::getLang()->getLanguageIds($this->getId());
+        foreach ($languageIds as $languageId) {
+            foreach ($extensionFields as $coreField => $field) {
+                $skipField = in_array($coreField, $this->skipExtensionTableFields);
+                $ucLanguageId = strtoupper($languageId);
+                if (!isset($fields[$coreField]) && !$skipField) {
+                    $fields[$coreField . '_' . $languageId] = "mlang_{$languageId}.{$coreField} AS {$coreField}_{$ucLanguageId}";
                 }
             }
-        }
 
-        return implode(',', $aFields);
+        }
+        return implode(',', $fields);
     }
 
     /**
@@ -250,16 +269,17 @@ class oxShop extends oxI18n
      */
     protected function _getViewJoinAll($sTable)
     {
-        $sJoin = ' ';
-        $oMetaData = oxNew('oxDbMetaDataHandler');
-        $aTables = $oMetaData->getAllMultiTables($sTable);
-        if (count($aTables)) {
-            foreach ($aTables as $sTableKey => $sTableName) {
-                $sJoin .= "LEFT JOIN {$sTableName} USING (OXID) ";
+        $join = ' ';
+        $metaDataHandler = oxNew('oxDbMetaDataHandler');
+        $extensionTable = $metaDataHandler->getLanguageExtensionTableName($sTable);
+        if ($metaDataHandler->tableExists($extensionTable)) {
+            $languageIds = oxRegistry::getLang()->getLanguageIds($this->getId());
+            foreach ($languageIds as $languageId) {
+                $alias = 'mlang_' . $languageId;
+                $join .= "LEFT JOIN {$extensionTable} AS {$alias} ON ({$sTable}.OXID = {$alias}.OXID AND {$alias}.OXLANG = '{$languageId}') ";
             }
         }
-
-        return $sJoin;
+        return $join;
     }
 
     /**
@@ -272,15 +292,15 @@ class oxShop extends oxI18n
      */
     protected function _getViewJoinLang($table, $languageId)
     {
-        $sJoin = ' ';
+        $join = ' ';
         $metaDataHandler = oxNew('oxDbMetaDataHandler');
-        $tableSet = $metaDataHandler->getTableSetForLanguageAbbreviation($languageId, $table);
+        $extensionTable = $metaDataHandler->getLanguageExtensionTableName($table);
 
-        if ($tableSet && $tableSet !== $table) {
-            $sJoin .= "LEFT JOIN {$tableSet} USING (OXID) ";
+        if ($metaDataHandler->tableExists($extensionTable)) {
+            $join .= "LEFT JOIN {$extensionTable} ON ({$table}.OXID = {$extensionTable}.OXID AND {$extensionTable}.OXLANG = '{$languageId}') ";
         }
 
-        return $sJoin;
+        return $join;
     }
 
     /**
@@ -346,10 +366,10 @@ class oxShop extends oxI18n
         $sViewTable = "oxv_{$table}{$sLangAddition}";
 
         if ($languageAbbr === null) {
-            $sFields = $this->_getViewSelectMultilang($table);
+            $sFields = $this->_getViewSelectAll($table);
             $sJoin = $this->_getViewJoinAll($table);
         } else {
-            $sFields = $this->_getViewSelect($table, $languageId);
+            $sFields = $this->_getSingleLanguageViewSelect($table);
             $sJoin = $this->_getViewJoinLang($table, $languageId);
         }
 
