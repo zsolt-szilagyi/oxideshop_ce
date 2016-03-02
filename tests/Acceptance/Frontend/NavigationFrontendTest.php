@@ -493,7 +493,7 @@ class NavigationFrontendTest extends FrontendTestCase
         $this->assertEquals("The latest news... %MORE%%ELLIPSIS%", $this->clearString($this->getText("//div[@id='newsBox']//li[1]")));
         $this->assertElementNotPresent("//div[@id='newsBox']//li[2]");
         //Delete new from database where short description is News
-        $sOxid = (oxDb::getDb()->getOne("SELECT oxid FROM oxnews WHERE OXSHORTDESC_DE = 'News'"));
+        $sOxid = (oxDb::getDb()->getOne("SELECT oxid FROM oxnews_multilang WHERE OXSHORTDESC = 'News' and OXLANG = 'de'"));
         $this->assertFalse(is_null($sOxid), "Oxid was not found in database for OXSHORTDESC_DE='News'");
         $this->callShopSC("oxNews", "delete", $sOxid, null, null, 1);
         $this->clearCache();
@@ -1463,7 +1463,7 @@ class NavigationFrontendTest extends FrontendTestCase
     {
         //activating CMS pages as categories
         //TODO: Selenium refactor to remove SQL's executions
-        $this->executeSql("UPDATE `oxcontents` SET `OXACTIVE_DE`=1, `OXACTIVE_EN`=1 WHERE `OXID` = 'testcontent1' OR `OXID` = 'testcontent2' OR `OXID` = 'oxsubshopcontent1' OR `OXID` = 'oxsubshopcontent2'");
+        $this->executeSql("UPDATE `oxcontents_multilang` SET `OXACTIVE`=1 WHERE `OXID` = 'testcontent1' OR `OXID` = 'testcontent2' OR `OXID` = 'oxsubshopcontent1' OR `OXID` = 'oxsubshopcontent2'");
 
         //cms as root category
         $this->clearCache();

@@ -717,13 +717,13 @@ LEFT JOIN oxlinks_multilang as mlang_en ON (oxlinks.OXID = mlang_en.OXID AND mla
 
 CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxlinks_de AS SELECT
 oxlinks.*,
-mlang.OXURLDESC as OXURLDESC_DE
+mlang.OXURLDESC as OXURLDESC
 from oxlinks
 LEFT JOIN oxlinks_multilang as mlang ON (oxlinks.OXID = mlang.OXID AND mlang.oxlang = 'de');
 
 CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxlinks_en AS SELECT
 oxlinks.*,
-mlang.OXURLDESC as OXURLDESC_DE
+mlang.OXURLDESC as OXURLDESC
 from oxlinks
 LEFT JOIN oxlinks_multilang as mlang ON (oxlinks.OXID = mlang.OXID AND mlang.oxlang = 'en');
 
@@ -744,10 +744,10 @@ CREATE TABLE `oxmanufacturers_multilang` (
   UNIQUE KEY `OXIDLANG` (`OXID`,`OXLANG`)
 ) ENGINE=MyISAM COMMENT 'Shop manufacturers';
 
-INSERT INTO `oxmanufacturers_multilang` (`OXID`, `OXLANG`, `OXTITLE`, `OXTIMESTAMP`)
-        SELECT `OXID`, 'de', `OXTITLE_DE`, `OXTIMESTAMP` FROM `oxmanufacturers`;
-INSERT INTO `oxmanufacturers_multilang` (`OXID`, `OXLANG`, `OXTITLE`, `OXTIMESTAMP`)
-        SELECT `OXID`, 'en', `OXTITLE_EN`, `OXTIMESTAMP` FROM `oxmanufacturers`;
+INSERT INTO `oxmanufacturers_multilang` (`OXID`, `OXLANG`, `OXTITLE`, `OXSHORTDESC`, `OXTIMESTAMP`)
+        SELECT `OXID`, 'de', `OXTITLE_DE`, `OXSHORTDESC_DE`, `OXTIMESTAMP` FROM `oxmanufacturers`;
+INSERT INTO `oxmanufacturers_multilang` (`OXID`, `OXLANG`, `OXTITLE`, `OXSHORTDESC`, `OXTIMESTAMP`)
+        SELECT `OXID`, 'en', `OXTITLE_EN`, `OXSHORTDESC_EN`, `OXTIMESTAMP` FROM `oxmanufacturers`;
 
 ALTER TABLE oxmanufacturers
 DROP COLUMN OXTITLE,
@@ -837,48 +837,57 @@ LEFT JOIN oxmediaurls_multilang as mlang ON (oxmediaurls.OXID = mlang.OXID AND m
 CREATE TABLE `oxnews_multilang` (
   `OXID` char(32) character set latin1 collate latin1_general_ci NOT NULL COMMENT 'News id',
   `OXLANG` VARCHAR(32) NOT NULL default 'de' COMMENT 'Language id',
+  `OXACTIVE` tinyint(1) NOT NULL default '1' COMMENT 'Is active',
   `OXSHORTDESC` varchar(255) NOT NULL default '' COMMENT 'Short description (multilanguage)',
   `OXLONGDESC` text NOT NULL COMMENT 'Long description (multilanguage)',
   `OXTIMESTAMP` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT 'Timestamp',
   UNIQUE KEY `OXIDLANG` (`OXID`,`OXLANG`)
 ) ENGINE=MyISAM COMMENT 'Shop news';
 
-INSERT INTO `oxnews_multilang` (`OXID`, `OXLANG`, `OXSHORTDESC`, `OXLONGDESC`, `OXTIMESTAMP`)
-        SELECT `OXID`, 'de', `OXSHORTDESC_DE`, `OXLONGDESC_DE`, `OXTIMESTAMP` FROM `oxnews`;
-INSERT INTO `oxnews_multilang` (`OXID`, `OXLANG`, `OXSHORTDESC`, `OXLONGDESC`, `OXTIMESTAMP`)
-        SELECT `OXID`, 'en', `OXSHORTDESC_EN`, `OXLONGDESC_DE`, `OXTIMESTAMP` FROM `oxnews`;
+INSERT INTO `oxnews_multilang` (`OXID`, `OXLANG`, `OXACTIVE`, `OXSHORTDESC`, `OXLONGDESC`, `OXTIMESTAMP`)
+        SELECT `OXID`, 'de', `OXACTIVE_DE`, `OXSHORTDESC_DE`, `OXLONGDESC_DE`, `OXTIMESTAMP` FROM `oxnews`;
+INSERT INTO `oxnews_multilang` (`OXID`, `OXLANG`, `OXACTIVE`, `OXSHORTDESC`, `OXLONGDESC`, `OXTIMESTAMP`)
+        SELECT `OXID`, 'en', `OXACTIVE_DE`, `OXSHORTDESC_EN`, `OXLONGDESC_EN`, `OXTIMESTAMP` FROM `oxnews`;
 
 ALTER TABLE oxnews
+DROP COLUMN OXACTIVE,
 DROP COLUMN OXSHORTDESC,
 DROP COLUMN OXLONGDESC,
+DROP COLUMN OXACTIVE_DE,
 DROP COLUMN OXSHORTDESC_DE,
 DROP COLUMN OXLONGDESC_DE,
+DROP COLUMN OXACTIVE_EN,
 DROP COLUMN OXSHORTDESC_EN,
 DROP COLUMN OXLONGDESC_EN,
+DROP COLUMN OXACTIVE_FR,
 DROP COLUMN OXSHORTDESC_FR,
 DROP COLUMN OXLONGDESC_FR;
 
 CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxnews AS SELECT
 oxnews.*,
+mlang_de.OXACTIVE    as OXACTIVE_DE,
 mlang_de.OXSHORTDESC as OXSHORTDESC_DE,
-mlang_de.OXSHORTDESC as OXLONGDESC_DE,
+mlang_de.OXLONGDESC  as OXLONGDESC_DE,
+mlang_en.OXACTIVE    as OXACTIVE_EN,
 mlang_en.OXSHORTDESC as OXSHORTDESC_EN,
-mlang_en.OXSHORTDESC as OXLONGDESC_EN
+mlang_en.OXLONGDESC  as OXLONGDESC_EN
 from oxnews
 LEFT JOIN oxnews_multilang as mlang_de ON (oxnews.OXID = mlang_de.OXID AND mlang_de.oxlang = 'de')
 LEFT JOIN oxnews_multilang as mlang_en ON (oxnews.OXID = mlang_en.OXID AND mlang_en.oxlang = 'en');
 
 CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxnews_de AS SELECT
 oxnews.*,
+mlang.OXACTIVE as OXACTIVE,
 mlang.OXSHORTDESC as OXSHORTDESC,
-mlang.OXSHORTDESC as OXLONGDESC
+mlang.OXLONGDESC as OXLONGDESC
 from oxnews
 LEFT JOIN oxnews_multilang as mlang ON (oxnews.OXID = mlang.OXID AND mlang.oxlang = 'de');
 
 CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxnews_en AS SELECT
 oxnews.*,
+mlang.OXACTIVE as OXACTIVE,
 mlang.OXSHORTDESC as OXSHORTDESC,
-mlang.OXSHORTDESC as OXLONGDESC
+mlang.OXLONGDESC as OXLONGDESC
 from oxnews
 LEFT JOIN oxnews_multilang as mlang ON (oxnews.OXID = mlang.OXID AND mlang.oxlang = 'en');
 

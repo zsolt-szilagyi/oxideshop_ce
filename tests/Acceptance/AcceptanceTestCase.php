@@ -62,18 +62,32 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
      */
     public function setUpTestsSuite($testSuitePath)
     {
-        parent::setUpTestsSuite($testSuitePath);
+        if (!self::$testsSuiteStarted) {
+            self::$testsSuiteStarted = true;
+            $this->dumpDb('reset_suite_db_dump');
+        } else {
+            $this->restoreDb('reset_suite_db_dump');
+        }
 
+        $this->activateModules();
+        $this->addTestData($testSuitePath);
         $this->restructureDatabase();
+
+        $this->dumpDb('reset_test_db_dump');
     }
 
-    protected function tearDown()
+    /**
+     * This method is called after the last test of this test class is run.
+     *
+     * @since Method available since Release 3.4.0
+     */
+    public static function tearDownAfterClass()
     {
-        $this->removeExtensionTables();
+        self::removeExtensionTables();
+        self::restoreDefaultDatabase();
 
-        parent::tearDown();
+        parent::tearDownAfterClass();
     }
-
 
     /**
      * Restructure database after all test data is added.
@@ -84,13 +98,18 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
         $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
         $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
         $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/restructured_database.sql');
+
+        if ($testConfig->getShopEdition() === 'EE') {
+            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Tests/Fixtures/restructured_database.sql');
+        }
+
         $serviceCaller->callService('ShopPreparation', 1);
     }
 
     /**
      * Remove *_multilang tables.
      */
-    protected function removeExtensionTables()
+    protected static function removeExtensionTables()
     {
         $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
         $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
@@ -98,4 +117,23 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
         $serviceCaller->callService('ShopPreparation', 1);
     }
 
+    /**
+     * Reinstall old database.
+     * We need this workaround atm until testdata is adapted to new structure.
+     */
+    protected static function restoreDefaultDatabase()
+    {
+        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
+        $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
+        $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopPath() .'/Setup/Sql/database.sql');
+
+        if ($testConfig->getShopEdition() === 'PE') {
+            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Setup/Sql/database.sql');
+        }
+        if ($testConfig->getShopEdition() === 'EE') {
+            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Setup/Sql/database.sql');
+        }
+
+        $serviceCaller->callService('ShopPreparation', 1);
+    }
 }

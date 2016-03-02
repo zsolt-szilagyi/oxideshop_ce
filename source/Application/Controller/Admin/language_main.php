@@ -169,11 +169,11 @@ class Language_Main extends oxAdminDetails
             //checking if added language already has created multilang fields
             //with new base ID - if not, creating new fields
             if ($blNewLanguage) {
-                if (!$this->_checkMultilangFieldsExistsInDb($sOxId)) {
-                    $this->_addNewMultilangFieldsToDb($sOxId);
-                } else {
+                #if (!$this->_checkMultilangFieldsExistsInDb($sOxId)) {
+                #    $this->_addNewMultilangFieldsToDb($sOxId);
+                #} else {
                     $blViewError = true;
-                }
+                #}
             }
             // show message for user to generate views
             if ($blViewError) {
