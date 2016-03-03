@@ -509,4 +509,30 @@ class Unit_Admin_LanguageMainTest extends OxidTestCase
 
         $this->assertEquals($errorMessage, $exception->getOxMessage());
     }
+
+    /**
+     * Test language options.
+     */
+    public function testLanguageOptions()
+    {
+        $view = $this->getProxyClass('Language_Main');
+        $result = $view->getLanguageOptions();
+
+        $expectedA = array('country_name'      => 'Anderes Land',
+                           'country_isoalpha2' => '',
+                           'id'                => 'de',
+                           'abbreviation'      => 'de',
+                           'variant'           => 'standard',
+                           'language'          => 'GERMAN_STANDARD');
+
+        $expectedB = array('country_name'      => 'Vereinigte Staaten von Amerika',
+                           'country_isoalpha2' => 'US',
+                           'id'                => 'en_us',
+                           'abbreviation'      => 'en_US',
+                           'variant'           => 'formal',
+                           'language'          => 'ENGLISH_US_FORMAL');
+
+        $this->assertEquals($expectedA, $result['languages']['']['GERMAN_STANDARD']);
+        $this->assertEquals($expectedB, $result['languages']['US']['ENGLISH_US_FORMAL']);
+    }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<countries>
+    <country name="STANDARD" isoalpha2="">
+        <language language="GERMAN_STANDARD" variant="standard" abbreviation="de" id="de"  />
+        <language language="ENGLISH_STANDARD" variant="standard" abbreviation="en" id="en"  />
+        <language language="FRENCH_STANDARD" variant="standard" abbreviation="fr" id="fr"  />
+    </country>
+    <country name="GERMANY" isoalpha2="DE">
+        <language language="GERMAN_DE_FORMAL"   variant="formal"   abbreviation="de_DE"          id="de_de"  />
+        <language language="GERMAN_DE_INFORMAL" variant="informal" abbreviation="de_DE_informal" id="de_de_informal"  />
+    </country>
+    <country name="AUSTRIA" isoalpha2="AT">
+        <language language="GERMAN_AT_FORMAL" variant="formal" abbreviation="de_AT" id="de_at" />
+    </country>
+    <country name="SWITZERLAND" isoalpha2="CH">
+        <language language="GERMAN_CH_FORMAL"  variant="formal" abbreviation="de_CH" id="de_ch" />
+        <language language="FRENCH_CH_FORMAL"  variant="formal" abbreviation="fr_CH" id="fr_ch" />
+        <language language="ITALIAN_CH_FORMAL" variant="formal" abbreviation="it_CH" id="it_ch" />
+    </country>
+    <country name="UNITED_KINGDOM" isoalpha2="GB">
+        <language language="ENGLISH_UK_FORMAL" variant="formal" abbreviation="en_UK" id="en_uk"  />
+    </country>
+    <country name="UNITED_STATES" isoalpha2="US">
+        <language language="ENGLISH_US_FORMAL" variant="formal" abbreviation="en_US" id="en_us"  />
+    </country>
+</countries>

@@ -2067,6 +2067,20 @@ $aLang = array(
 'OLC_ERROR_RESPONSE_UNEXPECTED'     =>    'Fehler: Antwort vom Server kann wegen unerwarteten Formats nicht ausgewertet werden. Bitte versuchen Sie es erneut.',
 
 'VERSION_UPDATE_LINK'               =>    'http://www.oxid-esales.com/de/support-services/dokumentation-und-hilfe/oxid-eshop/installation/oxid-eshop-aktualisieren/update-vorbereiten.html',
+
+//languages
+'PLEASE_SELECT'                     => 'Bitte auswählen',
+'GERMAN_STANDARD'                   => 'Deutsch',
+'ENGLISH_STANDARD'                  => 'Englisch',
+'FRENCH_STANDARD'                   => 'Französisch',
+'GERMAN_DE_FORMAL'                  => 'Deutsch (Deutschland)',
+'GERMAN_DE_INFORMAL'                => 'Deutsch (Deutschland, informal)',
+'GERMAN_AT_FORMAL'                  => 'Deutsch (Österreich)',
+'GERMAN_CH_FORMAL'                  => 'Deutsch (Schweiz)',
+'FRENCH_CH_FORMAL'                  => 'Französsch (Schweiz)',
+'ITALIAN_CH_FORMAL'                 => 'Italienisch (Schweiz)',
+'ENGLISH_UK_FORMAL'                 => 'Englisch (UK)',
+'ENGLISH_US_FORMAL'                 => 'Englisch (US)',
 );
 
 /*

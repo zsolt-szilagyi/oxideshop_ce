@@ -10,6 +10,34 @@ window.onload = function ()
     var oField = top.oxid.admin.getLockTarget();
     oField.onchange = oField.onkeyup = oField.onmouseout = top.oxid.admin.unlockSave;
 }
+
+function onSelect_country(country){
+    var language_main_languageselect = document.getElementById('language_main_languageselect');
+    var languages_by_country = document.getElementById('languages_' + country);
+    var selects = language_main_languageselect.getElementsByTagName('select');
+
+    language_main_languageselect.style = "";
+    for (i = 0; i < selects.length; i++) {
+        selects[i].style = 'display:none';
+    }
+    if ('--' == country) {
+        language_main_languageselect.style = 'display:none';
+    } else {
+        languages_by_country.style = "";
+    }
+}
+
+function onSelect_language(language, country, name){
+    var languages = [{$smarty_languages}];
+    var description = document.getElementById('editval[desc]');
+    var abbreviation = document.getElementById('oLockTarget');
+    abbreviation.value = languages[country][language]['abbreviation'];
+    if ('' == abbreviation.value) {
+        name = '';
+    }
+    description.value = name;
+}
+
 //-->
 </script>
 
@@ -43,6 +71,36 @@ window.onload = function ()
 
         <table cellspacing="0" cellpadding="0" border="0">
         [{block name="admin_language_main_form"}]
+
+            [{if '-1' == $oxid}]
+            <tr id="countryselect">
+                <td class="edittext">
+                    [{oxmultilang ident="GENERAL_COUNTRY"}]
+                </td>
+                <td class="edittext">
+                    <select class="editinput" name="editval[language_country]" id="language_country" [{$readonly}] onchange="javascript:onSelect_country(this.value, this.options[this.options.selectedIndex].innerHTML)" >
+                        [{foreach from=$languagecountries item=country key=key}]
+                        <option value="[{$key}]">[{$country}]</option>
+                        [{/foreach}]
+                    </select>
+                </td>
+            </tr>
+            <tr id="language_main_languageselect" style="display:none">
+                <td class="edittext">
+                    [{oxmultilang ident="GENERAL_LANGUAGE_NAME"}]
+                </td>
+                <td class="edittext">
+                    [{foreach from=$languagecountries item=country key=currentcountry}]
+                        <select style="display:none" class="editinput" name="editval[language]" id="languages_[{$currentcountry}]" [{$readonly}] onchange="javascript:onSelect_language(this.value,'[{$currentcountry}]',this.options[this.options.selectedIndex].innerHTML)" >
+                            [{foreach from=$languages.$currentcountry item=item key=key}]
+                            <option value="[{$key}]" name="[{oxmultilang ident=$item.language}]">[{oxmultilang ident=$item.language}]</option>
+                            [{/foreach}]
+                        </select>
+                    [{/foreach}]
+                </td>
+            </tr>
+           [{/if}]
+
             <tr>
                 <td class="edittext" width="120">
                 [{oxmultilang ident="LANGUAGE_ACTIVE"}]
@@ -57,7 +115,7 @@ window.onload = function ()
                 [{oxmultilang ident="LANGUAGE_ABBERVATION"}]
                 </td>
                 <td class="edittext">
-                <input type="text" class="editinput" size="5" maxlength="10" id="oLockTarget" name="editval[abbr]" value="[{$edit.abbr}]" [{$readonly}]>
+                    <input type="text" class="editinput" size="20" maxlength="10" id="oLockTarget" name="editval[abbr]" value="[{$edit.abbr}]" [{$readonly}]>
                 [{oxinputhelp ident="HELP_LANGUAGE_ABBERVATION"}]
                 </td>
             </tr>
@@ -66,7 +124,7 @@ window.onload = function ()
                 [{oxmultilang ident="LANGUAGE_DESCRIPTION"}]
                 </td>
                 <td class="edittext">
-                <input type="text" class="editinput" size="40" maxlength="50" name="editval[desc]" value="[{$edit.desc}]" [{$readonly}]>
+                <input type="text" class="editinput" size="40" maxlength="50" id="editval[desc]" name="editval[desc]" value="[{$edit.desc}]" [{$readonly}]>
                 [{oxinputhelp ident="HELP_LANGUAGE_DESCRIPTION"}]
                 </td>
             </tr>

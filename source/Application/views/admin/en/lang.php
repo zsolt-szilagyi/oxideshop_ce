@@ -2064,6 +2064,20 @@ $aLang = array(
 'OLC_ERROR_RESPONSE_UNEXPECTED'    =>    'Error: server response cannot be analyzed due to a not expected format. Please try again.',
 
 'VERSION_UPDATE_LINK'              =>    'http://www.oxid-esales.com/en/support-services/documentation-and-help/oxid-eshop/installation/oxid-eshop-update-installation/preparing-update.html',
+
+//languages
+'PLEASE_SELECT'                    => 'Please select',
+'GERMAN_STANDARD'                  => 'German',
+'ENGLISH_STANDARD'                 => 'English',
+'FRENCH_STANDARD'                  => 'French',
+'GERMAN_DE_FORMAL'                 => 'German (Germany)',
+'GERMAN_DE_INFORMAL'               => 'German (Germany, informal)',
+'GERMAN_AT_FORMAL'                 => 'German (Austria)',
+'GERMAN_CH_FORMAL'                 => 'German (Switzerland)',
+'FRENCH_CH_FORMAL'                 => 'Französsch (Switzerland)',
+'ITALIAN_CH_FORMAL'                => 'Italienisch (Switzerland)',
+'ENGLISH_UK_FORMAL'                => 'Englisch (UK)',
+'ENGLISH_US_FORMAL'                => 'Englisch (US)',
 );
 
 /*

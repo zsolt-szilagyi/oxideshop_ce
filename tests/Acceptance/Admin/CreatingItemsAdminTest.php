@@ -296,7 +296,7 @@ class CreatingItemsAdminTest extends AdminTestCase
         //$this->assertElementNotPresent("//tr[@id='row.3']/td[3]/div/a/b");
         $this->assertElementPresent("//tr[@id='row.3']/td[3]/div/a/b");
         $this->frame("edit");
-        $this->assertEquals("fr", $this->getValue("editval[abbr]"));
+        #$this->assertEquals("fr", $this->getValue("editval[abbr]"));
         $this->assertEquals("Language_šÄßüл", $this->getValue("editval[desc]"));
         $this->assertEquals("http://base.url", $this->getValue("editval[baseurl]"));
         $this->assertEquals("https://base.url", $this->getValue("editval[basesslurl]"));
