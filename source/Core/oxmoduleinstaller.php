@@ -380,10 +380,21 @@ class oxModuleInstaller extends oxSuperCfg
                 $sBlock = $aValue["block"];
                 $sFile = $aValue["file"];
 
-                $sSql = "INSERT INTO `oxtplblocks` (`OXID`, `OXACTIVE`, `OXSHOPID`, `OXTEMPLATE`, `OXBLOCKNAME`, `OXPOS`, `OXFILE`, `OXMODULE`)
-                         VALUES ('{$sOxId}', 1, '{$sShopId}', " . $oDb->quote($sTemplate) . ", " . $oDb->quote($sBlock) . ", " . $oDb->quote($iPosition) . ", " . $oDb->quote($sFile) . ", '{$sModuleId}')";
+                $theme = isset($aValue['theme']) ? $aValue['theme'] : '';
 
-                $oDb->execute($sSql);
+                $sql = "INSERT INTO `oxtplblocks` (`OXID`, `OXACTIVE`, `OXSHOPID`, `OXTHEME`, `OXTEMPLATE`, `OXBLOCKNAME`, `OXPOS`, `OXFILE`, `OXMODULE`)
+                         VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)";
+
+                $oDb->execute($sql, array(
+                    $sOxId,
+                    $sShopId,
+                    $theme,
+                    $sTemplate,
+                    $sBlock,
+                    $iPosition,
+                    $sFile,
+                    $sModuleId
+                ));
             }
         }
     }
