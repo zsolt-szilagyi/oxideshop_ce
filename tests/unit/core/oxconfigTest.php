@@ -1202,6 +1202,41 @@ class Unit_Core_oxconfigTest extends OxidTestCase
     }
 
     /**
+     * Get module template case
+     */
+    public function testGetModuleTemplatePath()
+    {
+        $requestTemplate = 'xxx.tpl';
+        $templateFilePath = 'somepath/somefilename.tpl';
+        $moduleId = 'moduleId';
+
+        $vfsStreamWrapper = $this->getVfsStreamWrapper();
+        $vfsStreamWrapper->createFile($templateFilePath, '');
+        $virtualDirectoryPath = $vfsStreamWrapper->getRootPath();
+
+        $moduleListMock = $this->getMock('oxmodulelist', array('getActiveModuleInfo'));
+        $moduleListMock->expects($this->any())->method('getActiveModuleInfo')->will($this->returnValue([$moduleId => true]));
+        oxTestModules::addModuleObject('oxmodulelist', $moduleListMock);
+
+        $templates = [
+            $moduleId => [
+                $requestTemplate => $templateFilePath
+            ]
+        ];
+
+        $config = $this->getMock('oxConfig', array('getModulesDir'));
+        $config->expects($this->any())->method('getModulesDir')->will($this->returnValue($virtualDirectoryPath));
+
+        $config->init();
+        $config->setConfigParam('aModuleTemplates', $templates);
+
+        $realResult = $config->getTemplatePath($requestTemplate, true);
+        $expected = $virtualDirectoryPath . $templateFilePath;
+
+        $this->assertEquals($expected, $realResult);
+    }
+
+    /**
      * Testing getAbsDynImageDir getter
      */
     public function testGetTranslationsDir()
