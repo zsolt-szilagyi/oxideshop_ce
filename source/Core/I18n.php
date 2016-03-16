@@ -23,6 +23,7 @@
 namespace OxidEsales\Eshop\Core;
 
 use oxRegistry;
+use oxDbMetaDataHandler;
 use oxDb;
 
 /**
@@ -52,6 +53,13 @@ class I18n extends \oxBase
      * @var bool
      */
     protected $_blEmployMultilanguage = true;
+
+    /**
+     * OXID in core table ends up in OXOBJECTID in language extension table.
+     *
+     * @var array
+     */
+    protected $multilanguageFieldMap = array('oxid' => 'oxobjectid', 'oxobjectid' => '');
 
     /**
      * Class constructor, initiates parent constructor (parent::oxBase()).
@@ -409,10 +417,7 @@ class I18n extends \oxBase
             $sKeyLowercase = strtolower($sKey);
             if ($sKeyLowercase != 'oxid') {
                 if ($this->_blEmployMultilanguage) {
-                    if ($blSkipMultilingual && $this->isMultilingualField($sKey)) {
-                        continue;
-                    }
-                    if ($blSkipCoreFields && !$this->isMultilingualField($sKey) && !empty($languageIdentifier)) {
+                    if ($this->isNoUpdateFieldForTable($sKey, $languageIdentifier, $blSkipMultilingual, $blSkipCoreFields)) {
                         continue;
                     }
                 } else {
@@ -434,9 +439,10 @@ class I18n extends \oxBase
 
             $sLongName = $this->_getFieldLongName($sKey);
             $oField = $this->$sLongName;
+            $mappedKey = $this->mapLanguageExtensionField($sKey, $sTable);
 
-            if (!$blUseSkipSaveFields || ($blUseSkipSaveFields && !in_array($sKeyLowercase, $this->_aSkipSaveFields))) {
-                $sSql .= (($blSep) ? ',' : '') . $sKey . " = " . $this->_getUpdateFieldValue($sKey, $oField);
+            if ($this->isUpdateField($mappedKey, $sKey, $sTable, $blUseSkipSaveFields)) {
+                $sSql .= (($blSep) ? ',' : '') . $mappedKey . " = " . $this->_getUpdateFieldValue($sKey, $oField);
                 $blSep = true;
             }
         }
@@ -559,6 +565,7 @@ class I18n extends \oxBase
         $blRet = parent::_insert();
 
         if ($blRet) {
+            $this->safeGuardFields();
             //also insert to multilang tables if it is separate
             foreach ($this->_getLanguageSetTables() as $sTable) {
                 $sSq = "insert into $sTable set " . $this->_getUpdateFieldsForTable($sTable, $this->getUseSkipSaveFields());
@@ -668,10 +675,72 @@ class I18n extends \oxBase
 
             //delete the record
             foreach ($this->_getLanguageSetTables() as $sSetTbl) {
-                $oDB->execute("delete from {$sSetTbl} where oxid = {$sOXID}");
+                $key = $this->multilanguageFieldMap('oxid', $sSetTbl);
+                $oDB->execute("delete from {$sSetTbl} where {$key} = {$sOXID}");
             }
         }
 
         return $blDeleted;
+    }
+
+    /**
+     * For example OXID in core table data ends up in OXOBJECTID field in langage extensiontable,
+     * need to map this here.
+     * Prevent original field multilanguage extension table OXOBJECTID from being duplicated in update query.
+     *
+     * @param $key
+     *
+     * @return string
+     */
+    protected function mapLanguageExtensionField($key, $table)
+    {
+        if (false !== strpos($table, oxDbMetaDataHandler::MULTILANG_TABLE_POSTFIX)) {
+            $key = isset($this->multilanguageFieldMap[strtolower($key)]) ? $this->multilanguageFieldMap[strtolower($key)] : $key;
+        }
+        return $key;
+    }
+
+    /**
+     * Check if field needs to be updated.
+     *
+     * @return bool
+     */
+    protected function isNoUpdateFieldForTable($key, $languageIdentifier, $skipMultilingual, $skipCoreFields)
+    {
+        $return = false;
+        if ($skipMultilingual && $this->isMultilingualField($key)) {
+            $return = true;
+        }
+        if ($skipCoreFields && !$this->isMultilingualField($key) && !empty($languageIdentifier)) {
+            $return = true;
+        }
+        return $return;
+    }
+
+    /**
+     * Check if field needs to be in update query.
+     *
+     * @param $mappedKey
+     * @param $key
+     * @param $table
+     * @param $useSkipSaveFields
+     *
+     * @return bool
+     */
+    protected function isUpdateField($mappedKey, $key, $table, $useSkipSaveFields)
+    {
+        $return = !empty($mappedKey) &&
+                  (!$useSkipSaveFields || ($useSkipSaveFields && !in_array(strtolower($key), $this->_aSkipSaveFields)));
+        return $return;
+    }
+
+    /**
+     * Depending on shop edition we need to make sure field data is loaded.
+     *
+     * @return null
+     */
+    protected function safeGuardFields()
+    {
+        return; //nothing to be done atm
     }
 }

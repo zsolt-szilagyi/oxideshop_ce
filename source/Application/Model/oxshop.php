@@ -276,7 +276,7 @@ class oxShop extends oxI18n
             $languageIds = oxRegistry::getLang()->getLanguageIds($this->getId());
             foreach ($languageIds as $languageId) {
                 $alias = 'mlang_' . $languageId;
-                $join .= "LEFT JOIN {$extensionTable} AS {$alias} ON ({$sTable}.OXID = {$alias}.OXID AND {$alias}.OXLANG = '{$languageId}') ";
+                $join .= "LEFT JOIN {$extensionTable} AS {$alias} ON ({$sTable}.OXID = {$alias}.OXOBJECTID AND {$alias}.OXLANG = '{$languageId}') ";
             }
         }
         return $join;
@@ -297,7 +297,7 @@ class oxShop extends oxI18n
         $extensionTable = $metaDataHandler->getLanguageExtensionTableName($table);
 
         if ($metaDataHandler->tableExists($extensionTable)) {
-            $join .= "LEFT JOIN {$extensionTable} ON ({$table}.OXID = {$extensionTable}.OXID AND {$extensionTable}.OXLANG = '{$languageId}') ";
+            $join .= "LEFT JOIN {$extensionTable} ON ({$table}.OXID = {$extensionTable}.OXOBJECTID AND {$extensionTable}.OXLANG = '{$languageId}') ";
         }
 
         return $join;

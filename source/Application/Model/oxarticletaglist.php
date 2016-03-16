@@ -140,7 +140,7 @@ class oxArticleTagList extends oxI18n implements oxITagList
         $table = $metaDataHandler->getLanguageExtensionTableName('oxartextends');
         $languageId = $this->getLanguage();
 
-        $query = "insert into {$table} (oxid, oxtags, oxlang) value (" . $database->quote($this->getArticleId()) . ", '{$tags}', '{$languageId}')
+        $query = "insert into {$table} (oxobjectid, oxtags, oxlang) value (" . $database->quote($this->getArticleId()) . ", '{$tags}', '{$languageId}')
                on duplicate key update oxtags = '{$tags}'";
 
         if ($database->execute($query)) {

@@ -100,7 +100,7 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
         $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/restructured_database.sql');
 
         if ($testConfig->getShopEdition() === 'EE') {
-            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Tests/Fixtures/restructured_database.sql');
+            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Enterprise/Tests/Fixtures/restructured_database.sql');
         }
 
         $serviceCaller->callService('ShopPreparation', 1);
@@ -131,7 +131,7 @@ class AcceptanceTestCase extends \OxidEsales\TestingLibrary\AcceptanceTestCase
             $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Setup/Sql/database.sql');
         }
         if ($testConfig->getShopEdition() === 'EE') {
-            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Professional/Setup/Sql/database.sql');
+            $serviceCaller->setParameter('importSql', '@' . $testConfig->getShopPath() . '/Edition/Enterprise/Setup/Sql/database.sql');
         }
 
         $serviceCaller->callService('ShopPreparation', 1);

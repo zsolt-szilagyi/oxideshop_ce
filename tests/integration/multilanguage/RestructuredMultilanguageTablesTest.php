@@ -67,7 +67,18 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
     public static function tearDownAfterClass()
     {
         $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-        $serviceCaller->setParameter('importSql', '@'. getShopBasePath() .'/Setup/Sql/database.sql');
+
+        if ('CE' == oxRegistry::getConfig()->getConfigParam('edition')) {
+            $serviceCaller->setParameter('importSql', '@'. getShopBasePath() .'/Setup/Sql/database.sql');
+        }
+        if ('PE' == oxRegistry::getConfig()->getConfigParam('edition')) {
+            $serviceCaller->setParameter('importSql', '@'. getShopBasePath() .'/Edition/Professional/Setup/Sql/database.sql');
+        }
+
+        if ('EE' == oxRegistry::getConfig()->getConfigParam('edition')) {
+            $serviceCaller->setParameter('importSql', '@'. getShopBasePath() .'/Edition/Enterprise/Setup/Sql/database.sql');
+        }
+
         $serviceCaller->callService('ShopPreparation', 1);
 
         parent::tearDownAfterClass();
@@ -114,7 +125,6 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         }
     }
 
-
     /**
      * Test loading category list.
      */
@@ -135,7 +145,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
      */
     public function providerAdminMode()
     {
-        $data = array( array(false), array(true) );
+        $data = array(array(false), array(true));
         return $data;
     }
 
@@ -151,10 +161,11 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $this->setAdminMode($adminMode);
         $categoryId = '943a9ba3050e78b443c16e043ae60ef3';
         $category = oxNew('oxCategory');
+        $viewTable = $this->getViewTable('oxcategories', 'de');
 
-        $query = $category->buildSelectString(array("`oxv_oxcategories_de`.`oxid`" => $categoryId));
-        $this->assertContains('`oxv_oxcategories_de`.`oxparentid`', $query);
-        $this->assertContains('`oxv_oxcategories_de`.`oxtitle`', $query);
+        $query = $category->buildSelectString(array("`{$viewTable}`.`oxid`" => $categoryId));
+        $this->assertContains("`{$viewTable}`.`oxparentid`", $query);
+        $this->assertContains("`{$viewTable}`.`oxtitle`", $query);
 
         $category->load($categoryId);
         $this->assertSame('Eco-Fashion', $category->oxcategories__oxtitle->value);
@@ -175,7 +186,8 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
 
         $this->assertSame('Bar-Set ABSINTH', $article->oxarticles__oxtitle->value);
         $longDescription = $article->getLongDescription();
-        $this->assertContains('Der Zauber der', $longDescription->value);
+        $this->assertContains('von Hemingway bis Oscar Wild', $longDescription->value);
+
     }
 
     /**
@@ -241,7 +253,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $shop->load($this->shopId);
         $this->assertSame('test text', $shop->oxshops__oxordersubject->value);
 
-        $query = "SELECT oxlang, oxordersubject FROM oxshops_multilang WHERE oxid = '" . $this->shopId . "'";
+        $query = "SELECT oxlang, oxordersubject FROM oxshops_multilang WHERE oxobjectid = '" . $this->shopId . "'";
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getArray($query);
 
         $expected = array( array('oxlang'         => 'de',
@@ -259,7 +271,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
     {
         $shop = $this->getProxyClass('oxShop');
 
-        $shop->loadInLang('en',$this->shopId);
+        $shop->loadInLang('en', $this->shopId);
         $this->assertSame('Your order at OXID eShop', $shop->oxshops__oxordersubject->value);
     }
 
@@ -268,7 +280,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
      */
     public function testCategoryUpdateTitle()
     {
-        $categoryId = '8a142c3e44ea4e714.31136811';
+        $categoryId = $this->getCategoryId();
         $category = oxNew('oxCategory');
 
         $category->load($categoryId);
@@ -286,7 +298,10 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $category->oxcategories__oxtitle = new oxField('home sweet home');
         $category->save();
 
-        $query = "SELECT oxlang, oxtitle FROM oxcategories_multilang WHERE oxid = '{$categoryId}'";
+        $query = "SELECT oxlang, oxtitle FROM oxcategories_multilang WHERE oxobjectid = '{$categoryId}'";
+        if ('EE' == $this->getTestConfig()->getShopEdition()) {
+            $query = "SELECT oxlang, oxtitle FROM oxcategories_multilang WHERE oxmapobjectid = '{$category->oxcategories__oxmapid->value}'";
+        }
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getArray($query);
 
         $expected = array( array('oxlang'  => 'de',
@@ -307,7 +322,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $metaDataHandler = oxNew('oxDbMetaDataHandler');
         $metaDataHandler->updateViews();
 
-        $categoryId = '8a142c3e44ea4e714.31136811';
+        $categoryId = $this->getCategoryId();
         $category = oxNew('oxCategory');
 
         $category->loadInLang($languageId, $categoryId);
@@ -315,7 +330,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $category->oxcategories__oxtitle = new oxField('new language text');
         $category->save();
 
-        $query = "SELECT oxlang, oxtitle FROM oxcategories_multilang WHERE oxid = '{$categoryId}' and oxlang = 'zz'";
+        $query = "SELECT oxlang, oxtitle FROM oxcategories_multilang WHERE oxobjectid = '{$categoryId}' and oxlang = 'zz'";
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getArray($query);
 
         $expected = array( array('oxlang'  => $languageId,
@@ -346,10 +361,10 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
     public function testArticleTags()
     {
         $articleTagList = oxNew('oxarticletaglist');
-        $articleTagList->loadInLang('en', '1126');
+        $articleTagList->loadInLang('en', '531f91d4ab8bfb24c4d04e473d246d0b');
         $tags = array_keys($articleTagList->getArray());
 
-        $expected = array('bar-set', 'absinth');
+        $expected = array('jeans', 'kuyichi', 'stylish', 'dark');
         $this->assertSame($expected, $tags);
 
         $articleTagList->set('absinth,newtag');
@@ -357,7 +372,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
 
         //load after change
         $articleTagList = oxNew('oxarticletaglist');
-        $articleTagList->loadInLang('en', '1126');
+        $articleTagList->loadInLang('en', '531f91d4ab8bfb24c4d04e473d246d0b');
         $tags = array_keys($articleTagList->getArray());
 
         $expected = array('absinth', 'newtag');
@@ -382,6 +397,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $article = oxNew('oxarticle');
         $article->load($testArticleId);
         $this->assertSame($text, $article->getLongDesc());
+
     }
 
     /**
@@ -546,7 +562,7 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $shop = $this->getProxyClass('oxShop');
         $shop->load($this->shopId);
         $result = $shop->_getViewJoinLang('oxshops', 'de');
-        $expected = " LEFT JOIN oxshops_multilang ON (oxshops.OXID = oxshops_multilang.OXID AND oxshops_multilang.OXLANG = 'de') ";
+        $expected = " LEFT JOIN oxshops_multilang ON (oxshops.OXID = oxshops_multilang.OXOBJECTID AND oxshops_multilang.OXLANG = 'de') ";
         $this->assertSame($expected, $result);
     }
 
@@ -561,8 +577,8 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $shop->load($this->shopId);
         $result = $shop->_getViewJoinAll('addtest');
 
-        $expected = " LEFT JOIN addtest_multilang AS mlang_de ON (addtest.OXID = mlang_de.OXID AND mlang_de.OXLANG = 'de') " .
-                    "LEFT JOIN addtest_multilang AS mlang_en ON (addtest.OXID = mlang_en.OXID AND mlang_en.OXLANG = 'en') ";
+        $expected = " LEFT JOIN addtest_multilang AS mlang_de ON (addtest.OXID = mlang_de.OXOBJECTID AND mlang_de.OXLANG = 'de') " .
+                    "LEFT JOIN addtest_multilang AS mlang_en ON (addtest.OXID = mlang_en.OXOBJECTID AND mlang_en.OXLANG = 'en') ";
 
         $this->assertSame($expected, $result);
     }
@@ -784,7 +800,15 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
     {
         $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
         $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-        $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/restructured_database.sql');
+
+        if (('CE' == $this->getTestConfig()->getShopEdition()) || ('PE' == $this->getTestConfig()->getShopEdition())) {
+            $serviceCaller->setParameter('importSql', '@'. $testConfig->getShopTestsPath() .'/Fixtures/restructured_database.sql');
+        }
+
+        if ('EE' == $this->getTestConfig()->getShopEdition()) {
+            $serviceCaller->setParameter('importSql', '@'. getShopBasePath() .'/Edition/Enterprise/tests/Fixtures/restructured_database.sql');
+        }
+
         $serviceCaller->callService('ShopPreparation', 1);
     }
 
@@ -875,5 +899,22 @@ class Integration_Multilanguage_RestructuredMultilanguageTablesTest extends Unit
         $this->getConfig()->saveShopConfVar('str', 'sDefaultLang', $defaultLanguage);
     }
 
+    /**
+     * Get view table according to shop edition.
+     *
+     * @return string
+     */
+    private function getViewTable($table, $language)
+    {
+        return 'EE' == $this->getTestConfig()->getShopEdition() ? "oxv_{$table}_1_{$language}" : "oxv_{$table}_{$language}";
+    }
+
+    /**
+     * Get category id depending on shop edition.
+     */
+    private function getCategoryId()
+    {
+        return 'EE' == $this->getTestConfig()->getShopEdition() ? '30e44ab83b6e585c9.63147165' : '8a142c3e44ea4e714.31136811';
+    }
 }
 
