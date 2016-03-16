@@ -589,7 +589,8 @@ class Unit_Core_oxUtilsViewTest extends OxidTestCase
         $config = $this->getMock('oxConfig', array('getShopId', 'init'));
         $config->expects($this->at(0))->method('getShopId')->will($this->returnValue('15'));
         $config->expects($this->at(1))->method('getShopId')->will($this->returnValue('15'));
-        $config->expects($this->at(2))->method('getShopId')->will($this->returnValue('25'));
+        $config->expects($this->at(2))->method('getShopId')->will($this->returnValue('15'));
+        $config->expects($this->at(3))->method('getShopId')->will($this->returnValue('25'));
 
         $aInfo = array('module1' => 'module1', 'module2' => 'module2');
 
@@ -639,13 +640,13 @@ class Unit_Core_oxUtilsViewTest extends OxidTestCase
         $utilsView = $this->getMock('oxUtilsView', array('getConfig', '_getActiveModuleInfo', '_getTemplateBlock'));
         $utilsView->expects($this->any())->method('getConfig')->will($this->returnValue($config));
         $utilsView->expects($this->any())->method('_getActiveModuleInfo')->will($this->returnValue($aInfo));
-        $utilsView->expects($this->at(3))->method('_getTemplateBlock')
+        $utilsView->expects($this->at(4))->method('_getTemplateBlock')
             ->with($this->equalTo('module2'), $this->equalTo('contentfile3'))
             ->will($this->throwException($exception));
-        $utilsView->expects($this->at(4))->method('_getTemplateBlock')
+        $utilsView->expects($this->at(5))->method('_getTemplateBlock')
             ->with($this->equalTo('module1'), $this->equalTo('contentfile1'))
             ->will($this->returnValue('content1'));
-        $utilsView->expects($this->at(5))->method('_getTemplateBlock')
+        $utilsView->expects($this->at(6))->method('_getTemplateBlock')
             ->with($this->equalTo('module2'), $this->equalTo('contentfile2'))
             ->will($this->returnValue('content2'));
 
