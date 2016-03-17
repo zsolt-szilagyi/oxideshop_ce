@@ -484,18 +484,24 @@ class oxUtilsView extends oxSuperCfg
         }
 
         if ($this->activeModuleOverridesTemplate()) {
+            $activeTheme = oxNew('oxTheme');
+            $activeThemeId = $activeTheme->getActiveThemeId();
+
             $shopId = $config->getShopId();
+
             $ids = $this->_getActiveModuleInfo();
             $modulesId = implode(", ", oxDb::getInstance()->quoteArray(array_keys($ids)));
+
             $sql = "select *
                     from oxtplblocks
                     where oxactive=1
                         and oxshopid=?
                         and oxtemplate=?
                         and oxmodule in ( " . $modulesId . " )
+                        and oxtheme in ('', ?)
                         order by oxpos asc";
             $db = oxDb::getDb(oxDb::FETCH_MODE_ASSOC);
-            $activeBlockTemplates = $db->getAll($sql, array($shopId, $templateFileName));
+            $activeBlockTemplates = $db->getAll($sql, array($shopId, $templateFileName, $activeThemeId));
 
             if ($activeBlockTemplates) {
                 $templateBlocksWithContent = $this->fillTemplateBlockWithContent($activeBlockTemplates);

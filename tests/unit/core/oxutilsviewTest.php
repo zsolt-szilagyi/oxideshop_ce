@@ -66,6 +66,19 @@ class Unit_Core_oxUtilsViewTest extends OxidTestCase
                                                        'module2'
                                                     )"
             );
+            oxDb::getDb()->Execute(
+                "insert into oxtplblocks (OXID,OXACTIVE,OXSHOPID,OXTHEME,OXTEMPLATE,OXBLOCKNAME,OXPOS,OXFILE,OXMODULE) values (
+                                                       'test_3_2',
+                                                       '1',
+                                                       '15',
+                                                       'not_active_theme',
+                                                       'filename.tpl',
+                                                       'blockname2',
+                                                       1,
+                                                       'contentfile2_active_theme',
+                                                       'module2'
+                                                    )"
+            );
             // one non active - to be sure it is not loaded
             oxDb::getDb()->Execute(
                 "insert into oxtplblocks (OXID,OXACTIVE,OXSHOPID,OXTEMPLATE,OXBLOCKNAME,OXPOS,OXFILE,OXMODULE) values (
