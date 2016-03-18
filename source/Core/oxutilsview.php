@@ -484,8 +484,7 @@ class oxUtilsView extends oxSuperCfg
         }
 
         if ($this->activeModuleOverridesTemplate()) {
-            $activeTheme = oxNew('oxTheme');
-            $activeThemeId = $activeTheme->getActiveThemeId();
+            $activeThemeId = $config->getActiveThemeId($this->isAdmin());
 
             $shopId = $config->getShopId();
 
@@ -618,7 +617,6 @@ class oxUtilsView extends oxSuperCfg
     private function filterTemplateBlocks($activeBlockTemplates)
     {
         foreach ($activeBlockTemplates as $activeBlockTemplate) {
-
             if ($activeBlockTemplate['OXTHEME']) {
                 $templateBlocksToExchange[$activeBlockTemplate['OXTEMPLATE'] . $activeBlockTemplate['OXBLOCKNAME']] = '';
             }

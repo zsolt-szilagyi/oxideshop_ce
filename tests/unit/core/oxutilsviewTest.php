@@ -645,10 +645,7 @@ class Unit_Core_oxUtilsViewTest extends OxidTestCase
     {
         $config = $this->getMock('oxConfig', array('getShopId', 'init'));
         $config->expects($this->any())->method('getShopId')->will($this->returnValue('15'));
-
-        $activeTheme = $this->getMock('oxTheme', array('getActiveThemeId'));
-        $activeTheme->expects($this->any())->method('getActiveThemeId')->will($this->returnValue('active_theme'));
-        oxTestModules::addModuleObject("oxTheme", $activeTheme);
+        $config->setConfigParam('sTheme', 'active_theme');
 
         $activeModules = array('module1' => 'module1', 'module2' => 'module2');
 
@@ -688,6 +685,42 @@ class Unit_Core_oxUtilsViewTest extends OxidTestCase
 
         $this->assertEquals(
             array(),
+            $utilsView->getTemplateBlocks('filename.tpl')
+        );
+    }
+
+    public function testGetTemplateBlocksForAdmin()
+    {
+        $this->setAdminMode(true);
+
+        $config = $this->getMock('oxConfig', array('getShopId', 'init'));
+        $config->expects($this->any())->method('getShopId')->will($this->returnValue('15'));
+
+        $activeTheme = $this->getMock('oxTheme', array('getActiveThemeId'));
+        $activeTheme->expects($this->any())->method('getActiveThemeId')->will($this->returnValue('active_theme'));
+        oxTestModules::addModuleObject("oxTheme", $activeTheme);
+
+        $activeModules = array('module1' => 'module1', 'module2' => 'module2');
+
+        $utilsView = $this->getMock('oxUtilsView', array('_getActiveModuleInfo', '_getTemplateBlock'));
+        $utilsView->expects($this->any())->method('_getActiveModuleInfo')->will($this->returnValue($activeModules));
+        $utilsView->expects($this->any())->method('_getTemplateBlock')->will($this->returnValueMap(array(
+            array('module2', 'contentfile3', 'content3'),
+            array('module1', 'contentfile1', 'content1'),
+            array('module2', 'contentfile2', 'content2'),
+        )));
+        $utilsView->setConfig($config);
+
+        $this->assertEquals(
+            array(
+                'blockname1' => array(
+                    'content1',
+                ),
+                'blockname2' => array(
+                    'content3',
+                    'content2',
+                ),
+            ),
             $utilsView->getTemplateBlocks('filename.tpl')
         );
     }

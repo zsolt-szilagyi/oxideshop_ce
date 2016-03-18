@@ -1261,10 +1261,53 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $moduleListMock->expects($this->any())->method('getActiveModuleInfo')->will($this->returnValue([$moduleId => true]));
         oxTestModules::addModuleObject('oxmodulelist', $moduleListMock);
 
-        // mock active theme
-        $themeMock = $this->getMock('oxTheme', array('getActiveThemeId'));
-        $themeMock->expects($this->any())->method('getActiveThemeId')->will($this->returnValue($themeName));
-        oxTestModules::addModuleObject('oxTheme', $themeMock);
+        $moduleTemplates = [
+            $moduleId => [
+                $overwrittenTemplate => $templateFilePathDefault,
+                $notOverwrittenTemplate => $templateFilePathStandard,
+                $possibleThemeName => [
+                    $overwrittenTemplate => $templateFilePathOverwritten,
+                ]
+            ]
+        ];
+
+        $config = $this->getMock('oxConfig', array('getModulesDir'));
+        $config->expects($this->any())->method('getModulesDir')->will($this->returnValue($virtualDirectoryPath));
+
+        $config->init();
+        $config->setConfigParam('aModuleTemplates', $moduleTemplates);
+        $config->setConfigParam('sTheme', $themeName);
+
+        $realResult = $config->getTemplatePath($overwrittenTemplate, false);
+        $expected = $virtualDirectoryPath . $templateFilePathOverwritten;
+
+        $this->assertEquals($expected, $realResult);
+    }
+
+    /**
+     * Get admin module template in shop admin.
+     */
+    public function testGetModuleTemplateByThemePathInAdmin()
+    {
+        $overwrittenTemplate = 'overwritenrequest.tpl';
+        $notOverwrittenTemplate = 'notoverwritenrequest.tpl';
+        $templateFilePathDefault = 'somepath/somefilename.tpl';
+        $templateFilePathOverwritten = 'somepathoverwritten/somefilenamebyTheme.tpl';
+        $templateFilePathStandard = 'standard.tpl';
+        $moduleId = 'moduleId';
+        $themeName = 'custom';
+        $possibleThemeName = 'custom';
+
+        $vfsStreamWrapper = $this->getVfsStreamWrapper();
+        $vfsStreamWrapper->createFile($templateFilePathDefault, '');
+        $vfsStreamWrapper->createFile($templateFilePathOverwritten, '');
+        $vfsStreamWrapper->createFile($templateFilePathStandard, '');
+        $virtualDirectoryPath = $vfsStreamWrapper->getRootPath();
+
+        // mock active module list
+        $moduleListMock = $this->getMock('oxmodulelist', array('getActiveModuleInfo'));
+        $moduleListMock->expects($this->any())->method('getActiveModuleInfo')->will($this->returnValue([$moduleId => true]));
+        oxTestModules::addModuleObject('oxmodulelist', $moduleListMock);
 
         $moduleTemplates = [
             $moduleId => [
@@ -1281,9 +1324,10 @@ class Unit_Core_oxconfigTest extends OxidTestCase
 
         $config->init();
         $config->setConfigParam('aModuleTemplates', $moduleTemplates);
+        $config->setConfigParam('sTheme', $themeName);
 
         $realResult = $config->getTemplatePath($overwrittenTemplate, true);
-        $expected = $virtualDirectoryPath . $templateFilePathOverwritten;
+        $expected = $virtualDirectoryPath . $templateFilePathDefault;
 
         $this->assertEquals($expected, $realResult);
     }
@@ -2702,5 +2746,20 @@ class Unit_Core_oxconfigTest extends OxidTestCase
             ->with($this->identicalTo($this->shopUrl . $entryPoint, false))
             ->will($this->returnValue($this->shopUrl . $entryPoint . '?'));
         oxRegistry::set('oxUtilsUrl', $utilsUrl);
+    }
+
+    /**
+     * getActiveThemeId test
+     */
+    public function testGetActiveThemeId()
+    {
+        $customThemeId = 'custom';
+
+        $config = oxNew('oxConfig');
+        $config->init();
+        $config->setConfigParam('sTheme', $customThemeId);
+
+        $this->assertEquals($customThemeId, $config->getActiveThemeId());
+        $this->assertEquals('admin', $config->getActiveThemeId(true));
     }
 }
