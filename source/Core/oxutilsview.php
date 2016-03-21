@@ -616,16 +616,22 @@ class oxUtilsView extends oxSuperCfg
      */
     private function filterTemplateBlocks($activeBlockTemplates)
     {
+        $templateBlocksToExchange = array();
+        $templateBlocks = $activeBlockTemplates;
+
         foreach ($activeBlockTemplates as $activeBlockTemplate) {
             if ($activeBlockTemplate['OXTHEME']) {
-                $templateBlocksToExchange[$activeBlockTemplate['OXTEMPLATE'] . $activeBlockTemplate['OXBLOCKNAME']] = '';
+                $templateBlocksToExchange[] = $this->prepareBlockKey($activeBlockTemplate);
             }
         }
 
-        foreach ($activeBlockTemplates as $activeBlockTemplate) {
-            if (!isset($templateBlocksToExchange[$activeBlockTemplate['OXTEMPLATE'] . $activeBlockTemplate['OXBLOCKNAME']])
-                || $activeBlockTemplate['OXTHEME']) {
-                $templateBlocks[] = $activeBlockTemplate;
+        if ($templateBlocksToExchange) {
+            $templateBlocks = array();
+            foreach ($activeBlockTemplates as $activeBlockTemplate) {
+                if (!in_array($this->prepareBlockKey($activeBlockTemplate), $templateBlocksToExchange)
+                    || $activeBlockTemplate['OXTHEME']) {
+                    $templateBlocks[] = $activeBlockTemplate;
+                }
             }
         }
 
@@ -719,5 +725,18 @@ class oxUtilsView extends oxSuperCfg
         $this->_blIsTplBlocks = $moduleOverridesTemplate;
 
         return $moduleOverridesTemplate;
+    }
+
+    /**
+     * Prepare indicator for template block.
+     * This indicator might be used to identify same template block for different theme.
+     *
+     * @param $activeBlockTemplate
+     *
+     * @return string
+     */
+    private function prepareBlockKey($activeBlockTemplate)
+    {
+        return $activeBlockTemplate['OXTEMPLATE'] . $activeBlockTemplate['OXBLOCKNAME'];
     }
 }
