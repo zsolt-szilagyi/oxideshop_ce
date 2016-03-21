@@ -1247,8 +1247,9 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $templateFilePathOverwritten = 'somepathoverwritten/somefilenamebyTheme.tpl';
         $templateFilePathStandard = 'standard.tpl';
         $moduleId = 'moduleId';
-        $themeName = 'custom';
         $possibleThemeName = 'custom';
+
+        $this->setConfigParam('sCustomTheme', 'custom');
 
         $vfsStreamWrapper = $this->getVfsStreamWrapper();
         $vfsStreamWrapper->createFile($templateFilePathDefault, '');
@@ -1273,10 +1274,8 @@ class Unit_Core_oxconfigTest extends OxidTestCase
 
         $config = $this->getMock('oxConfig', array('getModulesDir'));
         $config->expects($this->any())->method('getModulesDir')->will($this->returnValue($virtualDirectoryPath));
-
         $config->init();
         $config->setConfigParam('aModuleTemplates', $moduleTemplates);
-        $config->setConfigParam('sTheme', $themeName);
 
         $realResult = $config->getTemplatePath($overwrittenTemplate, false);
         $expected = $virtualDirectoryPath . $templateFilePathOverwritten;
@@ -1295,7 +1294,6 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $templateFilePathOverwritten = 'somepathoverwritten/somefilenamebyTheme.tpl';
         $templateFilePathStandard = 'standard.tpl';
         $moduleId = 'moduleId';
-        $themeName = 'custom';
         $possibleThemeName = 'custom';
 
         $vfsStreamWrapper = $this->getVfsStreamWrapper();
@@ -1324,7 +1322,6 @@ class Unit_Core_oxconfigTest extends OxidTestCase
 
         $config->init();
         $config->setConfigParam('aModuleTemplates', $moduleTemplates);
-        $config->setConfigParam('sTheme', $themeName);
 
         $realResult = $config->getTemplatePath($overwrittenTemplate, true);
         $expected = $virtualDirectoryPath . $templateFilePathDefault;
@@ -1343,8 +1340,9 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $templateFilePathOverwritten = 'somepathoverwritten/somefilenamebyTheme.tpl';
         $templateFilePathStandard = 'standard.tpl';
         $moduleId = 'moduleId';
-        $themeName = 'other';
         $possibleThemeName = 'custom';
+
+        $this->setConfigParam('sCustomTheme', 'other');
 
         $vfsStreamWrapper = $this->getVfsStreamWrapper();
         $vfsStreamWrapper->createFile($templateFilePathDefault, '');
@@ -1356,11 +1354,6 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $moduleListMock = $this->getMock('oxmodulelist', array('getActiveModuleInfo'));
         $moduleListMock->expects($this->any())->method('getActiveModuleInfo')->will($this->returnValue([$moduleId => true]));
         oxTestModules::addModuleObject('oxmodulelist', $moduleListMock);
-
-        // mock active theme
-        $themeMock = $this->getMock('oxTheme', array('getActiveThemeId'));
-        $themeMock->expects($this->any())->method('getActiveThemeId')->will($this->returnValue($themeName));
-        oxTestModules::addModuleObject('oxTheme', $themeMock);
 
         $moduleTemplates = [
             $moduleId => [
@@ -2754,10 +2747,9 @@ class Unit_Core_oxconfigTest extends OxidTestCase
     public function testGetActiveThemeId()
     {
         $customThemeId = 'custom';
+        $this->setConfigParam('sCustomTheme', $customThemeId);
 
         $config = oxNew('oxConfig');
-        $config->init();
-        $config->setConfigParam('sTheme', $customThemeId);
 
         $this->assertEquals($customThemeId, $config->getActiveThemeId());
         $this->assertEquals('admin', $config->getActiveThemeId(true));

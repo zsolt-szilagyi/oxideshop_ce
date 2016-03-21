@@ -2335,7 +2335,8 @@ class oxConfig extends oxSuperCfg
      */
     public function getActiveThemeId($isAdmin = false)
     {
-        $themeId = $this->getConfigParam('sTheme');
+        $theme = oxNew('oxTheme');
+        $themeId = $theme->getActiveThemeId();
 
         if ($isAdmin) {
             $themeId = 'admin';
