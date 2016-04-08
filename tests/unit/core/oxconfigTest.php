@@ -1211,7 +1211,7 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $moduleId = 'moduleId';
 
         $vfsStreamWrapper = $this->getVfsStreamWrapper();
-        $vfsStreamWrapper->createFile($templateFilePath, '');
+        $vfsStreamWrapper->createFile($templateFilePath);
         $virtualDirectoryPath = $vfsStreamWrapper->getRootPath();
 
         $moduleListStub = $this->getMock(oxModuleList::class, ['getActiveModuleInfo']);
