@@ -1208,11 +1208,12 @@ class Unit_Core_oxconfigTest extends OxidTestCase
     {
         $requestTemplate = 'xxx.tpl';
         $templateFilePath = 'somepath/somefilename.tpl';
+        $modulesRootPrefix = 'root_module_path/';
         $moduleId = 'moduleId';
 
         $vfsStreamWrapper = $this->getVfsStreamWrapper();
-        $vfsStreamWrapper->createFile($templateFilePath);
-        $virtualDirectoryPath = $vfsStreamWrapper->getRootPath();
+        $vfsStreamWrapper->createFile($modulesRootPrefix . $templateFilePath);
+        $modulesRootPath = $vfsStreamWrapper->getRootPath() . $modulesRootPrefix;
 
         $moduleListStub = $this->getMock(oxModuleList::class, ['getActiveModuleInfo']);
         $moduleListStub->method('getActiveModuleInfo')->willReturn([$moduleId => true]);
@@ -1225,13 +1226,13 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         ];
 
         $config = $this->getMock(oxConfig::class, ['getModulesDir']);
-        $config->method('getModulesDir')->willReturn($virtualDirectoryPath);
+        $config->method('getModulesDir')->willReturn($modulesRootPath);
 
         $config->init();
         $config->setConfigParam('aModuleTemplates', $templates);
 
         $actual = $config->getTemplatePath($requestTemplate, true);
-        $expected = $virtualDirectoryPath . $templateFilePath;
+        $expected = $modulesRootPath . $templateFilePath;
 
         $this->assertEquals($expected, $actual);
     }
