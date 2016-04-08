@@ -1202,9 +1202,9 @@ class Unit_Core_oxconfigTest extends OxidTestCase
     }
 
     /**
-     * Get module template case
+     * Test if correct template path is returned when the requested template is defined within a module.
      */
-    public function testGetModuleTemplatePath()
+    public function testGetTemplatePathFromModule()
     {
         $requestTemplate = 'xxx.tpl';
         $templateFilePath = 'somepath/somefilename.tpl';
