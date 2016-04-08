@@ -484,23 +484,23 @@ class oxUtilsView extends oxSuperCfg
         }
 
         if ($this->activeModuleOverridesTemplate()) {
-            $activeThemeId = $config->getActiveThemeId($this->isAdmin());
 
             $shopId = $config->getShopId();
 
             $ids = $this->_getActiveModuleInfo();
             $modulesId = implode(", ", oxDb::getInstance()->quoteArray(array_keys($ids)));
 
+            $activeThemesIdQuery = $this->formActiveThemesIdQuery();
             $sql = "select *
                     from oxtplblocks
                     where oxactive=1
                         and oxshopid=?
                         and oxtemplate=?
                         and oxmodule in ( " . $modulesId . " )
-                        and oxtheme in ('', ?)
+                        and oxtheme in (" . $activeThemesIdQuery . ")
                         order by oxpos asc";
             $db = oxDb::getDb(oxDb::FETCH_MODE_ASSOC);
-            $activeBlockTemplates = $db->getAll($sql, array($shopId, $templateFileName, $activeThemeId));
+            $activeBlockTemplates = $db->getAll($sql, array($shopId, $templateFileName));
 
             if ($activeBlockTemplates) {
                 $activeBlockTemplatesByTheme = $this->filterTemplateBlocks($activeBlockTemplates);
@@ -738,5 +738,32 @@ class oxUtilsView extends oxSuperCfg
     private function prepareBlockKey($activeBlockTemplate)
     {
         return $activeBlockTemplate['OXTEMPLATE'] . $activeBlockTemplate['OXBLOCKNAME'];
+    }
+
+    /**
+     * To form sql query part for active themes.
+     *
+     * @return string
+     */
+    private function formActiveThemesIdQuery()
+    {
+        $defaultThemeIndicator = '';
+        $activeThemeIds = array();
+        $activeThemeIds[] = $defaultThemeIndicator;
+
+        if ($this->isAdmin()) {
+            $activeThemeIds[] = 'admin';
+        } else {
+            $activeThemeIds[] = $this->getConfig()->getConfigParam('sTheme');
+
+            $customThemeId = $this->getConfig()->getConfigParam('sCustomTheme');
+            if ($customThemeId) {
+                $activeThemeIds[] = $customThemeId;
+            }
+        }
+
+        $activeThemesIdQuery = implode(', ', oxDb::getInstance()->quoteArray($activeThemeIds));
+
+        return $activeThemesIdQuery;
     }
 }
