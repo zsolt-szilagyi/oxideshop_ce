@@ -1230,10 +1230,10 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $config->init();
         $config->setConfigParam('aModuleTemplates', $templates);
 
-        $realResult = $config->getTemplatePath($requestTemplate, true);
+        $actual = $config->getTemplatePath($requestTemplate, true);
         $expected = $virtualDirectoryPath . $templateFilePath;
 
-        $this->assertEquals($expected, $realResult);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
