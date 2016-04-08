@@ -1206,8 +1206,8 @@ class Unit_Core_oxconfigTest extends OxidTestCase
      */
     public function testGetTemplatePathFromModule()
     {
-        $requestTemplate = 'xxx.tpl';
-        $templateFilePath = 'somepath/somefilename.tpl';
+        $requestTemplate = 'test_filename.tpl';
+        $templateFilePath = 'test_path/test_filename.tpl';
         $modulesRootPrefix = 'root_module_path/';
         $moduleId = 'moduleId';
 
