@@ -616,25 +616,87 @@ class oxUtilsView extends oxSuperCfg
      */
     private function filterTemplateBlocks($activeBlockTemplates)
     {
-        $templateBlocksToExchange = array();
         $templateBlocks = $activeBlockTemplates;
+
+        $templateBlocksToExchange = $this->formListOfDuplicatedBlocks($activeBlockTemplates);
+
+        if ($templateBlocksToExchange['theme']) {
+            $templateBlocks = $this->removeDefaultBlocks($activeBlockTemplates, $templateBlocksToExchange);
+        }
+
+        if ($templateBlocksToExchange['custom_theme']) {
+            $templateBlocks = $this->removeParentBlocks($templateBlocks, $templateBlocksToExchange);
+        }
+
+        return $templateBlocks;
+    }
+
+    /**
+     * Form list of blocks which has duplicates for specific theme.
+     *
+     * @param $activeBlockTemplates
+     *
+     * @return array
+     */
+    private function formListOfDuplicatedBlocks($activeBlockTemplates)
+    {
+        $templateBlocksToExchange = array();
+        $customThemeId = $this->getConfig()->getConfigParam('sCustomTheme');
 
         foreach ($activeBlockTemplates as $activeBlockTemplate) {
             if ($activeBlockTemplate['OXTHEME']) {
-                $templateBlocksToExchange[] = $this->prepareBlockKey($activeBlockTemplate);
-            }
-        }
-
-        if ($templateBlocksToExchange) {
-            $templateBlocks = array();
-            foreach ($activeBlockTemplates as $activeBlockTemplate) {
-                if (!in_array($this->prepareBlockKey($activeBlockTemplate), $templateBlocksToExchange)
-                    || $activeBlockTemplate['OXTHEME']) {
-                    $templateBlocks[] = $activeBlockTemplate;
+                if ($customThemeId && $customThemeId === $activeBlockTemplate['OXTHEME']) {
+                    $templateBlocksToExchange['custom_theme'][] = $this->prepareBlockKey($activeBlockTemplate);
+                } else {
+                    $templateBlocksToExchange['theme'][] = $this->prepareBlockKey($activeBlockTemplate);
                 }
             }
         }
 
+        return $templateBlocksToExchange;
+    }
+
+    /**
+     * Remove default blocks whose have duplicate for specific theme.
+     *
+     * @param $activeBlockTemplates
+     * @param $templateBlocksToExchange
+     *
+     * @return array
+     */
+    private function removeDefaultBlocks($activeBlockTemplates, $templateBlocksToExchange)
+    {
+        $templateBlocks = array();
+        foreach ($activeBlockTemplates as $activeBlockTemplate) {
+            if (!in_array($this->prepareBlockKey($activeBlockTemplate), $templateBlocksToExchange['theme'])
+                || $activeBlockTemplate['OXTHEME']
+            ) {
+                $templateBlocks[] = $activeBlockTemplate;
+            }
+        }
+        return $templateBlocks;
+    }
+
+    /**
+     * Remove parent theme blocks whose have duplicate for custom theme.
+     *
+     * @param $templateBlocks
+     * @param $templateBlocksToExchange
+     *
+     * @return array
+     */
+    private function removeParentBlocks($templateBlocks, $templateBlocksToExchange)
+    {
+        $activeBlockTemplates = $templateBlocks;
+        $templateBlocks = array();
+        $customThemeId = $this->getConfig()->getConfigParam('sCustomTheme');
+        foreach ($activeBlockTemplates as $activeBlockTemplate) {
+            if (!in_array($this->prepareBlockKey($activeBlockTemplate), $templateBlocksToExchange['custom_theme'])
+                || $activeBlockTemplate['OXTHEME'] === $customThemeId
+            ) {
+                $templateBlocks[] = $activeBlockTemplate;
+            }
+        }
         return $templateBlocks;
     }
 
