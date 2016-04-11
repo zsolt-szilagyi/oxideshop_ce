@@ -371,7 +371,6 @@ class oxModuleInstaller extends oxSuperCfg
         $oDb = oxDb::getDb();
 
         if (is_array($aModuleBlocks)) {
-
             foreach ($aModuleBlocks as $aValue) {
                 $sOxId = oxUtilsObject::getInstance()->generateUId();
 
