@@ -375,7 +375,9 @@ class oxModuleInstaller extends oxSuperCfg
                 $id = oxUtilsObject::getInstance()->generateUId();
 
                 $template = $moduleBlock["template"];
-                $position = $moduleBlock["position"] ? $moduleBlock["position"] : 1;
+                $position = isset($moduleBlock['position']) && is_numeric($moduleBlock['position']) ?
+                    intval($moduleBlock['position']) : 1;
+
                 $block = $moduleBlock["block"];
                 $filePath = $moduleBlock["file"];
 
