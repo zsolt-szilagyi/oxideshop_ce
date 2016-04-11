@@ -362,37 +362,37 @@ class oxModuleInstaller extends oxSuperCfg
     /**
      * Add module templates to database.
      *
-     * @param array  $aModuleBlocks Module blocks array
-     * @param string $sModuleId     Module id
+     * @param array  $moduleBlocks Module blocks array
+     * @param string $moduleId     Module id
      */
-    protected function _addTemplateBlocks($aModuleBlocks, $sModuleId)
+    protected function _addTemplateBlocks($moduleBlocks, $moduleId)
     {
-        $sShopId = $this->getConfig()->getShopId();
-        $oDb = oxDb::getDb();
+        $shopId = $this->getConfig()->getShopId();
+        $db = oxDb::getDb();
 
-        if (is_array($aModuleBlocks)) {
-            foreach ($aModuleBlocks as $aValue) {
-                $sOxId = oxUtilsObject::getInstance()->generateUId();
+        if (is_array($moduleBlocks)) {
+            foreach ($moduleBlocks as $moduleBlock) {
+                $id = oxUtilsObject::getInstance()->generateUId();
 
-                $sTemplate = $aValue["template"];
-                $iPosition = $aValue["position"] ? $aValue["position"] : 1;
-                $sBlock = $aValue["block"];
-                $sFile = $aValue["file"];
+                $template = $moduleBlock["template"];
+                $position = $moduleBlock["position"] ? $moduleBlock["position"] : 1;
+                $block = $moduleBlock["block"];
+                $filePath = $moduleBlock["file"];
 
-                $theme = isset($aValue['theme']) ? $aValue['theme'] : '';
+                $theme = isset($moduleBlock['theme']) ? $moduleBlock['theme'] : '';
 
                 $sql = "INSERT INTO `oxtplblocks` (`OXID`, `OXACTIVE`, `OXSHOPID`, `OXTHEME`, `OXTEMPLATE`, `OXBLOCKNAME`, `OXPOS`, `OXFILE`, `OXMODULE`)
                          VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)";
 
-                $oDb->execute($sql, array(
-                    $sOxId,
-                    $sShopId,
+                $db->execute($sql, array(
+                    $id,
+                    $shopId,
                     $theme,
-                    $sTemplate,
-                    $sBlock,
-                    $iPosition,
-                    $sFile,
-                    $sModuleId
+                    $template,
+                    $block,
+                    $position,
+                    $filePath,
+                    $moduleId
                 ));
             }
         }
