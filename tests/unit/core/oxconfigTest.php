@@ -1214,9 +1214,9 @@ class Unit_Core_oxconfigTest extends OxidTestCase
         $vfsStreamWrapper->createFile($templateFilePath, '');
         $virtualDirectoryPath = $vfsStreamWrapper->getRootPath();
 
-        $moduleListMock = $this->getMock('oxmodulelist', array('getActiveModuleInfo'));
-        $moduleListMock->expects($this->any())->method('getActiveModuleInfo')->will($this->returnValue([$moduleId => true]));
-        oxTestModules::addModuleObject('oxmodulelist', $moduleListMock);
+        $moduleListStub = $this->getMock(oxModuleList::class, ['getActiveModuleInfo']);
+        $moduleListStub->method('getActiveModuleInfo')->willReturn([$moduleId => true]);
+        oxTestModules::addModuleObject(oxModuleList::class, $moduleListStub);
 
         $templates = [
             $moduleId => [
@@ -1224,8 +1224,8 @@ class Unit_Core_oxconfigTest extends OxidTestCase
             ]
         ];
 
-        $config = $this->getMock('oxConfig', array('getModulesDir'));
-        $config->expects($this->any())->method('getModulesDir')->will($this->returnValue($virtualDirectoryPath));
+        $config = $this->getMock(oxConfig::class, ['getModulesDir']);
+        $config->method('getModulesDir')->willReturn($virtualDirectoryPath);
 
         $config->init();
         $config->setConfigParam('aModuleTemplates', $templates);
