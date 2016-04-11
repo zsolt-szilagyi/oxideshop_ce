@@ -813,9 +813,7 @@ class oxUtilsView extends oxSuperCfg
         $activeThemeIds = array();
         $activeThemeIds[] = $defaultThemeIndicator;
 
-        if ($this->isAdmin()) {
-            $activeThemeIds[] = 'admin';
-        } else {
+        if (!$this->isAdmin()) {
             $activeThemeIds[] = $this->getConfig()->getConfigParam('sTheme');
 
             $customThemeId = $this->getConfig()->getConfigParam('sCustomTheme');
