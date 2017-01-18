@@ -142,6 +142,8 @@ class ModuleChainsGenerator
 
     /**
      * Clean classes from chain for given module id.
+     * Classes might be in module chain by path (old way) or by module namespace(new way).
+     * This function removes all classes from class chain for classes inside a deactivated module's directory.
      *
      * @param $moduleId
      * @param $classChain
@@ -158,7 +160,6 @@ class ModuleChainsGenerator
 
     /**
      * Clean classes from chain for given module id.
-     * Classes might be in module chain by path (old way) or by module namespace(new way).
      * This function removes all classes from class chain for classes inside a deactivated module's directory.
      *
      * @param $moduleId
