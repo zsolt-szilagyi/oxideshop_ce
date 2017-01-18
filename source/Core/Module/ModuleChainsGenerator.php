@@ -90,31 +90,35 @@ class ModuleChainsGenerator
         $allExtendedClasses = array_keys($modules);
         $currentExtendedClasses = array_intersect($allExtendedClasses, [$lowerCaseClassName, $lowerCaseClassAlias]);
         if (!empty($currentExtendedClasses)) {
-            /**
+            /*
              * there may be 2 class chains, matching the same class:
              * - one for the class alias like 'oxUser' - metadata v1.1
              * - another for the real class name like 'OxidEsales\Eshop\Application\Model\User' - metadata v1.2
              * These chains must be merged in the same order as they appear in the modules array
              */
             $classChains = [];
-            /** Get the position of the class name */
+            /* Get the position of the class name */
             if (false !== $position = array_search($lowerCaseClassName, $allExtendedClasses)) {
                 $classChains[$position] = explode("&", $modules[$lowerCaseClassName]);
             }
-            /** Get the position of the alias class name */
+            /* Get the position of the alias class name */
             if (false !== $position = array_search($lowerCaseClassAlias, $allExtendedClasses)) {
                 $classChains[$position] = explode("&", $modules[$lowerCaseClassAlias]);
             }
 
-            /** Notice that the array keys will be ordered, but do not necessarily start at 0 */
+            /* Notice that the array keys will be ordered, but do not necessarily start at 0 */
             ksort($classChains);
             $fullChain = [];
             if (1 === count($classChains)) {
-                /** @var array $fullChain uses the one and only element of the array */
+                /**
+                 * @var array $fullChain uses the one and only element of the array
+                 */
                 $fullChain = reset($classChains);
             }
             if (2 === count($classChains)) {
-                /** @var array $fullChain merges the first and then the second array from the $classChains */
+                /**
+                 * @var array $fullChain merges the first and then the second array from the $classChains
+                 */
                 $fullChain = array_merge(reset($classChains), next($classChains));
             }
         }
@@ -145,25 +149,53 @@ class ModuleChainsGenerator
      * Classes might be in module chain by path (old way) or by module namespace(new way).
      * This function removes all classes from class chain for classes inside a deactivated module's directory.
      *
-     * @param $moduleId
-     * @param $classChain
+     * @param string $moduleId
+     * @param array  $classChain
      *
      * @return array
      */
     public function cleanModuleFromClassChain($moduleId, $classChain)
     {
-        //WIP, need to also handle aModuleExtensions
+        $cleanedClassChain = $this->cleanModuleFromClassChainByModuleId($moduleId, $classChain);
+        $cleanedClassChain = $this->cleanModuleFromClassChainByPath($moduleId, $cleanedClassChain);
 
-        $cleanedClassChain = $this->cleanModuleFromClassChainByPath($moduleId, $classChain);
         return $cleanedClassChain;
+    }
+
+    /**
+     * Clean classes from chain for given module id.
+     * This function removes all classes from class chain that are in aModuleExtensions and belong to a deactivated module.
+     *
+     * @param string $moduleId
+     * @param array  $classChain
+     *
+     * @return mixed
+     */
+    public function cleanModuleFromClassChainByModuleId($moduleId, $classChain)
+    {
+        $variablesLocator = $this->getModuleVariablesLocator();
+        $registeredExtensions = $variablesLocator->getModuleVariable('aModuleExtensions');
+
+        $toBeRemovedFromChain = array();
+        if (isset($registeredExtensions[$moduleId])) {
+            $toBeRemovedFromChain = array_combine($registeredExtensions[$moduleId], $registeredExtensions[$moduleId]);
+        }
+
+        foreach ($classChain as $key => $moduleClass) {
+            if (isset($toBeRemovedFromChain[$moduleClass])) {
+                unset($classChain[$key]);
+            }
+        }
+
+        return $classChain;
     }
 
     /**
      * Clean classes from chain for given module id.
      * This function removes all classes from class chain for classes inside a deactivated module's directory.
      *
-     * @param $moduleId
-     * @param $classChain
+     * @param string $moduleId
+     * @param array  $classChain
      *
      * @return array
      */
@@ -184,8 +216,8 @@ class ModuleChainsGenerator
      * NOTE: for old style modules, the shop config variable 'aModules' contains the path to the module file
      *       relative to shop/modules directory.
      *
-     * @param $moduleClass
-     * @param $moduleDirectory
+     * @param string $moduleClass
+     * @param string $moduleDirectory
      *
      * @return bool
      */
@@ -226,6 +258,7 @@ class ModuleChainsGenerator
      *
      * Get module path relative to source/modules for given module id.
      *
+     * @param string $moduleId
      *
      * @return string
      */
@@ -382,6 +415,8 @@ class ModuleChainsGenerator
     }
 
     /**
+     * Getter for ModuleVariablesLocator.
+     *
      * @return \OxidEsales\Eshop\Core\Module\ModuleVariablesLocator
      */
     public function getModuleVariablesLocator()
@@ -390,6 +425,8 @@ class ModuleChainsGenerator
     }
 
     /**
+     * Getter for module array.
+     *
      * @param \OxidEsales\Eshop\Core\Module\ModuleVariablesLocator $variablesLocator
      *
      * @return array
