@@ -312,6 +312,9 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
 
         //removing from config tables and templates blocks table
         $this->_removeFromDatabase($aDeletedModuleIds);
+
+        //SPIKE
+        \OxidEsales\Eshop\Core\Module\ModuleVariablesLocator::resetModuleVariables();
     }
 
     /**
