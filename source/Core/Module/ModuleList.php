@@ -721,22 +721,25 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
     private function _getInvalidExtensions($sModuleId)
     {
         $extendedClasses = $this->getModuleExtensions($sModuleId);
-        $aDeletedExt = array();
+        $deletedExtensions = array();
 
         foreach ($extendedClasses as $oxidEshopClass => $moduleClasses) {
             foreach ($moduleClasses as $sModulePath) {
                 if (!$this->isNamespacedClass($sModulePath)) {
-                    $sExtPath = $this->getConfig()->getModulesDir() . $sModulePath . '.php';
-                    if (!file_exists($sExtPath)) {
-                        $aDeletedExt[$oxidEshopClass][] = $sModulePath;
+                    $completeExtensionPath = $this->getConfig()->getModulesDir() . $sModulePath . '.php';
+
+                    if (!file_exists($completeExtensionPath)) {
+                        $deletedExtensions[$oxidEshopClass][] = $sModulePath;
                     }
                 } else {
-                    //@todo: handle this case
+                    if (!class_exists($sModulePath)) {
+                        $deletedExtensions[$oxidEshopClass][] = $sModulePath;
+                    }
                 }
             }
         }
 
-        return $aDeletedExt;
+        return $deletedExtensions;
     }
 
     /**
