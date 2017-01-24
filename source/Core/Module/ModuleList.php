@@ -732,7 +732,7 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
                         $deletedExtensions[$oxidEshopClass][] = $sModulePath;
                     }
                 } else {
-                    if (!class_exists($sModulePath)) {
+                    if (!class_exists($sModulePath, false)) {
                         $deletedExtensions[$oxidEshopClass][] = $sModulePath;
                     }
                 }
