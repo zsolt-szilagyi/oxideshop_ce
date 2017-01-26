@@ -59,13 +59,14 @@ class ModuleNamespaceTest extends ModuleBaseTest
         if ($testConfig->isSubShop()) {
             $this->markTestSkipped('Test is not for SubShop');
         }
+
     }
 
     /**
      * Test deactivating a namespace module.
      */
     public function testDeactivateNamespaceModule()
-    {
+    { die();
         $this->loginAdmin('Extensions', 'Modules');
         $this->activateModule(self::TITLE_MODULE_OLDSTYLE);
         $this->activateModule(self::TITLE_MODULE_NAMESPACE);
