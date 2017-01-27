@@ -27,12 +27,26 @@ use oxRegistry;
 
 class Environment
 {
+    const DEFAULT_MODULE_LOCATION = 'modules';
+
     /**
      * Shop Id in which will be prepared environment.
      *
      * @var int
      */
-    private $shopId;
+    protected $shopId;
+
+    /**
+     * Name of test module subdirectory.
+     *
+     * @var string
+     */
+    protected $moduleLocation = null;
+
+    public function __construct($moduleLocation = self::DEFAULT_MODULE_LOCATION)
+    {
+        $this->moduleLocation = $moduleLocation;
+    }
 
     /**
      * Sets shop Id for modules environment.
@@ -135,9 +149,9 @@ class Environment
      *
      * @return array
      */
-    private function getAllModules()
+    protected function getAllModules()
     {
-        $aModules = array_diff(scandir($this->getPathToTestDataDirectory() . 'modules'), array('..', '.'));
+        $aModules = array_diff(scandir($this->getPathToTestDataDirectory() . $this->moduleLocation), array('..', '.'));
 
         return $aModules;
     }
@@ -145,7 +159,7 @@ class Environment
     /**
      * Loads config parameters from DB and sets to config.
      */
-    private function loadShopParameters()
+    protected function loadShopParameters()
     {
         $aParameters = array(
             'aModules', 'aModuleEvents', 'aModuleVersions', 'aModuleFiles', 'aDisabledModules', 'aModuleTemplates'
@@ -162,7 +176,7 @@ class Environment
      *
      * @return array
      */
-    private function _getConfigValueFromDB($sVarName)
+    protected function _getConfigValueFromDB($sVarName)
     {
         $oDb = oxDb::getDb();
         $sQuery = "SELECT " . oxRegistry::getConfig()->getDecodeValueQuery() . "
