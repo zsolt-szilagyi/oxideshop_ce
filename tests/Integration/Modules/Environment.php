@@ -125,7 +125,7 @@ class Environment
      *
      * @return string
      */
-    private function getPathToTestDataDirectory()
+    protected function getPathToTestDataDirectory()
     {
         return realpath(__DIR__) . '/TestData/';
     }
