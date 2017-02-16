@@ -92,6 +92,18 @@ class ModuleNamespaceTest extends AdminTestCase
     }
 
     /**
+     * Test module activation, deactivation and again activation
+     */
+    public function testModuleActivationDeactivationActivation()
+    {
+        $this->loginAdmin('Extensions', 'Modules');
+        $this->activateModule(self::TEST_NAMESPACE_MODULE_TITLE);
+        $this->deactivateModule(self::TEST_NAMESPACE_MODULE_TITLE);
+        $this->activateModule(self::TEST_NAMESPACE_MODULE_TITLE);
+        $this->checkFrontendForNamespaceModule();
+    }
+
+    /**
      * Helper function for module activation
      *
      * @param string $module
