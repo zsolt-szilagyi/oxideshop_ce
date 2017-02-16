@@ -85,7 +85,7 @@ class ClassProviderStorage implements ClassProviderStorageInterface
     public function remove($moduleId)
     {
         $controllerMap = $this->get();
-        unset($controllerMap[$moduleId]);
+        unset($controllerMap[strtolower($moduleId)]);
 
         $this->set($controllerMap);
     }
