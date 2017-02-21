@@ -34,7 +34,9 @@
     "autoload-dev": {
         "psr-4": {
             "OxidEsales\\EshopCommunity\\Tests\\": "./tests",
-            "OxidEsales\\EshopCommunityTestModule\\": "./tests/Integration/Modules/TestDataInheritance/modules"
+            "OxidEsales\\EshopCommunityTestModule\\": "./tests/Integration/Modules/TestDataInheritance/modules",
+            "OxidEsales\\EshopCommunityDemo1\\": "./source/modules/vendor1metadatav2demo",
+            "OxidEsales\\EshopCommunityDemo2\\": "./source/modules/vendor2metadatav2demo"
         }
     },
     "minimum-stability": "dev",

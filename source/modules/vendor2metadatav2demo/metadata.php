@@ -16,11 +16,27 @@
  * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2015
+ * @copyright (C) OXID eSales AG 2003-2017
  * @version   OXID eShop CE
  */
-
 /**
  * Metadata version
  */
-$sVendorMetadataVersion = '1.0';
+$sMetadataVersion = '2.0';
+/**
+ * Module information
+ */
+$aModule = array(
+    'id'           => 'vendor2MetadataV2Demo',
+    'title'        => 'Metadata version 2.0 other test module (with namespace) and own controller',
+    'description'  => '',
+    'thumbnail'    => 'module.png',
+    'version'      => '1.0',
+    'author'       => 'OXID eSales AG',
+    'controllers'  => [
+        'vendor2_metadatav2demo_mymodulecontroller' => \OxidEsales\EshopCommunityDemo2\MyModuleController::class
+    ],
+    'templates' => [
+        'vendor2_controller_routing.tpl' => 'vendor2metadatav2demo/vendor2_controller_routing.tpl'
+    ]
+);
