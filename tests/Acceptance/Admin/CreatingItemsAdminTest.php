@@ -1741,7 +1741,7 @@ class CreatingItemsAdminTest extends AdminTestCase
         $this->assertEquals("description [EN]_šÄßüл", $this->getValue("editval[oxcategories__oxdesc]"));
         $this->assertEquals("Test category 0 [EN] šÄßüл", $this->getSelectedLabel("editval[oxcategories__oxparentid]"));
         $this->assertEquals("1", $this->getValue("editval[oxcategories__oxsort]"));
-        $this->assertEquals("http://www.DElink.com", $this->getValue("editval[oxcategories__oxextlink]"));
+        $this->assertEquals("http://www.ENlink.com", $this->getValue("editval[oxcategories__oxextlink]"));
         $this->assertEquals("template [DE]", $this->getValue("editval[oxcategories__oxtemplate]"));
         $this->assertEquals("Title", $this->getSelectedLabel("editval[oxcategories__oxdefsort]"));
         $this->assertEquals("1", $this->getValue("/descendant::input[@name='editval[oxcategories__oxdefsortmode]'][2]"));

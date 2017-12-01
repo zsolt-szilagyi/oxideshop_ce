@@ -1055,4 +1055,27 @@ class CategoryTest extends \OxidTestCase
         $oCategory->load($this->_sCategory);
         $this->assertTrue($oCategory->isLoaded());
     }
+
+    public function testCategoryExeternalLinkInternationalisation()
+    {
+        $categoryId = 'b3e44bf962f314624.45760494';
+        $german     = 0;
+        $english    = 1;
+
+        $categoryGerman = oxNew('oxCategory');
+        $categoryGerman->loadInLang($german, $categoryId);
+
+        $this->assertEquals(
+            'http://www.beispiel.de/himmel',
+            $categoryGerman->getStdLink()
+        );
+
+        $categoryEnglish = oxNew("oxCategory");
+        $categoryEnglish->loadInLang($english, $categoryId);
+
+        $this->assertEquals(
+            'http://www.example.com/sky',
+            $categoryEnglish->getStdLink()
+        );
+    }
 }
