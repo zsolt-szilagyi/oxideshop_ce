@@ -6,10 +6,6 @@
 
 namespace OxidEsales\EshopCommunity\Application\Model;
 
-use oxDb;
-use oxField;
-use oxRegistry;
-
 /**
  * Article review manager.
  * Performs loading, updating, inserting of article review.
@@ -159,5 +155,43 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
     public function getObjectId()
     {
         return $this->oxreviews__oxobjectid->value;
+    }
+
+    /**
+     * Return a range of reviews for a given user
+     *
+     * @param string $userId
+     * @param int    $start
+     * @param int    $limit
+     * @param string $type
+     *
+     * @return \OxidEsales\Eshop\Core\Model\ListModel
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function getUserReviews($userId, $start, $limit, $type = 'oxarticle')
+    {
+        $orderKey = 'oxcreate';
+        $orderDirection  = 'ASC';
+
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $query = 'SELECT * FROM oxreviews ' .
+                 'WHERE 1 '.
+                 'AND oxuserid = ? '.
+                 'AND oxtype = ? '.
+                 'ORDER BY ' . $db->quoteIdentifier($orderKey) . ' ' . $orderDirection . ' ';
+
+        $reviews = oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
+        $reviews->init('oxreview');
+        $reviews->setSqlLimit($start, $limit);
+        $reviews->selectString($query, [$userId, $type]);
+
+        // change date
+        foreach ($reviews as $item) {
+            $item->oxreviews__oxcreate->convertToFormattedDbDate();
+            $item->oxreviews__oxtext->convertToPseudoHtml();
+        }
+
+        return $reviews;
     }
 }
