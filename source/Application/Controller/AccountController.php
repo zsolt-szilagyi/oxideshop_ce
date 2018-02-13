@@ -389,4 +389,24 @@ class AccountController extends \OxidEsales\Eshop\Application\Controller\Fronten
             ->getConfig()
             ->getConfigParam('allowUsersToDeleteTheirAccount');
     }
+
+    /**
+     * Get a list of product reviews for the active user
+     *
+     * @param integer $start The item to start with
+     * @param integer $limit The number of items to retrieve
+     *
+     * @return \OxidEsales\Eshop\Core\Model\ListModel
+     */
+    public function getProductReviewList($start, $limit)
+    {
+        $reviews = [];
+        $user = $this->getUser();
+        $userId = $user->getId();
+
+        $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
+        $reviews = $review->getUserReviews($userId, $start, $limit);
+
+        return $reviews;
+    }
 }
