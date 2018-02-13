@@ -229,4 +229,24 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
 
         return $reviews;
     }
+
+    /**
+     * @param string $reviewId The ID of the review to be deleted
+     *
+     * @return bool True if a record has been deleted, False if no record has been deleted
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseException
+     */
+    public function deleteReview($reviewId)
+    {
+        if (empty($reviewId)) {
+            throw new \InvalidArgumentException('Parameter reviewId must not be empty');
+        }
+
+        if (!$this->isLoaded()) {
+            $this->load($reviewId);
+        }
+
+        return $this->delete();
+    }
 }
