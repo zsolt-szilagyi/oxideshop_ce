@@ -158,33 +158,68 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
     }
 
     /**
-     * Return a range of reviews for a given user
+     * Get the total number of
      *
      * @param string $userId
-     * @param int    $start
-     * @param int    $limit
-     * @param string $type
+     *
+     * @return false|string
+     *
+     * @throws \InvalidArgumentException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     */
+    public function getProductReviewItemsCntByUserId($userId)
+    {
+        if (empty($userId)) {
+            throw new \InvalidArgumentException('Parameter userId must not be empty');
+        }
+
+        $reviewType = 'oxarticle';
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+
+        $query = 'SELECT COUNT(*) FROM oxreviews ' .
+                 'WHERE 1 ' .
+                 'AND oxuserid = ? ' .
+                 'AND oxtype = ? ';
+
+        $totalItems = (int) $db->getOne($query, [$userId, $reviewType]);
+
+        return $totalItems;
+    }
+
+    /**
+     * Get a range of reviews for a given user
+     *
+     * @param string $userId   An ID of a given user
+     * @param int    $offset   MySQL LIMIT offset
+     * @param int    $rowCount MySQL LIMIT row_count
      *
      * @return \OxidEsales\Eshop\Core\Model\ListModel
      *
+     * @throws \InvalidArgumentException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public function getUserReviews($userId, $start, $limit, $type = 'oxarticle')
+    public function getProductReviewsByUserId($userId, $offset = 0, $rowCount = 25)
     {
+        if (empty($userId)) {
+            throw new \InvalidArgumentException('Parameter userId must not be empty');
+        }
+
+        $reviewType = 'oxarticle';
         $orderKey = 'oxcreate';
         $orderDirection  = 'ASC';
 
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $query = 'SELECT * FROM oxreviews ' .
-                 'WHERE 1 '.
-                 'AND oxuserid = ? '.
-                 'AND oxtype = ? '.
+                 'WHERE 1 ' .
+                 'AND oxuserid = ? ' .
+                 'AND oxtype = ? ' .
                  'ORDER BY ' . $db->quoteIdentifier($orderKey) . ' ' . $orderDirection . ' ';
 
         $reviews = oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
         $reviews->init('oxreview');
-        $reviews->setSqlLimit($start, $limit);
-        $reviews->selectString($query, [$userId, $type]);
+        $reviews->setSqlLimit((integer) $offset, (integer) $rowCount);
+        $reviews->selectString($query, [$userId, $reviewType]);
 
         // change date
         foreach ($reviews as $item) {

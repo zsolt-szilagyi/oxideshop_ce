@@ -391,22 +391,45 @@ class AccountController extends \OxidEsales\Eshop\Application\Controller\Fronten
     }
 
     /**
-     * Get a list of product reviews for the active user
+     * Get the total number of reviews for the active user.
      *
-     * @param integer $start The item to start with
-     * @param integer $limit The number of items to retrieve
-     *
-     * @return \OxidEsales\Eshop\Core\Model\ListModel
+     * @return integer Number of reviews
      */
-    public function getProductReviewList($start, $limit)
+    public function getProductReviewItemsCnt()
     {
-        $reviews = [];
-        $user = $this->getUser();
-        $userId = $user->getId();
+        $totalNrOfReviews = 0;
 
-        $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
-        $reviews = $review->getUserReviews($userId, $start, $limit);
+        if ($user = $this->getUser()) {
+            $userId = $user->getId();
 
-        return $reviews;
+            $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
+            $totalNrOfReviews = $review->getProductReviewItemsCntByUserId($userId);
+        }
+
+        return $totalNrOfReviews;
+    }
+
+    /**
+     * Get a list of a range of product reviews for the active user.
+     * The range to retrieve is determined by the offset and rowCount parameters
+     * which behave like in the MySQL LIMIT clause
+     *
+     * @param integer $offset   The offset to start with
+     * @param integer $rowCount The number of items to retrieve
+     *
+     * @return \OxidEsales\Eshop\Core\Model\ListModel|null
+     */
+    public function getProductReviewList($offset, $rowCount)
+    {
+        $productReviewList = null;
+
+        if ($user = $this->getUser()) {
+            $userId = $user->getId();
+
+            $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
+            $productReviewList = $review->getProductReviewsByUserId($userId, $start, $limit);
+        }
+
+        return $productReviewList;
     }
 }
