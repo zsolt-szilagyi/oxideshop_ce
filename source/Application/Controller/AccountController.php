@@ -444,8 +444,15 @@ class AccountController extends \OxidEsales\Eshop\Application\Controller\Fronten
      */
     public function deleteProductReview($reviewId)
     {
+        $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
+
         /** There must be an active user */
         if (!$user = $this->getUser()) {
+            return false;
+        }
+
+        /** The review must exist */
+        if (!$review->load($reviewId)) {
             return false;
         }
 
@@ -465,7 +472,6 @@ class AccountController extends \OxidEsales\Eshop\Application\Controller\Fronten
          * If no exception is thrown, the review is gone: Or it has been deleted by the method call below or it has
          * never been there.
          */
-        $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
         $review->deleteReview($reviewId);
 
         return true;
