@@ -444,48 +444,4 @@ class AccountController extends \OxidEsales\Eshop\Application\Controller\Fronten
 
         return $productReviewList;
     }
-
-    /**
-     * Delete a product review, which belongs to the active user
-     *
-     * @param string $reviewId ID of the record to be deleted.
-     *
-     * @return bool True, if the review is gone, False, if the review cannot be deleted, because the validation failed
-     *
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function deleteProductReview($reviewId)
-    {
-        $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
-
-        /** There must be an active user */
-        if (!$user = $this->getUser()) {
-            return false;
-        }
-
-        /** The review must exist */
-        if (!$review->load($reviewId)) {
-            return false;
-        }
-
-        /** It must be a product review */
-        if ('oxarticle' !== $review->getObjectType()) {
-            return false;
-        }
-
-        /** It must belong to the active user */
-        $reviewUserId = $review->getUser()->getId();
-        $userId = $user->getId();
-        if ($reviewUserId != $userId) {
-            return false;
-        };
-
-        /**
-         * If no exception is thrown, the review is gone: Or it has been deleted by the method call below or it has
-         * never been there.
-         */
-        $review->deleteReview($reviewId);
-
-        return true;
-    }
 }

@@ -13,6 +13,7 @@ namespace OxidEsales\EshopCommunity\Application\Model;
  */
 class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
 {
+
     /**
      * Shop control variable
      *
@@ -49,7 +50,7 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
 
         if (isset($this->oxreviews__oxuserid) && $this->oxreviews__oxuserid->value) {
             $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
-            $this->oxuser__oxfname = new \OxidEsales\Eshop\Core\Field($oDb->getOne("select oxfname from oxuser where oxid=" . $oDb->quote($this->oxreviews__oxuserid->value)));
+            $this->oxuser__oxfname = new \OxidEsales\Eshop\Core\Field($oDb->getOne("SELECT oxfname FROM oxuser WHERE oxid=" . $oDb->quote($this->oxreviews__oxuserid->value)));
         }
 
         return $blRet;
@@ -207,7 +208,7 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
 
         $reviewType = 'oxarticle';
         $orderKey = 'oxcreate';
-        $orderDirection  = 'ASC';
+        $orderDirection = 'ASC';
 
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $query = 'SELECT * FROM oxreviews ' .
@@ -231,22 +232,16 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
     }
 
     /**
-     * @param string $reviewId The ID of the review to be deleted
+     * Return the article objet the review was made for.
      *
-     * @return bool True if a record has been deleted, False if no record has been deleted
-     *
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseException
+     * @return object|Article
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public function deleteReview($reviewId)
+    public function getArticle()
     {
-        if (empty($reviewId)) {
-            throw new \InvalidArgumentException('Parameter reviewId must not be empty');
-        }
+        $article = oxNew(Article::class);
+        $article->load($this->getObjectId());
 
-        if (!$this->isLoaded()) {
-            $this->load($reviewId);
-        }
-
-        return $this->delete();
+        return $article;
     }
 }

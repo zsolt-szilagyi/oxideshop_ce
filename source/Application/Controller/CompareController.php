@@ -12,7 +12,7 @@ use oxRegistry;
  * Comparing Products.
  * Takes a few products and show attribute values to compare them.
  */
-class CompareController extends \OxidEsales\Eshop\Application\Controller\FrontendController
+class CompareController extends \OxidEsales\Eshop\Application\Controller\AccountController
 {
     /**
      * Number of possible compare pages.

@@ -410,6 +410,7 @@ $aLang = [
 'PRODUCT_NO'                                                  => 'Item #',
 'PRODUCT_POST_CARD_FROM'                                      => 'A product postcard from',
 'PRODUCT_REVIEW'                                              => 'Product review',
+'PRODUCT_REVIEW_NOT_DELETED'                                  => 'The product review could not be deleted',
 'PRODUCT_REVIEWS'                                             => 'Product reviews',
 'PUBLIC_GIFT_REGISTRIES'                                      => 'Public gift registries',
 'PUBLISH'                                                     => 'Publish',
