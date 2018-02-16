@@ -45,11 +45,15 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     }
 
     /**
-     * Delete a product review and rating, which belongs to the active user
+     * Delete a product review and rating, which belongs to the active user.
+     * Keep in mind, that this method may return only false or void. Any other return value will cause malfunction in
+     * higher layers
      *
-     * @return bool True, if the review is gone, False, if the review cannot be deleted, because the validation failed
+     * @return bool False, if the review cannot be deleted, because the validation failed
      *
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \Exception
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
      */
     public function deleteProductReviewAndRating()
     {
@@ -59,19 +63,19 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
 
         /** The CSFR token must be valid */
         if (!\OxidEsales\Eshop\Core\Registry::getSession()->checkSessionChallenge()) {
-            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('ERROR_PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
 
             return false;
         }
 
         /** There must be an active user */
         if (!$user = $this->getUser()) {
-            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('ERROR_PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
 
             return false;
         }
         if (!$userId = $user->getId()) {
-            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('ERROR_PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
 
             return false;
         }
@@ -110,12 +114,16 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
                 $db->commitTransaction();
             } else {
                 $db->rollbackTransaction();
-                \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+                \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('ERROR_PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
             }
         } catch (\Exception $exception) {
             $db->rollbackTransaction();
 
             throw $exception;
+        }
+
+        if (!(($ratingDeleted && $reviewDeleted))) {
+            return false;
         }
     }
 
