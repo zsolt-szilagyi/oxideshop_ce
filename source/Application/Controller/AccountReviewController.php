@@ -18,7 +18,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
      *
      * @var string
      */
-    protected $_sThisTemplate = 'page/account/productreviewlist.tpl';
+    protected $_sThisTemplate = 'page/account/productreviews.tpl';
 
     /**
      * Get a list of a range of product reviews for the active user.
@@ -45,42 +45,120 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     }
 
     /**
-     * TODO Shit! If a user does not rate a product, it is posible to write more than one review.
-     * ratings and reviews are both to be deleted. Additionally a  user can write/have more than one review per
-     * product.
-     *
-     * Delete a product review, which belongs to the active user
+     * Delete a product review and rating, which belongs to the active user
      *
      * @return bool True, if the review is gone, False, if the review cannot be deleted, because the validation failed
      *
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public function deleteProductReview()
+    public function deleteProductReviewAndRating()
     {
+        /**
+         * Do some validation and gather the needed data
+         */
+
+        /** The CSFR token must be valid */
         if (!\OxidEsales\Eshop\Core\Registry::getSession()->checkSessionChallenge()) {
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+
             return false;
         }
 
         /** There must be an active user */
         if (!$user = $this->getUser()) {
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+
             return false;
         }
         if (!$userId = $user->getId()) {
+            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+
             return false;
         }
 
-        /** The article id must be given to be able to delete the rating */
-        $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
-        if (!$articleId) {
+        /**
+         * Perform the deletion.
+         * If the rating cannot be deleted, the review will also not be deleted: It is possible to create a review without
+         * rating, but an existing rating always assumes an existing a review. This logic will be maintained on deletion.
+         */
+
+        $db = \OxidEsales\EshopCommunity\Core\DatabaseProvider::getDb();
+        $db->startTransaction();
+        try {
+            /** The review id must be given to be able to delete a single review */
+            /** The article id must be given to be able to delete the rating */
+            $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
+            if (!$articleId ||
+                !$this->deleteProductRating($userId, $articleId)
+            ) {
+                $ratingDeleted = false;
+            } else {
+                $ratingDeleted = true;
+            }
+
+            $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
+            if (!$ratingDeleted ||
+                !$reviewId ||
+                !$this->deleteProductReview($userId, $reviewId)
+            ) {
+                $reviewDeleted = false;
+            } else {
+                $reviewDeleted = true;
+            }
+
+            if ($ratingDeleted && $reviewDeleted) {
+                $db->commitTransaction();
+            } else {
+                $db->rollbackTransaction();
+                \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
+            }
+        } catch (\Exception $exception) {
+            $db->rollbackTransaction();
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * Delete a given review for a given user
+     *
+     * @param string $userId    Id of the user the rating belongs to
+     * @param string $articleId Id of the rating to delete
+     *
+     * @return bool True, if the rating has been deleted, False if the validation failed
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function deleteProductRating($userId, $articleId)
+    {
+        if (!$shopId = \OxidEsales\EshopCommunity\Core\Registry::getConfig()->getShopId()) {
             return false;
         }
 
-        /** The review id must be given to be able to delete a single review */
-        $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
-        if (!$reviewId) {
+        $rating = oxNew(\OxidEsales\Eshop\Application\Model\Rating::class);
+        if (!$ratingId = $rating->getProductRatingByUserId($articleId, $userId, $shopId)) {
             return false;
         }
 
+        $rating->delete($ratingId);
+
+        return true;
+    }
+
+    /**
+     * Delete a given review for a given user
+     *
+     * @param string $userId   Id of the user the review belongs to
+     * @param string $reviewId Id of the review to delete
+     *
+     * @return bool True, if the review has been deleted, False if the validation failed
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function deleteProductReview($userId, $reviewId)
+    {
         /** The review must exist */
         $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
         if (!$review->load($reviewId)) {
@@ -94,20 +172,12 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
 
         /** It must belong to the active user */
         $reviewUserId = $review->getUser()->getId();
-        $userId = $user->getId();
         if ($reviewUserId != $userId) {
             return false;
         };
 
-        try {
-            $review->delete($reviewId);
-        } catch (\Exception $exception) {
-            \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('PRODUCT_REVIEW_NOT_DELETED');
-        }
+        $review->delete($reviewId);
 
-        /**
-         * TODO
-         * Delete ratings as well
-         */
+        return true;
     }
 }
