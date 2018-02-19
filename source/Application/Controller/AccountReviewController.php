@@ -13,7 +13,7 @@ namespace OxidEsales\EshopCommunity\Application\Controller;
  */
 class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\AccountController
 {
-    protected $itemsPerPage = 10;
+    protected $itemsPerPage = 2;
 
     /**
      * @return \stdClass|void
@@ -84,7 +84,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
          */
 
         /** The CSFR token must be valid */
-        if (!\OxidEsales\Eshop\Core\Registry::getSession()->checkSessionChallenge()) {
+        if (!$this->getSession()->checkSessionChallenge()) {
             \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay('ERROR_PRODUCT_REVIEW_AND_RATING_NOT_DELETED');
 
             return false;
@@ -113,7 +113,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         try {
             $ratingDeleted = true;
             /** The article id must be given to be able to delete the rating */
-            $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
+            $articleId = $this->getArticleIdFromRequest();
             if (!$articleId ||
                 !$this->deleteProductRating($userId, $articleId)
             ) {
@@ -121,7 +121,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
             }
 
             /** The review id must be given to be able to delete a single review */
-            $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
+            $reviewId = $this->getReviewIdFromRequest();
             if (!$ratingDeleted ||
                 !$reviewId ||
                 !$this->deleteProductReview($userId, $reviewId)
@@ -212,5 +212,25 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         $review->delete($reviewId);
 
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getArticleIdFromRequest()
+    {
+        $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
+
+        return $articleId;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getReviewIdFromRequest()
+    {
+        $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
+
+        return $reviewId;
     }
 }

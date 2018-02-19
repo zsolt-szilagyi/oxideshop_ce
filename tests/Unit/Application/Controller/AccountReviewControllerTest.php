@@ -14,55 +14,91 @@ namespace OxidEsales\EshopCommunity\Tests\Unit\Application\Controller;
  */
 class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
+
     /**
-     * If there is no active user the number of items returned by
-     * \OxidEsales\EshopCommunity\Application\Controller\AccountController::getProductReviewItemsCnt
-     * should be 0
-     *
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::getProductReviewItemsCnt
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::render
      */
-    public function testGetProductReviewItemsCntReturnZeroForNoUser()
+    public function testRenderReturnsParentTemplateNameIfFeatureNotEnabled()
     {
-        $expectedReviewsCount = 0;
+        /**
+         * method getShowProductReviewList() will return false
+         */
+        $getShowProductReviewList = false;
 
-        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountController::class, ['getUser']);
-        $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue(false));
+        $user = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
+        $user->oxuser__oxpassword = new \oxField(1);
 
-        $actualReviewsCount = $accountReviewControllerMock->getProductReviewItemsCnt();
+        /**
+         * Get the template name from the parent controller.
+         * This mocking is necessary in order to authenticate the user and not to get the login template
+         */
+        $accountControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountController::class,
+            ["redirectAfterLogin", "getUser", "isEnabledPrivateSales"]
+        );
+        $accountControllerMock->expects($this->once())->method("redirectAfterLogin")->will($this->returnValue(1));
+        $accountControllerMock->expects($this->once())->method("getUser")->will($this->returnValue($user));
+        $accountControllerMock->expects($this->any())->method('isEnabledPrivateSales')->will($this->returnValue(false));
 
-        $this->assertSame( $expectedReviewsCount, $actualReviewsCount);
+        $expectedTemplateName = $accountControllerMock->render();
+
+        /**
+         * Get the template name from the AccountReviewController
+         * This mocking is necessary in order to authenticate the user and not to get the login template
+         */
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList', 'redirectAfterLogin', 'getUser', 'isEnabledPrivateSales']
+        );
+        $accountReviewControllerMock->expects($this->any())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+        $accountReviewControllerMock->expects($this->once())->method("redirectAfterLogin")->will($this->returnValue(1));
+        $accountReviewControllerMock->expects($this->once())->method("getUser")->will($this->returnValue($user));
+        $accountReviewControllerMock->expects($this->any())->method('isEnabledPrivateSales')->will($this->returnValue(false));
+
+        $actualTemplateName = $accountReviewControllerMock->render();
+
+        $this->assertSame($expectedTemplateName, $actualTemplateName);
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::getProductReviewItemsCnt
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::render
      */
-    public function testGetProductReviewItemsCntReturnsExpectedCountForActiveUser()
+    public function testRenderReturnsOwnTemplateNameIfFeatureIsEnabled()
     {
-        $expectedReviewsCount = 100;
+        /**
+         * method getShowProductReviewList() will return false
+         */
+        $getShowProductReviewList = true;
+        $expectedTemplateName = 'page/account/productreviews.tpl';
 
-        $userMock = $this->getMock(\OxidEsales\Eshop\Application\Model\User::class, ['getId']);
-        $userMock->expects($this->any())->method('getId')->will($this->returnValue("userId"));
+        $user = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
+        $user->oxuser__oxpassword = new \oxField(1);
 
-        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountController::class, ['getUser']);
-        $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
+        /**
+         * Get the template name from the AccountReviewController
+         * This mocking is necessary in order to authenticate the user and not to get the login template
+         */
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList', 'redirectAfterLogin', 'getUser', 'isEnabledPrivateSales']
+        );
+        $accountReviewControllerMock->expects($this->any())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+        $accountReviewControllerMock->expects($this->once())->method("getUser")->will($this->returnValue($user));
+        $accountReviewControllerMock->expects($this->any())->method('isEnabledPrivateSales')->will($this->returnValue(false));
 
-        $reviewsMock = $this->getMock(\OxidEsales\Eshop\Application\Model\Review::class, ['getProductReviewItemsCntByUserId']);
-        $reviewsMock->expects($this->any())->method('getProductReviewItemsCntByUserId')->will($this->returnValue($expectedReviewsCount));
-        \oxTestModules::addModuleObject(\OxidEsales\Eshop\Application\Model\Review::class, $reviewsMock);
+        $actualTemplateName = $accountReviewControllerMock->render();
 
-        $actualReviewsCount = $accountReviewControllerMock->getProductReviewItemsCnt();
-
-        $this->assertSame( $expectedReviewsCount, $actualReviewsCount);
+        $this->assertSame($expectedTemplateName, $actualTemplateName);
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::getProductReviewList
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::getProductReviewList
      */
     public function testGetProductReviewListReturnsNullForNoUser()
     {
         $expectedProductReviewList = null;
 
-        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountController::class, ['getUser']);
+        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountReviewController::class, ['getUser']);
         $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue(false));
 
         $actualProductReviewList = $accountReviewControllerMock->getProductReviewList();
@@ -71,7 +107,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::getProductReviewList
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::getProductReviewList
      */
     public function testGetProductReviewListReturnsExpectedListForActiveUser()
     {
@@ -80,7 +116,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
         $userMock = $this->getMock(\OxidEsales\Eshop\Application\Model\User::class, ['getId']);
         $userMock->expects($this->any())->method('getId')->will($this->returnValue("userId"));
 
-        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountController::class, ['getUser']);
+        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountReviewController::class, ['getUser']);
         $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
 
         $reviewsMock = $this->getMock(\OxidEsales\Eshop\Application\Model\Review::class, ['getProductReviewsByUserId']);
@@ -93,15 +129,15 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::deleteProductReviewAndRating
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
      */
-    public function testDeleteProductReviewReturnsFalseOnNoUser()
+    public function testDeleteProductReviewReturnsFalseOnNoSessionChallenge()
     {
-        $userMock = $this->getMock(\OxidEsales\Eshop\Application\Model\User::class, ['getId']);
-        $userMock->expects($this->any())->method('getId')->will($this->returnValue("userId"));
+        $sessionMock = $this->getMock(\OxidEsales\Eshop\Core\Session::class, array('checkSessionChallenge'));
+        $sessionMock->expects($this->once())->method('checkSessionChallenge')->will($this->returnValue(false));
 
-        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountReviewController::class, ['getUser']);
-        $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
+        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountReviewController::class, ['getSession']);
+        $accountReviewControllerMock->expects($this->any())->method('getSession')->will($this->returnValue($sessionMock));
 
         $result = $accountReviewControllerMock->deleteProductReviewAndRating();
 
@@ -109,7 +145,77 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::deleteProductReviewAndRating
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
+     */
+    public function testDeleteProductReviewReturnsFalseOnNoUser()
+    {
+        $sessionMock = $this->getMock(\OxidEsales\Eshop\Core\Session::class, array('checkSessionChallenge'));
+        $sessionMock->expects($this->once())->method('checkSessionChallenge')->will($this->returnValue(true));
+
+        $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountReviewController::class, ['getSession', 'getUser']);
+        $accountReviewControllerMock->expects($this->any())->method('getSession')->will($this->returnValue($sessionMock));
+        $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue(false));
+
+        $result = $accountReviewControllerMock->deleteProductReviewAndRating();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * The method must return NULL on success
+     * In this test all preconditions for a successful deletion are met
+     *
+     * @dataProvider dataProviderTestDeleteProductReview
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
+     */
+    public function testDeleteProductReview($checkSessionChallenge, $expectedResult, $message)
+    {
+        /** CSFR protection: Session challenge check must pass */
+        $sessionMock = $this->getMock(\OxidEsales\Eshop\Core\Session::class, array('checkSessionChallenge'));
+        $sessionMock->expects($this->once())->method('checkSessionChallenge')->will($this->returnValue($checkSessionChallenge));
+
+        /** Is user logged in? User with userId must be present */
+        $userMock = $this->getMock(\OxidEsales\Eshop\Application\Model\User::class, ['getId']);
+        $userMock->expects($this->any())->method('getId')->will($this->returnValue("userId"));
+
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getSession', 'getUser', 'getArticleIdFromRequest','deleteProductRating', 'getReviewIdFromRequest', 'deleteProductReview']
+        );
+        $accountReviewControllerMock->expects($this->any())->method('getSession')->will($this->returnValue($sessionMock));
+        $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
+        /** Article Id must be set in the HTTP REQUEST */
+        $accountReviewControllerMock->expects($this->any())->method('getArticleIdFromRequest')->will($this->returnValue(true));
+        /** Rating must be successfully deleted */
+        $accountReviewControllerMock->expects($this->any())->method('deleteProductRating')->will($this->returnValue(true));
+        /** Review Id must be set in the HTTP REQUEST */
+        $accountReviewControllerMock->expects($this->any())->method('getReviewIdFromRequest')->will($this->returnValue(true));
+        /** AND review must be successfully deleted */
+        $accountReviewControllerMock->expects($this->any())->method('deleteProductReview')->will($this->returnValue(true));
+
+        $actualResult = $accountReviewControllerMock->deleteProductReviewAndRating();
+
+        $this->assertSame($expectedResult, $actualResult, $message);
+    }
+
+    public function dataProviderTestDeleteProductReview()
+    {
+        return [
+            'All conditions are met' => [
+                'checkSessionChallenge' => true,
+                'expectedResult' => null,
+                'message' => 'Returns null on success'
+            ],
+            'Session Challenge check fails' => [
+                'checkSessionChallenge' => false,
+                'expectedResult' => false,
+                'message' => 'Returns false on failed session challenge check'
+            ],
+        ];
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
      */
     public function testDeleteProductReviewReturnsFalseOnNoReview()
     {
@@ -125,7 +231,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::deleteProductReviewAndRating
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
      */
     public function testDeleteProductReviewReturnsFalseOnWrongReviewType()
     {
@@ -146,7 +252,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountController::deleteProductReviewAndRating
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
      */
     public function testDeleteProductReviewReturnsFalseOnWrongReviewUser()
     {
