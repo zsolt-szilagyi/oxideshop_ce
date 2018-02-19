@@ -65,7 +65,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
         $accountReviewControllerMock = $this->getMock(\OxidEsales\Eshop\Application\Controller\AccountController::class, ['getUser']);
         $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue(false));
 
-        $actualProductReviewList = $accountReviewControllerMock->getProductReviewList(0, 10);
+        $actualProductReviewList = $accountReviewControllerMock->getProductReviewList();
 
         $this->assertSame( $expectedProductReviewList, $actualProductReviewList);
     }
@@ -87,7 +87,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
         $reviewsMock->expects($this->any())->method('getProductReviewsByUserId')->will($this->returnValue($expectedProductReviewsList));
         \oxTestModules::addModuleObject(\OxidEsales\Eshop\Application\Model\Review::class, $reviewsMock);
 
-        $actualProductReviewsList = $accountReviewControllerMock->getProductReviewList(0,10);
+        $actualProductReviewsList = $accountReviewControllerMock->getProductReviewList();
 
         $this->assertSame( $expectedProductReviewsList, $actualProductReviewsList);
     }

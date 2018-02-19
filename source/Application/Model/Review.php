@@ -208,7 +208,7 @@ class Review extends \OxidEsales\Eshop\Core\Model\BaseModel
 
         $reviewType = 'oxarticle';
         $orderKey = 'oxcreate';
-        $orderDirection = 'ASC';
+        $orderDirection = 'DESC';
 
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $query = 'SELECT * FROM oxreviews ' .

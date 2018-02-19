@@ -13,32 +13,54 @@ namespace OxidEsales\EshopCommunity\Application\Controller;
  */
 class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\AccountController
 {
+    protected $itemsPerPage = 10;
+
     /**
-     * Current class template name.
-     *
-     * @var string
+     * @return \stdClass|void
      */
-    protected $_sThisTemplate = 'page/account/productreviews.tpl';
+    public function getPageNavigation()
+    {
+        $this->_iCntPages = ceil($this->getProductReviewItemsCnt() / $this->itemsPerPage);
+        $this->_oPageNavigation = $this->generatePageNavigation();
+
+        return $this->_oPageNavigation;
+    }
+
+    /**
+     * Show the Reviews list only, if the feature has been enabled in eShop Admin
+     * -> Master Settings -> Core Settings -> Settings -> Account settings -> "Allow users to manage their product reviews"
+     *
+     * @return string
+     */
+    public function render()
+    {
+        if ($this->getShowProductReviewList()) {
+            $this->_sThisTemplate = 'page/account/productreviews.tpl';
+        }
+
+        return parent::render();
+    }
 
     /**
      * Get a list of a range of product reviews for the active user.
      * The range to retrieve is determined by the offset and rowCount parameters
      * which behave like in the MySQL LIMIT clause
      *
-     * @param integer $offset   The offset to start with
-     * @param integer $rowCount The number of items to retrieve
-     *
      * @return \OxidEsales\Eshop\Core\Model\ListModel|null
      */
-    public function getProductReviewList($offset, $rowCount)
+    public function getProductReviewList()
     {
         $productReviewList = null;
 
         if ($user = $this->getUser()) {
+            $currentPage = $this->getActPage();
+            $offset = $currentPage * $this->itemsPerPage;
+            $rowCount = $this->itemsPerPage;
+
             $userId = $user->getId();
 
             $review = oxNew(\OxidEsales\Eshop\Application\Model\Review::class);
-            $productReviewList = $review->getProductReviewsByUserId($userId, $start, $limit);
+            $productReviewList = $review->getProductReviewsByUserId($userId, $offset, $rowCount);
         }
 
         return $productReviewList;
@@ -89,17 +111,16 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         $db = \OxidEsales\EshopCommunity\Core\DatabaseProvider::getDb();
         $db->startTransaction();
         try {
-            /** The review id must be given to be able to delete a single review */
+            $ratingDeleted = true;
             /** The article id must be given to be able to delete the rating */
             $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
             if (!$articleId ||
                 !$this->deleteProductRating($userId, $articleId)
             ) {
                 $ratingDeleted = false;
-            } else {
-                $ratingDeleted = true;
             }
 
+            /** The review id must be given to be able to delete a single review */
             $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
             if (!$ratingDeleted ||
                 !$reviewId ||
@@ -146,8 +167,12 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         }
 
         $rating = oxNew(\OxidEsales\Eshop\Application\Model\Rating::class);
+        /**
+         * There might be the case that there has been no product rating introducted during the product review.
+         * This case will be treated here as if it has been already deleted.
+         */
         if (!$ratingId = $rating->getProductRatingByUserId($articleId, $userId, $shopId)) {
-            return false;
+            return true;
         }
 
         $rating->delete($ratingId);
