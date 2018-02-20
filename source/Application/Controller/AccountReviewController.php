@@ -27,6 +27,29 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     }
 
     /**
+     * Returns Bread Crumb - you are here page1/page2/page3...
+     *
+     * @return array
+     */
+    public function getBreadCrumb()
+    {
+        $aPaths = [];
+        $aPath = [];
+
+        $iBaseLanguage = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+        $sSelfLink = $this->getViewConfig()->getSelfLink();
+        $aPath['title'] = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_ACCOUNT', $iBaseLanguage, false);
+        $aPath['link'] = \OxidEsales\Eshop\Core\Registry::getSeoEncoder()->getStaticUrl($sSelfLink . 'cl=account');
+        $aPaths[] = $aPath;
+
+        $aPath['title'] = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_PRODUCT_REVIEWS', $iBaseLanguage, false);
+        $aPath['link'] = $this->getLink();
+        $aPaths[] = $aPath;
+
+        return $aPaths;
+    }
+
+    /**
      * Show the Reviews list only, if the feature has been enabled in eShop Admin
      * -> Master Settings -> Core Settings -> Settings -> Account settings -> "Allow users to manage their product reviews"
      *
