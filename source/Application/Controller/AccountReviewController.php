@@ -13,14 +13,45 @@ namespace OxidEsales\EshopCommunity\Application\Controller;
  */
 class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\AccountController
 {
-    protected $itemsPerPage = 2;
+
+    protected $itemsPerPage = 10;
 
     /**
+     * Redirect to My Account, if feature is not enabled
+     */
+    public function init()
+    {
+        if (!$this->getShowProductReviewList()) {
+            $this->redirectToAccountDashboard();
+        }
+
+        parent::init();
+    }
+
+    /**
+     * Show the Reviews list only, if the feature has been enabled in eShop Admin
+     * -> Master Settings -> Core Settings -> Settings -> Account settings -> "Allow users to manage their product reviews"
+     *
+     * @return string
+     */
+    public function render()
+    {
+        if ($this->getShowProductReviewList()) {
+            $this->_sThisTemplate = 'page/account/productreviews.tpl';
+        }
+
+        /** Parent controller manages access control, if user is not logged in and may overwrite the template */
+        return parent::render();
+    }
+
+    /**
+     * This generates the pagination, if needed
+     *
      * @return \stdClass
      */
     public function getPageNavigation()
     {
-        $this->_iCntPages = ceil($this->getProductReviewItemsCnt() / $this->itemsPerPage);
+        $this->_iCntPages = ceil($this->getProductReviewItemsCnt() / $this->getItemsPerPage());
         $this->_oPageNavigation = $this->generatePageNavigation();
 
         return $this->_oPageNavigation;
@@ -62,37 +93,13 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     }
 
     /**
-     * Redirect to My Account, if feature is not enabled
-     */
-    public function init()
-    {
-        if (!$this->getShowProductReviewList()) {
-            $myAccountLink = $this->getViewConfig()->getSelfLink() . 'cl=account';
-            $myAccountUrl = \OxidEsales\Eshop\Core\Registry::getUtilsUrl()->processUrl($myAccountLink);
-
-            \OxidEsales\Eshop\Core\Registry::getUtils()->redirect(
-                $myAccountUrl,
-                true,
-                302
-            );
-        }
-
-        parent::init();
-    }
-    /**
-     * Show the Reviews list only, if the feature has been enabled in eShop Admin
-     * -> Master Settings -> Core Settings -> Settings -> Account settings -> "Allow users to manage their product reviews"
+     * Return how many items will be displayed per page
      *
-     * @return string
+     * @return int
      */
-    public function render()
+    public function getItemsPerPage()
     {
-        if ($this->getShowProductReviewList()) {
-            $this->_sThisTemplate = 'page/account/productreviews.tpl';
-        }
-
-        /** Parent controller manages access control, if user is not logged in and may overwrite the template */
-        return parent::render();
+        return $this->itemsPerPage;
     }
 
     /**
@@ -110,8 +117,8 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
 
         if ($user = $this->getUser()) {
             $currentPage = $this->getActPage();
-            $offset = $currentPage * $this->itemsPerPage;
-            $rowCount = $this->itemsPerPage;
+            $offset = $currentPage * $this->getItemsPerPage();
+            $rowCount = $this->getItemsPerPage();
 
             $userId = $user->getId();
 
@@ -294,5 +301,21 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         $reviewId = $request->getRequestEscapedParameter('reviewId', '');
 
         return $reviewId;
+    }
+
+    /**
+     * Redirect to My Account dashboard
+     */
+    protected function redirectToAccountDashboard()
+    {
+        $myAccountLink = $this->getViewConfig()->getSelfLink() . 'cl=account';
+        $myAccountUrl = \OxidEsales\Eshop\Core\Registry::getUtilsUrl()->processUrl($myAccountLink);
+
+        \OxidEsales\Eshop\Core\Registry::getUtils()->redirect(
+            $myAccountUrl,
+            true,
+            302
+        );
+        exit(0);
     }
 }

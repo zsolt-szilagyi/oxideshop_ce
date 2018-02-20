@@ -16,6 +16,41 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
 {
 
     /**
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::init
+     */
+    public function testInitDoesNotRedirectIfFeatureIsEnabled()
+    {
+        $getShowProductReviewList = true;
+
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList', 'redirectToAccountDashboard']
+        );
+        $accountReviewControllerMock->expects($this->once())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+        $accountReviewControllerMock->expects($this->never())->method('redirectToAccountDashboard');
+
+        $accountReviewControllerMock->init();
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::init
+     */
+    public function testInitRedirectsIfFeatureIsDisabled()
+    {
+        $getShowProductReviewList = false;
+
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList', 'redirectToAccountDashboard']
+        );
+        $accountReviewControllerMock->expects($this->once())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+        $accountReviewControllerMock->expects($this->once())->method('redirectToAccountDashboard');
+
+        $accountReviewControllerMock->init();
+    }
+
+
+    /**
      * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::render
      */
     public function testRenderReturnsParentTemplateNameIfFeatureNotEnabled()
@@ -89,6 +124,50 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
         $actualTemplateName = $accountReviewControllerMock->render();
 
         $this->assertSame($expectedTemplateName, $actualTemplateName);
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::getBreadCrumb
+     */
+    public function testGetBreadCrumbReturnsOwnBreadcrumbIfFeatureIsEnabled()
+    {
+        $getShowProductReviewList = true;
+        $languageId = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+        $expectedBreadCrumbTitle = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_PRODUCT_REVIEWS', $languageId, false);
+
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList',]
+        );
+        $accountReviewControllerMock->expects($this->once())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+
+        $result = $accountReviewControllerMock->getBreadCrumb();
+
+        $ownBreadCrumb = array_pop($result);
+
+        $this->assertSame($expectedBreadCrumbTitle, $ownBreadCrumb['title']);
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::getBreadCrumb
+     */
+    public function testGetBreadIfFeatureIsDisabled()
+    {
+        $getShowProductReviewList = false;
+        $languageId = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+        $expectedBreadCrumbTitle = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_PRODUCT_REVIEWS', $languageId, false);
+
+        $accountReviewControllerMock = $this->getMock(
+            \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
+            ['getShowProductReviewList',]
+        );
+        $accountReviewControllerMock->expects($this->once())->method('getShowProductReviewList')->will($this->returnValue($getShowProductReviewList));
+
+        $result = $accountReviewControllerMock->getBreadCrumb();
+
+        $ownBreadCrumb = array_pop($result);
+
+        $this->assertNotEquals($expectedBreadCrumbTitle, $ownBreadCrumb['title']);
     }
 
     /**
@@ -168,7 +247,14 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
      * @dataProvider dataProviderTestDeleteProductReview
      * @covers \OxidEsales\EshopCommunity\Application\Controller\AccountReviewController::deleteProductReviewAndRating
      */
-    public function testDeleteProductReview($checkSessionChallenge, $expectedResult, $message)
+    public function testDeleteProductReview($checkSessionChallenge,
+                                            $userId,
+                                            $articleIdFromRequest,
+                                            $productRatingDeleted,
+                                            $reviewIdFromRequest,
+                                            $productReviewDeleted,
+                                            $expectedResult,
+                                            $message)
     {
         /** CSFR protection: Session challenge check must pass */
         $sessionMock = $this->getMock(\OxidEsales\Eshop\Core\Session::class, array('checkSessionChallenge'));
@@ -176,7 +262,7 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
 
         /** Is user logged in? User with userId must be present */
         $userMock = $this->getMock(\OxidEsales\Eshop\Application\Model\User::class, ['getId']);
-        $userMock->expects($this->any())->method('getId')->will($this->returnValue("userId"));
+        $userMock->expects($this->any())->method('getId')->will($this->returnValue($userId));
 
         $accountReviewControllerMock = $this->getMock(
             \OxidEsales\Eshop\Application\Controller\AccountReviewController::class,
@@ -185,13 +271,13 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
         $accountReviewControllerMock->expects($this->any())->method('getSession')->will($this->returnValue($sessionMock));
         $accountReviewControllerMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
         /** Article Id must be set in the HTTP REQUEST */
-        $accountReviewControllerMock->expects($this->any())->method('getArticleIdFromRequest')->will($this->returnValue(true));
+        $accountReviewControllerMock->expects($this->any())->method('getArticleIdFromRequest')->will($this->returnValue($articleIdFromRequest));
         /** Rating must be successfully deleted */
-        $accountReviewControllerMock->expects($this->any())->method('deleteProductRating')->will($this->returnValue(true));
+        $accountReviewControllerMock->expects($this->any())->method('deleteProductRating')->will($this->returnValue($productRatingDeleted));
         /** Review Id must be set in the HTTP REQUEST */
-        $accountReviewControllerMock->expects($this->any())->method('getReviewIdFromRequest')->will($this->returnValue(true));
+        $accountReviewControllerMock->expects($this->any())->method('getReviewIdFromRequest')->will($this->returnValue($reviewIdFromRequest));
         /** AND review must be successfully deleted */
-        $accountReviewControllerMock->expects($this->any())->method('deleteProductReview')->will($this->returnValue(true));
+        $accountReviewControllerMock->expects($this->any())->method('deleteProductReview')->will($this->returnValue($productReviewDeleted));
 
         $actualResult = $accountReviewControllerMock->deleteProductReviewAndRating();
 
@@ -201,15 +287,75 @@ class AccountReviewControllerTest extends \OxidEsales\TestingLibrary\UnitTestCas
     public function dataProviderTestDeleteProductReview()
     {
         return [
-            'All conditions are met' => [
+            'All conditions are met'                => [
                 'checkSessionChallenge' => true,
-                'expectedResult' => null,
-                'message' => 'Returns null on success'
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => true,
+                'expectedResult'        => null,
+                'message'               => 'Returns null on success'
             ],
-            'Session Challenge check fails' => [
+            'Session challenge check fails'         => [
                 'checkSessionChallenge' => false,
-                'expectedResult' => false,
-                'message' => 'Returns false on failed session challenge check'
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => true,
+                'expectedResult'        => false,
+                'message'               => 'Returns false on failed session challenge check'
+            ],
+            'User id is not set'                    => [
+                'checkSessionChallenge' => true,
+                'userId'                => false,
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => true,
+                'expectedResult'        => false,
+                'message'               => 'Returns false on failed userid check'
+            ],
+            'No article ID is given in the request' => [
+                'checkSessionChallenge' => true,
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => false,
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => true,
+                'expectedResult'        => false,
+                'message'               => 'Returns false, if parameter aid is not given in the HTTP REQUEST'
+            ],
+            'Product rating could not be deleted'   => [
+                'checkSessionChallenge' => true,
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => false,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => true,
+                'expectedResult'        => false,
+                'message'               => 'Returns false, if product rating could not be deleted'
+            ],
+            'No review ID is given in the request'  => [
+                'checkSessionChallenge' => true,
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => false,
+                'productReviewDeleted'  => true,
+                'expectedResult'        => false,
+                'message'               => 'Returns false, if parameter reviewId is not given in the HTTP REQUEST'
+            ],
+            'Product review could not be deleted'   => [
+                'checkSessionChallenge' => true,
+                'userId'                => 'someUserId',
+                'articleIdFromRequest'  => 'someArticleId',
+                'productRatingDeleted'  => true,
+                'reviewIdFromRequest'   => 'someReviewId',
+                'productReviewDeleted'  => false,
+                'expectedResult'        => false,
+                'message'               => 'Returns false, if product rating could not be deleted'
             ],
         ];
     }
