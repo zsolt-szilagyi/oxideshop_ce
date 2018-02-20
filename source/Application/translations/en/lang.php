@@ -763,4 +763,5 @@ $aLang = [
 'INFO_ABOUT_COOKIES'                                          => 'Information about cookies',
 'PARTNERS'                                                    => 'Partners',
 
+'MY_PRODUCT_REVIEWS'                                          => 'My product reviews',
 ];
