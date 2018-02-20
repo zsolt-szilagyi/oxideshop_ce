@@ -16,7 +16,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     protected $itemsPerPage = 2;
 
     /**
-     * @return \stdClass|void
+     * @return \stdClass
      */
     public function getPageNavigation()
     {
@@ -33,22 +33,52 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
      */
     public function getBreadCrumb()
     {
-        $aPaths = [];
-        $aPath = [];
+        if ($this->getShowProductReviewList()) {
+            $languageId = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+            $selfLink = $this->getViewConfig()->getSelfLink();
 
-        $iBaseLanguage = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
-        $sSelfLink = $this->getViewConfig()->getSelfLink();
-        $aPath['title'] = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_ACCOUNT', $iBaseLanguage, false);
-        $aPath['link'] = \OxidEsales\Eshop\Core\Registry::getSeoEncoder()->getStaticUrl($sSelfLink . 'cl=account');
-        $aPaths[] = $aPath;
+            /**
+             * Parent level breadcrumb.
+             * Note: parent::getBreadCrumb() cannot be used here, as a different string will be rendered.
+             */
+            $breadCrumbPaths[] = [
+                'title' => \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_ACCOUNT', $languageId, false),
+                'link'  => \OxidEsales\Eshop\Core\Registry::getSeoEncoder()->getStaticUrl($selfLink . 'cl=account')
+            ];
 
-        $aPath['title'] = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_PRODUCT_REVIEWS', $iBaseLanguage, false);
-        $aPath['link'] = $this->getLink();
-        $aPaths[] = $aPath;
+            /** Own level breadcrumb */
+            $breadCrumbPaths[] = [
+                'title' => \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MY_PRODUCT_REVIEWS', $languageId, false),
+                'link'  => $this->getLink()
+            ];
+        } else {
+            /**
+             * If feature is deactivated, the parent method will be called.
+             */
+            $breadCrumbPaths = parent::getBreadCrumb();
+        }
 
-        return $aPaths;
+        return $breadCrumbPaths;
     }
 
+    /**
+     * Redirect to My Account, if feature is not enabled
+     */
+    public function init()
+    {
+        if (!$this->getShowProductReviewList()) {
+            $myAccountLink = $this->getViewConfig()->getSelfLink() . 'cl=account';
+            $myAccountUrl = \OxidEsales\Eshop\Core\Registry::getUtilsUrl()->processUrl($myAccountLink);
+
+            \OxidEsales\Eshop\Core\Registry::getUtils()->redirect(
+                $myAccountUrl,
+                true,
+                302
+            );
+        }
+
+        parent::init();
+    }
     /**
      * Show the Reviews list only, if the feature has been enabled in eShop Admin
      * -> Master Settings -> Core Settings -> Settings -> Account settings -> "Allow users to manage their product reviews"
@@ -61,6 +91,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
             $this->_sThisTemplate = 'page/account/productreviews.tpl';
         }
 
+        /** Parent controller manages access control, if user is not logged in and may overwrite the template */
         return parent::render();
     }
 
@@ -70,6 +101,8 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
      * which behave like in the MySQL LIMIT clause
      *
      * @return \OxidEsales\Eshop\Core\Model\ListModel|null
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     public function getProductReviewList()
     {
@@ -169,6 +202,8 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
         if (!(($ratingDeleted && $reviewDeleted))) {
             return false;
         }
+
+        return null;
     }
 
     /**
@@ -181,7 +216,6 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
      *
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     protected function deleteProductRating($userId, $articleId)
     {
@@ -191,7 +225,7 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
 
         $rating = oxNew(\OxidEsales\Eshop\Application\Model\Rating::class);
         /**
-         * There might be the case that there has been no product rating introducted during the product review.
+         * There might be the case that there has been no product rating introduced during the product review.
          * This case will be treated here as if it has been already deleted.
          */
         if (!$ratingId = $rating->getProductRatingByUserId($articleId, $userId, $shopId)) {
@@ -211,7 +245,6 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
      *
      * @return bool True, if the review has been deleted, False if the validation failed
      *
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     protected function deleteProductReview($userId, $reviewId)
     {
@@ -238,21 +271,27 @@ class AccountReviewController extends \OxidEsales\Eshop\Application\Controller\A
     }
 
     /**
-     * @return mixed
+     * Retrieve the article ID from the request
+     *
+     * @return string
      */
     protected function getArticleIdFromRequest()
     {
-        $articleId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('aId');
+        $request = oxNew(\OxidEsales\Eshop\Core\Request::class);
+        $articleId = $request->getRequestEscapedParameter('aId', '');
 
         return $articleId;
     }
 
     /**
-     * @return mixed
+     * Retrieve the review ID from the request
+     *
+     * @return string
      */
     protected function getReviewIdFromRequest()
     {
-        $reviewId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('reviewId');
+        $request = oxNew(\OxidEsales\Eshop\Core\Request::class);
+        $reviewId = $request->getRequestEscapedParameter('reviewId', '');
 
         return $reviewId;
     }
