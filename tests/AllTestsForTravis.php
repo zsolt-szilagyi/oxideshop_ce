@@ -29,7 +29,10 @@ class AllTestsForTravis extends AllTestsRunner
 {
     /** @var array Default test suites */
     protected static $_aTestSuites = array(
-        'unit',
+        'unit/core',
+        'unit/maintenance',
+        'unit/setup',
+        'unit/views',
         'integration/admin',
         'integration/article',
         'integration/checkout',
@@ -42,6 +45,8 @@ class AllTestsForTravis extends AllTestsRunner
         'integration/seo',
         'integration/restrictedAddress',
         'integration/timestamp',
-        'integration/user'
+        'integration/user',
+        'unit/components',
+        'unit/modules',
     );
 }
