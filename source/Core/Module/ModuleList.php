@@ -6,6 +6,13 @@
 
 namespace OxidEsales\EshopCommunity\Core\Module;
 
+use OxidEsales\Eshop\Core\FileCache;
+use OxidEsales\Eshop\Core\ShopIdCalculator;
+use OxidEsales\Eshop\Core\SubShopSpecificFileCache;
+use OxidEsales\Eshop\Core\Module\ModuleSmartyPluginDirectoryRepository as EshopModuleSmartyPluginDirectoryRepository;
+use OxidEsales\Eshop\Core\Module\ModuleVariablesLocator as EshopModuleVariablesLocator;
+use OxidEsales\Eshop\Core\Module\Module as EshopModule;
+
 /**
  * Modules list class.
  *
@@ -285,6 +292,8 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
 
         // removing from aModuleControllers array
         $this->removeFromModulesArray(static::MODULE_KEY_CONTROLLERS, $aDeletedModuleIds);
+
+        $this->removeModuleSmartyPlugins($aDeletedModuleIds);
 
         //removing from config tables and templates blocks table
         $this->_removeFromDatabase($aDeletedModuleIds);
@@ -763,5 +772,54 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
         if (!is_readable($moduleClassFile)) {
             $invalidModuleClasses[$extendedShopClass][] = $moduleClass;
         }
+    }
+
+    /**
+     * @param array $moduleIds
+     */
+    private function removeModuleSmartyPlugins($moduleIds)
+    {
+        $repository = $this->getModuleSmartyPluginDirectoryRepository();
+        $moduleSmartyPluginDirectories =  $repository->get();
+
+        foreach ($moduleIds as $id) {
+            $moduleSmartyPluginDirectories->remove($id);
+        }
+
+        $repository->save($moduleSmartyPluginDirectories);
+    }
+
+    /**
+     * @return EshopModuleSmartyPluginDirectoryRepository
+     */
+    private function getModuleSmartyPluginDirectoryRepository()
+    {
+        $subShopSpecificCache = oxNew(
+            SubShopSpecificFileCache::class,
+            $this->getShopIdCalculator()
+        );
+
+        $moduleVariablesLocator = oxNew(
+            EshopModuleVariablesLocator::class,
+            $subShopSpecificCache,
+            $this->getShopIdCalculator()
+        );
+
+        return oxNew(
+            EshopModuleSmartyPluginDirectoryRepository::class,
+            $this->getConfig(),
+            $moduleVariablesLocator,
+            oxNew(EshopModule::class)
+        );
+    }
+
+    /**
+     * @return ShopIdCalculator
+     */
+    private function getShopIdCalculator()
+    {
+        $moduleVariablesCache = oxNew(FileCache::class);
+
+        return oxNew(ShopIdCalculator::class, $moduleVariablesCache);
     }
 }

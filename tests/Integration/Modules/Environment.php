@@ -234,8 +234,16 @@ class Environment
     protected function loadShopParameters()
     {
         $aParameters = array(
-            'aModules', 'aModuleEvents', 'aModuleVersions', 'aModuleFiles', 'aDisabledModules', 'aModuleTemplates', 'aModuleControllers'
+            'aModules',
+            'aModuleEvents',
+            'aModuleVersions',
+            'aModuleFiles',
+            'aDisabledModules',
+            'aModuleTemplates',
+            'aModuleControllers',
+            'moduleSmartyPluginDirectories',
         );
+
         foreach ($aParameters as $sParameter) {
             Registry::getConfig()->setConfigParam($sParameter, $this->_getConfigValueFromDB($sParameter));
         }
