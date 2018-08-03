@@ -20,7 +20,6 @@ class ProductRatingDaoTest extends \PHPUnit_Framework_TestCase
     {
         $queryBuilderFactory = $this->getMockBuilder(QueryBuilderFactoryInterface::class)->getMock();
         $mapper = $this->getMockBuilder(EntityMapperInterface::class)->getMock();
-
         $productRatingDao = new ProductRatingDao(
             $queryBuilderFactory,
             $mapper
