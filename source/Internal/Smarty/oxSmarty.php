@@ -6,14 +6,13 @@
  * Time: 11:53
  */
 
-namespace OxidEsales\EshopCommunity\Core\Templating;
+namespace OxidEsales\EshopCommunity\Internal\Smarty;
 
 
 use OxidEsales\EshopCommunity\Core\Registry;
 
 class oxSmarty
 {
-
     /**
      * Sets template content from cache. In demoshop enables security mode.
      *
