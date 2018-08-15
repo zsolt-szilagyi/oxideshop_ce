@@ -1,16 +1,20 @@
 <?php
 /**
- * Copyright © OXID eSales AG. All rights reserved.
- * See LICENSE file for license details.
+ * Created by PhpStorm.
+ * User: vilma
+ * Date: 02.08.18
+ * Time: 13:38
  */
 
 namespace OxidEsales\EshopCommunity\Internal\Templating;
 
-class TemplateEngineBridge implements TemplateEngineBridgeInterface
+use Symfony\Component\Templating\EngineInterface;
+
+class TemplateEngineBridge
 {
     private $templateEngine;
 
-    public function __construct(BaseEngineInterface $templateEngine)
+    public function __construct(EngineInterface $templateEngine)
     {
         $this->templateEngine = $templateEngine;
     }
