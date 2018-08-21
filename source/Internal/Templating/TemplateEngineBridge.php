@@ -6,7 +6,7 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Templating;
 
-class TemplateEngineBridge
+class TemplateEngineBridge implements TemplateEngineBridgeInterface
 {
     private $templateEngine;
 
