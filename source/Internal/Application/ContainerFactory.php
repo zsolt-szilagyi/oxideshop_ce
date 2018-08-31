@@ -106,7 +106,10 @@ class ContainerFactory
     private function saveContainerToCache($cachefile)
     {
         $dumper = new PhpDumper($this->symfonyContainer);
-        file_put_contents($cachefile, $dumper->dump());
+       // file_put_contents($cachefile, $dumper->dump(), LOCK_EX);
+        $fp = fopen($cachefile, 'c');
+        fwrite($fp, $dumper->dump());
+        fclose($fp);
     }
 
     /**
