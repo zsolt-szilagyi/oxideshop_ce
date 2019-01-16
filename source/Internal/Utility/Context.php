@@ -71,6 +71,14 @@ class Context extends BasicContext implements ContextInterface
     }
 
     /**
+     * @return array
+     */
+    public function getAllShopIds(): array
+    {
+        return $this->config->getShopIds();
+    }
+
+    /**
      * @return string
      */
     public function getContainerCacheFile()
