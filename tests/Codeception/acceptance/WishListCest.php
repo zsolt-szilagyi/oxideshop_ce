@@ -41,12 +41,12 @@ class WishListCest
             ->closeAccountMenu();
 
         $userAccountPage = $detailsPage->openAccountPage();
-        $I->see(Translator::translate('MY_WISH_LIST'), $userAccountPage::$dashboardWishListPanelHeader);
-        $I->see(Translator::translate('PRODUCT').' 1', $userAccountPage::$dashboardWishListPanelContent);
+        $I->see(Translator::translate('MY_WISH_LIST'));
+        $I->see(Translator::translate('PRODUCT').' 1');
 
         $userAccountPage->logoutUser()->login($userData['userLoginName'], $userData['userPassword']);
-        $I->see(Translator::translate('MY_WISH_LIST'), $userAccountPage::$dashboardWishListPanelHeader);
-        $I->see(Translator::translate('PRODUCT').' 1', $userAccountPage::$dashboardWishListPanelContent);
+        $I->see(Translator::translate('MY_WISH_LIST'));
+        $I->see(Translator::translate('PRODUCT').' 1');
 
         //open details page
         $detailsPage = $productNavigation->openProductDetailsPage($productData['id']);

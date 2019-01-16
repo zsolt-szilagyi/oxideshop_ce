@@ -35,13 +35,13 @@ class ProductCompareCest
             ->checkCompareListItemCount(1);
 
         $userAccountPage = $detailsPage->openAccountPage();
-        $I->see(Translator::translate('MY_PRODUCT_COMPARISON'), $userAccountPage::$dashboardCompareListPanelHeader);
-        $I->see(Translator::translate('PRODUCT').' 1', $userAccountPage::$dashboardCompareListPanelContent);
+        $I->see(Translator::translate('MY_PRODUCT_COMPARISON'));
+        $I->see(Translator::translate('PRODUCT').' 1');
 
         $userAccountPage = $userAccountPage->logoutUser()
             ->login($userData['userLoginName'], $userData['userPassword']);
-        $I->see(Translator::translate('MY_PRODUCT_COMPARISON'), $userAccountPage::$dashboardCompareListPanelHeader);
-        $I->see(Translator::translate('PRODUCT').' 1', $userAccountPage::$dashboardCompareListPanelContent);
+        $I->see(Translator::translate('MY_PRODUCT_COMPARISON'));
+        $I->see(Translator::translate('PRODUCT').' 1');
 
         //open details page
         $detailsPage = $productNavigation->openProductDetailsPage($productData['id']);
@@ -193,8 +193,15 @@ class ProductCompareCest
         $accountPage = $detailsPage->openAccountPage();
         $I->dontSee(Translator::translate('MY_PRODUCT_COMPARISON'), $accountPage::$dashboardCompareListPanelHeader);
 
-        //(Use product compare) is enabled
         $I->cleanUp();
+        //(Use product compare) is enabled
+        $I->updateConfigInDatabase('bl_showCompareList', true);
+    }
+
+    public function _failed(\AcceptanceTester $I)
+    {
+        $I->cleanUp();
+        $I->clearShopCache();
     }
 
     private function getExistingUserData()

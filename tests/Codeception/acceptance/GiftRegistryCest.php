@@ -212,6 +212,12 @@ class GiftRegistryCest
 
     }
 
+    public function _failed(\AcceptanceTester $I)
+    {
+        $I->cleanUp();
+        $I->clearShopCache();
+    }
+
     private function getExistingUserData()
     {
         return \Codeception\Util\Fixtures::get('existingUser');

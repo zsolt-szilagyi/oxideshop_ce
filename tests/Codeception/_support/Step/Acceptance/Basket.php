@@ -33,7 +33,7 @@ class Basket extends \AcceptanceTester
     {
         $I = $this;
         //add Product to basket
-       // $params['cl'] = $controller;
+        $params['cl'] = $controller;
         $params['fnc'] = 'tobasket';
         $params['aid'] = $productId;
         $params['am'] = $amount;

@@ -48,7 +48,7 @@ class ProductDetailsPageCest
      *
      * @param AcceptanceTester $I
      */
-    public function detailsPageInformation(AcceptanceTester $I, ProductNavigation $productNavigation)
+    /*public function detailsPageInformation(AcceptanceTester $I, ProductNavigation $productNavigation)
     {
         $I->wantToTest('product information in details page');
 
@@ -80,7 +80,7 @@ class ProductDetailsPageCest
             ->seeAttributeValue('attr value 3 [EN] šÄßüл', 2)
             ->seeAttributeName('Test attribute 2 [EN] šÄßüл',3)
             ->seeAttributeValue('attr value 12 [EN] šÄßüл', 3);
-    }
+    }*/
 
     /**
      * @group product
@@ -814,6 +814,12 @@ class ProductDetailsPageCest
         $productNavigation->openProductDetailsPage($productData['id'])
             ->seeProductData($productData)
             ->seeAmountPrices($amountPrices);
+    }
+
+    public function _failed(\AcceptanceTester $I)
+    {
+        $I->cleanUp();
+        $I->clearShopCache();
     }
 
     private function getExistingUserData()
