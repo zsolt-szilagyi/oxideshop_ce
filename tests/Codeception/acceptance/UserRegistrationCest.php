@@ -467,7 +467,7 @@ class UserRegistrationCest
             "CountryId" => $userCountry,
         ];
         if ( $userCountry == 'Germany' ) {
-            $addressData["StateId"] = "BE";
+            $addressData["StateId"] = "Berlin";
         }
         return $addressData;
     }

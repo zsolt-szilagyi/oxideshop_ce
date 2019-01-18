@@ -45,8 +45,8 @@ class CheckoutProcessCest
         $userCheckoutPage = $homePage->seeMiniBasketContains([$basketItem1, $basketItem2], '200,00 €', 3)
             ->openCheckout();
 
-        $breadCrumbName = Translator::translate("YOU_ARE_HERE") . ':' . Translator::translate("ADDRESS");
-        $I->see($breadCrumbName, $userCheckoutPage::$breadCrumb);
+        $breadCrumbName = Translator::translate("ADDRESS");
+        $userCheckoutPage->seeOnBreadCrumb($breadCrumbName);
 
         $userData = $this->getExistingUserData();
         $homePage = $userCheckoutPage->openHomePage()
@@ -54,8 +54,8 @@ class CheckoutProcessCest
 
         $paymentCheckoutPage = $homePage->openMiniBasket()->openCheckout();
 
-        $breadCrumbName = Translator::translate("YOU_ARE_HERE") . ':' . Translator::translate("PAY");
-        $I->see($breadCrumbName, $paymentCheckoutPage::$breadCrumb);
+        $breadCrumbName = Translator::translate("PAY");
+        $paymentCheckoutPage->seeOnBreadCrumb($breadCrumbName);
     }
     /**
      * @group basketfrontend
@@ -134,8 +134,8 @@ class CheckoutProcessCest
 
         $orderPage->submitOrder();
 
-        $breadCrumb = Translator::translate('YOU_ARE_HERE').':'.Translator::translate('ORDER_COMPLETED');
-        $I->see($breadCrumb);
+        $breadCrumb = Translator::translate('ORDER_COMPLETED');
+        $orderPage->seeOnBreadCrumb($breadCrumb);
 
         //cleanUp data
         $I->updateInDatabase('oxarticles', ["oxstock" => '15', "oxstockflag" => '1'], ["oxid" => '1000']);

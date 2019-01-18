@@ -27,8 +27,8 @@ class UserAccountCest
         $I->dontSee(Translator::translate('LOGIN'));
 
         $accountPage = $startPage->openAccountPage();
-        $breadCrumb = Translator::translate('YOU_ARE_HERE').':'.Translator::translate('MY_ACCOUNT').' - '.$userData['userLoginName'];
-        $I->see($breadCrumb, $accountPage::$breadCrumb);
+        $breadCrumb = Translator::translate('MY_ACCOUNT').' - '.$userData['userLoginName'];
+        $accountPage->seeOnBreadCrumb($breadCrumb);
         $I->see(Translator::translate('LOGOUT'));
     }
 
@@ -50,8 +50,8 @@ class UserAccountCest
         $I->dontSee(Translator::translate('LOGIN'));
 
         $accountPage = $startPage->openAccountPage();
-        $breadCrumb = Translator::translate('YOU_ARE_HERE').':'.Translator::translate('MY_ACCOUNT').' - '.$userName;
-        $I->see($breadCrumb, $accountPage::$breadCrumb);
+        $breadCrumb = Translator::translate('MY_ACCOUNT').' - '.$userName;
+        $accountPage->seeOnBreadCrumb($breadCrumb);
 
         $changePasswordPage = $accountPage->openChangePasswordPage();
 

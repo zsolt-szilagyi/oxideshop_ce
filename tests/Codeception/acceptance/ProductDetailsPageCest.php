@@ -27,8 +27,8 @@ class ProductDetailsPageCest
             ->searchFor('100')
             ->seeProductData($productData, 2);
         $detailsPage = $searchListPage->openProductDetailsPage(2);
-        $breadCrumb = Translator::translate('YOU_ARE_HERE').':'.sprintf(Translator::translate('SEARCH_RESULT'), '100');
-        $I->see($breadCrumb);
+        $breadCrumb = sprintf(Translator::translate('SEARCH_RESULT'), '100');
+        $detailsPage->seeOnBreadCrumb($breadCrumb);
         $navigationText = Translator::translate('PRODUCT').' 2 '.Translator::translate('OF').' 4';
         $I->see($navigationText);
         $detailsPage = $detailsPage->openNextProduct();
@@ -39,8 +39,8 @@ class ProductDetailsPageCest
         $I->see($navigationText);
         $detailsPage->openProductSearchList()
             ->seeProductData($productData, 2);
-        $breadCrumb = Translator::translate('YOU_ARE_HERE').':'.Translator::translate('SEARCH');
-        $I->see($breadCrumb);
+        $breadCrumb = Translator::translate('SEARCH');
+        $detailsPage->seeOnBreadCrumb($breadCrumb);
     }
 
     /**

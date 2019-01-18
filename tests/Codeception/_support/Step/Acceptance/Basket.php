@@ -40,13 +40,15 @@ class Basket extends \AcceptanceTester
         $params['anid'] = $productId;
         $I->amOnPage(BasketPage::route($params));
         if ($controller === 'user') {
-            $breadCrumbName = Translator::translate("YOU_ARE_HERE") . ':' . Translator::translate("ADDRESS");
-            $I->see($breadCrumbName, UserCheckout::$breadCrumb);
-            return new UserCheckout($I);
+            $userCheckoutPage = new UserCheckout($I);
+            $breadCrumbName = Translator::translate("ADDRESS");
+            $userCheckoutPage->seeOnBreadCrumb($breadCrumbName);
+            return $userCheckoutPage;
         } else {
-            $breadCrumbName = Translator::translate("YOU_ARE_HERE") . ':' . Translator::translate("CART");
-            $I->see($breadCrumbName, BasketPage::$breadCrumb);
-            return new BasketPage($I);
+            $basketPage = new BasketPage($I);
+            $breadCrumbName = Translator::translate("CART");
+            $basketPage->seeOnBreadCrumb($breadCrumbName);
+            return $basketPage;
         }
     }
 }

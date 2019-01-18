@@ -20,8 +20,8 @@ class UserRegistrationInCheckout extends \AcceptanceTester
         }
 
         $paymentPage = $userCheckout->goToNextStep();
-        $breadCrumbName = Translator::translate("YOU_ARE_HERE").':'.Translator::translate("PAY");
-        $I->see($breadCrumbName, $paymentPage::$breadCrumb);
+        $breadCrumbName = Translator::translate("PAY");
+        $paymentPage->seeOnBreadCrumb($breadCrumbName);
         return $paymentPage;
     }
 
@@ -39,8 +39,8 @@ class UserRegistrationInCheckout extends \AcceptanceTester
         }
 
         $paymentPage = $userCheckout->goToNextStep();
-        $breadCrumbName = Translator::translate("YOU_ARE_HERE").':'.Translator::translate("PAY");
-        $I->see($breadCrumbName, $paymentPage::$breadCrumb);
+        $breadCrumbName = Translator::translate("PAY");
+        $paymentPage->seeOnBreadCrumb($breadCrumbName);
         return $paymentPage;
     }
 
@@ -58,7 +58,8 @@ class UserRegistrationInCheckout extends \AcceptanceTester
         }
 
         $userCheckout = $userCheckout->tryToRegisterUser();
-        $breadCrumbName = Translator::translate("YOU_ARE_HERE").':'.Translator::translate("ADDRESS");
+        $breadCrumbName = Translator::translate("ADDRESS");
+        $userCheckout->seeOnBreadCrumb($breadCrumbName);
         $I->see($breadCrumbName, $userCheckout::$breadCrumb);
 
         return $userCheckout;
