@@ -1,5 +1,5 @@
 <?php
-namespace Helper;
+namespace OxidEsales\EshopCommunity\Tests\Helper;
 
 class Context
 {

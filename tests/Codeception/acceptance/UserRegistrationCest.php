@@ -1,9 +1,10 @@
 <?php
+namespace OxidEsales\EshopCommunity\Tests\acceptance;
 
-use Step\Acceptance\Start;
-use Step\Acceptance\UserRegistration;
-use Step\Acceptance\Basket;
-use Step\Acceptance\UserRegistrationInCheckout;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\Start;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\UserRegistration;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\Basket;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\UserRegistrationInCheckout;
 use OxidEsales\Codeception\Module\Translator;
 
 class UserRegistrationCest

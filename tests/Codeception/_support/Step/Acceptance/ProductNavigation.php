@@ -1,5 +1,5 @@
 <?php
-namespace Step\Acceptance;
+namespace OxidEsales\EshopCommunity\Tests\Step\Acceptance;
 
 use OxidEsales\Codeception\Page\ProductDetails;
 

@@ -1,7 +1,8 @@
 <?php
+namespace OxidEsales\EshopCommunity\Tests\acceptance;
 
-use Step\Acceptance\ProductNavigation;
-use Step\Acceptance\Start;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\ProductNavigation;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\Start;
 use OxidEsales\Codeception\Module\Translator;
 
 class GiftRegistryCest

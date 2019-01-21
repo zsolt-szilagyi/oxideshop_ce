@@ -1,5 +1,7 @@
 <?php
 
+namespace OxidEsales\EshopCommunity\Tests;
+
 use OxidEsales\Codeception\Page\Home;
 
 /**

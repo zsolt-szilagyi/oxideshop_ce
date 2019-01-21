@@ -1,3 +1,4 @@
+namespace: OxidEsales\EshopCommunity\Tests
 params:
     - Codeception/config/params.php
 paths:

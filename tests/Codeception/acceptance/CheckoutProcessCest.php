@@ -1,6 +1,7 @@
 <?php
+namespace OxidEsales\EshopCommunity\Tests\acceptance;
 
-use Step\Acceptance\Basket;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\Basket;
 use OxidEsales\Codeception\Module\Translator;
 
 class CheckoutProcessCest

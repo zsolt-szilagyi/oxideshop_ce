@@ -1,6 +1,7 @@
 <?php
+namespace OxidEsales\EshopCommunity\Tests\acceptance;
 
-use Step\Acceptance\ProductNavigation;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\ProductNavigation;
 use OxidEsales\Codeception\Module\Translator;
 
 class ReviewAndRatingCest

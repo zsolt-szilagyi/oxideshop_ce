@@ -1,6 +1,7 @@
 <?php
+namespace OxidEsales\EshopCommunity\Tests\acceptance;
 
-use Step\Acceptance\Start;
+use OxidEsales\EshopCommunity\Tests\Step\Acceptance\Start;
 use OxidEsales\Codeception\Module\Translator;
 
 class UserAccountCest
