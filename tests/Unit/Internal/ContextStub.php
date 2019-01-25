@@ -16,6 +16,8 @@ class ContextStub extends BasicContextStub implements ContextInterface
 
     private $currentShopId = 1;
 
+    private $shopIds = [1];
+
     /**
      * @var array
      */
@@ -101,4 +103,11 @@ class ContextStub extends BasicContextStub implements ContextInterface
         return '';
     }
 
+    /**
+     * @return array
+     */
+    public function getAllShopIds(): array
+    {
+        return $this->shopIds;
+    }
 }
