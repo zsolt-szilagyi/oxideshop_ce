@@ -31,14 +31,6 @@ class Context extends BasicContext implements ContextInterface
     /**
      * @return string
      */
-    public function getEnvironment(): string
-    {
-        return 'prod';
-    }
-
-    /**
-     * @return string
-     */
     public function getLogLevel()
     {
         return $this->getConfigParameter('sLogLevel');
@@ -75,7 +67,13 @@ class Context extends BasicContext implements ContextInterface
      */
     public function getAllShopIds(): array
     {
-        return $this->config->getShopIds();
+        $integerShopIds = [];
+
+        foreach ($this->config->getShopIds() as $shopId) {
+            $integerShopIds[] = (int) $shopId;
+        }
+
+        return $integerShopIds;
     }
 
     /**
