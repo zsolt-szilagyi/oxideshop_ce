@@ -28,7 +28,7 @@ class FormatCurrencyExtensionTest extends AbstractExtensionTest
 
     public function testNumberFormat()
     {
-        $template = "{{ 'EUR@ 1.00@ .@ ,@ EUR@ 2'|number_format(25000000.5584) }}";
+        $template = "{{ 'EUR@ 1.00@ .@ ,@ EUR@ 2'|format_currency(25000000.5584) }}";
         $expected = '25,000,000.56';
 
         $this->assertEquals($expected, $this->getTemplate($template)->render([]));

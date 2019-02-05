@@ -125,7 +125,7 @@ adipi[...]'
         $tolerance = isset($params['tolerance']) ? $params['tolerance'] : 0;
         $etc = isset($params['etc']) ? $params['etc'] : '...';
 
-        $actualString = $smartWordWrapExtension->smartWordWrap($string, $length, $break, $cutRows, $tolerance, $etc);
+        $actualString = $smartWordWrapExtension->smartWordwrap($string, $length, $break, $cutRows, $tolerance, $etc);
         $this->assertEquals($expectedString, $actualString);
 
     }
