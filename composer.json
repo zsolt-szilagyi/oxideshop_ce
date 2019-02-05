@@ -14,10 +14,10 @@
         "monolog/monolog": "^v1.23.0",
         "psr/container": "1.0.*",
         "symfony/config": "~2.8|~3.0",
-        "symfony/dependency-injection": "^3.1"
+        "symfony/dependency-injection": "^3.1",
+        "oxid-esales/flow-theme": "^v3.0.2"
     },
     "require-dev": {
-        "oxid-esales/flow-theme": "^v3.0.2",
         "oxid-esales/oxideshop-doctrine-migration-wrapper": "^v2.1.2",
         "oxid-esales/oxideshop-db-views-generator": "^v1.2.0",
         "oxid-esales/oxideshop-demodata-installer": "^v1.1.2",
