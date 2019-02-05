@@ -7,25 +7,25 @@
 namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Twig\Extensions;
 
 use OxidEsales\Eshop\Core\Field;
-use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\FormDateLogic;
-use OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters\FormDateFilterExtension;
+use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\FormatDateLogic;
+use OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters\FormatDateExtension;
 
 /**
- * Class FormDateFilterExtensionTest
+ * Class FormatDateExtensionTest
  *
  * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
-class FormDateFilterExtensionTest extends AbstractExtensionTest
+class FormatDateExtensionTest extends AbstractExtensionTest
 {
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->extension = new FormDateFilterExtension(new FormDateLogic());
+        $this->extension = new FormatDateExtension(new FormatDateLogic());
     }
 
     /**
-     * @covers FormDateFilterExtension::form_date
+     * @covers FormatDateExtension::form_date
      */
     public function testFormDateWithDatetime(): void
     {
@@ -36,7 +36,7 @@ class FormDateFilterExtensionTest extends AbstractExtensionTest
     }
 
     /**
-     * @covers FormDateFilterExtension::form_date
+     * @covers FormatDateExtension::form_date
      */
     public function testFormDateWithTimestamp(): void
     {
@@ -47,7 +47,7 @@ class FormDateFilterExtensionTest extends AbstractExtensionTest
     }
 
     /**
-     * @covers FormDateFilterExtension::form_date
+     * @covers FormatDateExtension::form_date
      */
     public function testFormDateWithDate(): void
     {
@@ -58,7 +58,7 @@ class FormDateFilterExtensionTest extends AbstractExtensionTest
     }
 
     /**
-     * @covers FormDateFilterExtension::form_date
+     * @covers FormatDateExtension::form_date
      */
     public function testFormDateUsingObject(): void
     {

@@ -6,24 +6,24 @@
 
 namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Twig\Extensions\Filters;
 
-use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\WordWrapLogic;
-use OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters\WordWrapExtension;
+use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\WordwrapLogic;
+use OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters\WordwrapExtension;
 use OxidEsales\EshopCommunity\Tests\Unit\Internal\Twig\Extensions\AbstractExtensionTest;
 
 /**
- * Class WordWrapExtensionTest
+ * Class WordwrapExtensionTest
  *
  * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
-class WordWrapExtensionTest extends AbstractExtensionTest
+class WordwrapExtensionTest extends AbstractExtensionTest
 {
 
-    /** @var WordWrapExtension */
+    /** @var WordwrapExtension */
     protected $extension;
 
     public function setUp()
     {
-        $this->extension = new WordWrapExtension(new WordWrapLogic());
+        $this->extension = new WordwrapExtension(new WordwrapLogic());
     }
 
     /**
