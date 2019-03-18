@@ -18,7 +18,6 @@
         "psr/container": "1.0.*",
         "symfony/event-dispatcher": "^3.4",
         "symfony/dependency-injection": "^3.4",
-        "symfony/templating": "^4.1",
         "twig/twig": "^2.5",
         "symfony/expression-language": "^4.1"
     },

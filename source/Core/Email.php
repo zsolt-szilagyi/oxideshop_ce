@@ -7,7 +7,7 @@
 namespace OxidEsales\EshopCommunity\Core;
 
 use Exception;
-use OxidEsales\EshopCommunity\Internal\Templating\EngineInterface;
+use OxidEsales\EshopCommunity\Internal\Templating\TraditionalEngineInterface;
 use oxSystemComponentException;
 
 /**
@@ -248,7 +248,7 @@ class Email extends \PHPMailer
     /**
      * Template engine instance
      *
-     * @var EngineInterface
+     * @var TraditionalEngineInterface
      */
     protected $templateEngine = null;
 
@@ -344,12 +344,12 @@ class Email extends \PHPMailer
     /**
      * Template engine instance getter, assigns this oxEmail instance to "oEmailView" variable
      *
-     * @return EngineInterface
+     * @return TraditionalEngineInterface
      */
     protected function getTemplateRenderer()
     {
         if ($this->templateEngine === null) {
-            $this->templateEngine = $this->getContainer()->get(EngineInterface::class);
+            $this->templateEngine = $this->getContainer()->get(TraditionalEngineInterface::class);
         }
 
         //setting default view
