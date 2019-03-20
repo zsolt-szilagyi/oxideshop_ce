@@ -5,7 +5,9 @@
  */
 namespace OxidEsales\EshopCommunity\Tests\Unit\Application\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface;
 use \oxTestModules;
+use Psr\Container\ContainerInterface;
 
 class RssTest extends \OxidTestCase
 {
@@ -49,11 +51,12 @@ class RssTest extends \OxidTestCase
 
     public function testRender()
     {
-        $oSmarty = $this->getMock('Smarty', array('assign', 'fetch'));
-        $oSmarty->expects($this->any())->method('assign');
-        $oSmarty->expects($this->once())->method('fetch')->with($this->equalTo('widget/rss.tpl'), $this->equalTo('viewid'))->will($this->returnValue('smarty processed xml'));
-        $oUtilsView = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('getSmarty'));
-        $oUtilsView->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
+        $renderer = $this->getMockBuilder(TemplateRendererInterface::class)
+            ->setMethods(['renderTemplate', 'renderFragment', 'exists', 'getEngine'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $renderer->expects($this->any())->method('renderTemplate')->with($this->equalTo("widget/rss.tpl"))->will($this->returnValue('smarty processed xml'));
+        $container = $this->getContainerMock('OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface', $renderer);
 
         $oUtils = $this->getMock(\OxidEsales\Eshop\Core\Utils::class, array('setHeader', 'showMessageAndExit'));
         $oUtils->expects($this->once())->method('setHeader')->with($this->equalTo('Content-Type: text/xml; charset=XCHARSET'));
@@ -62,11 +65,11 @@ class RssTest extends \OxidTestCase
         $oLang = $this->getMock(\OxidEsales\Eshop\Core\Language::class, array('translateString'));
         $oLang->expects($this->once())->method('translateString')->with($this->equalTo('charset'))->will($this->returnValue('XCHARSET'));
 
-        $oRss = $this->getMock(\OxidEsales\Eshop\Application\Controller\RssController::class, array('getViewId'));
+        $oRss = $this->getMock(\OxidEsales\Eshop\Application\Controller\RssController::class, array('getViewId', 'getContainer'));
         $oRss->expects($this->once())->method('getViewId')->will($this->returnValue('viewid'));
+        $oRss->expects($this->any())->method('getContainer')->will($this->returnValue($container));
 
         oxTestModules::addModuleObject('oxUtils', $oUtils);
-        oxTestModules::addModuleObject('oxUtilsView', $oUtilsView);
         oxTestModules::addModuleObject('oxLang', $oLang);
 
         $this->assertSame(null, $oRss->render());
@@ -388,6 +391,46 @@ class RssTest extends \OxidTestCase
         $oRss->recommlists();
     }
 
+    /**
+     * Check that render method returns expected template name.
+     * Could be useful as an integrational test to test that template from controller is set to template engine
+     *
+     * @param $expectedTemplate
+     *
+     * @return \PHPUnit\Framework\MockObject\MockObject
+     */
+    private function getTemplateRendererMock($expectedTemplate)
+    {
+        $renderer = $this->getMockBuilder(TemplateRendererInterface::class)
+            ->setMethods(['renderTemplate', 'renderFragment', 'exists', 'getEngine'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $renderer->expects($this->any())->method('renderTemplate')->with($this->equalTo($expectedTemplate));
+        $renderer->expects($this->any())->method('getEngine')->will($this->returnValue((object)[]));
+
+        return $renderer;
+    }
+
+    /**
+     * Check that render method returns expected template name.
+     * Could be useful as an integrational test to test that template from controller is set to template engine
+     *
+     * @param $expectedTemplate
+     *
+     * @return \PHPUnit\Framework\MockObject\MockObject
+     */
+    private function getContainerMock($serviceName, $serviceMock)
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->setMethods(['get', 'has'])
+            ->getMock();
+        $container->expects($this->any())
+            ->method('get')
+            ->with($this->equalTo($serviceName))
+            ->will($this->returnValue($serviceMock));
+
+        return $container;
+    }
 
 }
 

@@ -706,6 +706,7 @@ class Utils extends \OxidEsales\Eshop\Core\Base
      */
     public function resetTemplateCache($aTemplates)
     {
+        //TODO: who is responsible for it?
         $sSmartyDir = \OxidEsales\Eshop\Core\Registry::getUtilsView()->getSmartyDir();
         //$aFiles = glob( $this->getCacheFilePath( null, true ) . '*' );
         $aFiles = glob($sSmartyDir . '*');

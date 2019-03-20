@@ -54,18 +54,37 @@ class GenericExportDo extends \OxidEsales\Eshop\Application\Controller\Admin\Dyn
         $blContinue = false;
         if ($oArticle = $this->getOneArticle($iCnt, $blContinue)) {
             $myConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
-            $oSmarty = \OxidEsales\Eshop\Core\Registry::getUtilsView()->getSmarty();
-            $oSmarty->assign("sCustomHeader", \OxidEsales\Eshop\Core\Registry::getSession()->getVariable("sExportCustomHeader"));
-            $oSmarty->assign("linenr", $iCnt);
-            $oSmarty->assign("article", $oArticle);
-            $oSmarty->assign("spr", $myConfig->getConfigParam('sCSVSign'));
-            $oSmarty->assign("encl", $myConfig->getConfigParam('sGiCsvFieldEncloser'));
-            $this->write($oSmarty->fetch("genexport.tpl", $this->getViewId()));
+            $parameters = [
+                "sCustomHeader" => \OxidEsales\Eshop\Core\Registry::getSession()->getVariable("sExportCustomHeader"),
+                "linenr"        => $iCnt,
+                "article"       => $oArticle,
+                "spr"           => $myConfig->getConfigParam('sCSVSign'),
+                "encl"          => $myConfig->getConfigParam('sGiCsvFieldEncloser')
+            ];
+
+            $this->write(
+                $this->getRenderer()->renderTemplate(
+                    "genexport.tpl",
+                    $parameters,
+                    $this->getViewId()
+                )
+            );
 
             return ++$iExportedItems;
         }
 
         return $blContinue;
+    }
+
+    /**
+     * @internal
+     *
+     * @return \OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface
+     */
+    private function getRenderer()
+    {
+       /* $oSmarty = \OxidEsales\Eshop\Core\Registry::getUtilsView()->getSmarty();*/
+        return $this->getContainer()->get(\OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface::class);
     }
 
     /**

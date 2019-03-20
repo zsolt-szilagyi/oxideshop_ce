@@ -67,6 +67,8 @@ class EditionPathProvider
     /**
      * Method forms path to corresponding smarty plugins directory.
      *
+     * TODO: where will this be used?
+     *
      * @return string
      */
     public function getSmartyPluginsDirectory()

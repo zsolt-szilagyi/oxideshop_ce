@@ -30,8 +30,8 @@ class EmailAzureTplTest extends \OxidTestCase
 
         $this->getConfig()->setConfigParam('sTheme', 'azure');
 
-        // reload smarty
-        \OxidEsales\Eshop\Core\Registry::getUtilsView()->getSmarty(true);
+        // reload engine
+        \OxidEsales\EshopCommunity\Internal\Application\ContainerFactory::getInstance()->resetContainer();
 
         $this->_oEmail = oxNew("oxEmail");
 

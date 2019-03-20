@@ -1,0 +1,7 @@
+services:
+  OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface:
+    class: OxidEsales\EshopCommunity\Internal\Templating\TemplateRenderer
+    arguments:
+      - '@OxidEsales\EshopCommunity\Internal\Smarty\SmartyEngine'
+    public: true
+    tags: ['templating']

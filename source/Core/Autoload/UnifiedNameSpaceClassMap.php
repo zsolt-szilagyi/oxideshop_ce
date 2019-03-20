@@ -2197,7 +2197,7 @@ return [
         'editionClassName' => \OxidEsales\EshopCommunity\Application\Model\SmartyRenderer::class,
         'isAbstract'       => false,
         'isInterface'      => false,
-        'isDeprecated'     => false
+        'isDeprecated'     => true
     ],
     'OxidEsales\Eshop\Application\Model\State'                                   => [
         'editionClassName' => \OxidEsales\EshopCommunity\Application\Model\State::class,

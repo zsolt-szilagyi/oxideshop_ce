@@ -11,25 +11,6 @@ use OxidEsales\EshopCommunity\Application\Model\PriceAlarm;
 use \oxTestModules;
 
 /**
- * ext Smarty class for testing
- */
-class PriceAlarmMainTest_smarty
-{
-
-    /**
-     * Logging call data
-     *
-     * @param string $sName   called method
-     * @param array  $aParams parameters
-     *
-     * @return null
-     */
-    public function __call($sName, $aParams)
-    {
-    }
-}
-
-/**
  * Tests for PriceAlarm_Main class
  */
 class PriceAlarmMainTest extends \OxidTestCase
@@ -69,7 +50,6 @@ class PriceAlarmMainTest extends \OxidTestCase
     public function testRender__()
     {
         oxTestModules::addFunction('oxpricealarm', 'load', '{ $this->oxpricealarm__oxuserid = new oxField( "oxdefaultadmin" ); return true; }');
-        oxTestModules::addFunction('oxUtilsView', 'getSmarty', '{ return new \\OxidEsales\\EshopCommunity\\Tests\\Unit\\Application\\Controller\\Admin\\PriceAlarmMainTest_smarty(); }');
         oxTestModules::addFunction('oxarticle', 'load', '{ $this->oxarticles__oxparentid = new oxField( "parentid" ); $this->oxarticles__oxtitle = new oxField(""); return true; }');
         $this->setRequestParameter("oxid", "testId");
 
@@ -133,7 +113,6 @@ class PriceAlarmMainTest extends \OxidTestCase
     public function testRender_checkingMailBody()
     {
         oxTestModules::addFunction('oxpricealarm', 'load', '{ $this->oxpricealarm__oxuserid = new oxField( "oxdefaultadmin" ); return true; }');
-        oxTestModules::addFunction('oxUtilsView', 'getSmarty', '{ return new \\OxidEsales\\EshopCommunity\\Tests\\Unit\\Application\\Controller\\Admin\\PriceAlarmMainTest_smarty(); }');
         oxTestModules::addFunction('oxarticle', 'load', '{ $this->oxarticles__oxparentid = new oxField( "parentid" ); $this->oxarticles__oxtitle = new oxField(""); return true; }');
 
         $this->setRequestParameter("oxid", "testId");

@@ -135,6 +135,8 @@ function getStr()
  *
  * @see http://www.smarty.net/docsv2/en/template.resources.tpl
  *
+ * @deprecated TODO
+ *
  * @param string $sTplName    name of template
  * @param string &$sTplSource Template source
  * @param object $oSmarty     not used here
@@ -157,6 +159,8 @@ function ox_get_template($sTplName, &$sTplSource, $oSmarty)
  *
  * @see http://www.smarty.net/docsv2/en/template.resources.tpl
  *
+ * @deprecated TODO
+ *
  * @param string $sTplName       name of template
  * @param string &$iTplTimestamp template timestamp referense
  * @param object $oSmarty        not used here
@@ -175,6 +179,8 @@ function ox_get_timestamp($sTplName, &$iTplTimestamp, $oSmarty)
  *
  * @see http://www.smarty.net/docsv2/en/template.resources.tpl
  *
+ * @deprecated TODO
+ *
  * @param string $sTplName not used here
  * @param object $oSmarty  not used here
  *
@@ -189,6 +195,8 @@ function ox_get_secure($sTplName, $oSmarty)
  * Dummy function, required for smarty plugin registration.
  *
  * @see http://www.smarty.net/docsv2/en/template.resources.tpl
+ *
+ * @deprecated TODO
  *
  * @param string $sTplName not used here
  * @param object $oSmarty  not used here
