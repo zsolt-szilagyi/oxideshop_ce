@@ -10,7 +10,7 @@ use OxidEsales\EshopCommunity\Internal\Twig\Node\HasRightsNode;
 use Twig\Error\SyntaxError;
 use Twig\Node\Node;
 use Twig\TokenParser\AbstractTokenParser;
-use Twig_Token as Token;
+use Twig\Token;
 
 /**
  * Class HasRightsTokenParser

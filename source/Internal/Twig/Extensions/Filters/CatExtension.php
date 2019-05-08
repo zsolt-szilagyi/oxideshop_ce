@@ -7,6 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class CatExtension
@@ -17,11 +18,11 @@ class CatExtension extends AbstractExtension
 {
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
-        return [new \Twig_Filter('cat', [$this, 'cat'], ['deprecated' => true, 'alternative' => '~'])];
+        return [new TwigFilter('cat', [$this, 'cat'], ['deprecated' => true, 'alternative' => '~'])];
     }
 
     /**

@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\DateFormatHelper;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class DateFormatExtension
@@ -34,11 +35,11 @@ class DateFormatExtension extends AbstractExtension
     }
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters()
     {
-        return [new \Twig_Filter('date_format', [$this, 'dateFormat'])];
+        return [new TwigFilter('date_format', [$this, 'dateFormat'])];
     }
 
     /**

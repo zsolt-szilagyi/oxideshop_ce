@@ -7,6 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class EncloseExtension
@@ -18,11 +19,11 @@ class EncloseExtension extends AbstractExtension
 {
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
-        return [new \Twig_Filter('enclose', [$this, 'enclose'])];
+        return [new TwigFilter('enclose', [$this, 'enclose'])];
     }
 
     /**

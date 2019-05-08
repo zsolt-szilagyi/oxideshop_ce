@@ -28,7 +28,7 @@ class SmartyCycleExtension extends AbstractExtension
 
     /**
      * @param array $values
-     * @param array $parameters
+     * @param array        $parameters
      *
      * @return mixed|null
      */

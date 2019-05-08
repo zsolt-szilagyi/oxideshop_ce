@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\FormatTimeLogic;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class FormatTimeExtension
@@ -34,11 +35,11 @@ class FormatTimeExtension extends AbstractExtension
     }
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
-        return [new \Twig_Filter('format_time', [$this, 'formatTime'])];
+        return [new TwigFilter('format_time', [$this, 'formatTime'])];
     }
 
     /**

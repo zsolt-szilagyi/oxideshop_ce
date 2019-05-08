@@ -9,6 +9,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions;
 use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\StyleLogic;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\Environment;
 
 /**
  * Class AssignAdvancedExtension
@@ -34,7 +35,7 @@ class StyleExtension extends AbstractExtension
     }
 
     /**
-     * @return array|\Twig_Function[]
+     * @return TwigFunction[]
      */
     public function getFunctions()
     {
@@ -42,12 +43,12 @@ class StyleExtension extends AbstractExtension
     }
 
     /**
-     * @param \Twig_Environment $env
-     * @param array             $params
+     * @param Environment $env
+     * @param array       $params
      *
      * @return string
      */
-    public function style(\Twig_Environment $env, $params = [])
+    public function style(Environment $env, $params = [])
     {
         $globals = $env->getGlobals();
         $isDynamic = false;

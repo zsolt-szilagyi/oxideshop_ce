@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\FileSizeLogic;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class FileSizeExtension
@@ -34,11 +35,11 @@ class FileSizeExtension extends AbstractExtension
     }
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
-        return [new \Twig_Filter('file_size', [$this, 'fileSize'])];
+        return [new TwigFilter('file_size', [$this, 'fileSize'])];
     }
 
     /**

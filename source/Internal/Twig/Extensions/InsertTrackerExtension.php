@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\Environment;
 
 /**
  * Class InsertTrackerExtension
@@ -19,7 +20,7 @@ class InsertTrackerExtension extends AbstractExtension
 {
 
     /**
-     * @return array|\Twig_Function[]
+     * @return TwigFunction[]
      */
     public function getFunctions(): array
     {
@@ -27,12 +28,12 @@ class InsertTrackerExtension extends AbstractExtension
     }
 
     /**
-     * @param  \Twig_Environment $env
-     * @param  array             $params
+     * @param Environment $env
+     * @param array       $params
      *
      * @return string
      */
-    public function insertTracker(\Twig_Environment $env = null, $params = []): string
+    public function insertTracker(Environment $env = null, $params = []): string
     {
         return '';
     }

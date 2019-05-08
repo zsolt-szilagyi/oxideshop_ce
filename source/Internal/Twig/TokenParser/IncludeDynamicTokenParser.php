@@ -7,6 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Twig\TokenParser;
 
 use OxidEsales\EshopCommunity\Internal\Twig\Node\IncludeDynamicNode;
+use Twig\Token;
 use Twig\TokenParser\IncludeTokenParser;
 
 /**
@@ -22,7 +23,7 @@ class IncludeDynamicTokenParser extends IncludeTokenParser
      *
      * @return IncludeDynamicNode|\Twig_Node|\Twig_Node_Include
      */
-    public function parse(\Twig_Token $token): IncludeDynamicNode
+    public function parse(Token $token): IncludeDynamicNode
     {
         $expr = $this->parser->getExpressionParser()->parseExpression();
 

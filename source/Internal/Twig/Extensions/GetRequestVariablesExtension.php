@@ -18,7 +18,7 @@ use Twig\TwigFunction;
 class GetRequestVariablesExtension extends AbstractExtension
 {
     /**
-     * @return array|\Twig_Function[]
+     * @return TwigFunction[]
      */
     public function getFunctions()
     {

@@ -9,7 +9,8 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\TokenParser;
 use OxidEsales\EshopCommunity\Internal\Twig\Node\CaptureNode;
 use Twig\Error\SyntaxError;
 use Twig\TokenParser\AbstractTokenParser;
-use Twig_Token as Token;
+use Twig\Token;
+use Twig\TokenStream;
 
 /**
  * Class CaptureTokenParser
@@ -27,7 +28,6 @@ class CaptureTokenParser extends AbstractTokenParser
      *
      * @return CaptureNode|\Twig_Node
      * @throws SyntaxError
-     * @throws \Twig_Error_Syntax
      */
     public function parse(Token $token): CaptureNode
     {
@@ -35,9 +35,9 @@ class CaptureTokenParser extends AbstractTokenParser
         $stream = $parser->getStream();
 
         $attributeName = $this->getAttributeName($stream);
-        $stream->expect(\Twig\Token::OPERATOR_TYPE, '=');
+        $stream->expect(Token::OPERATOR_TYPE, '=');
         $variableName = $parser->getExpressionParser()->parseExpression()->getAttribute('value');
-        $stream->expect(\Twig\Token::BLOCK_END_TYPE);
+        $stream->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
         $stream->expect(Token::BLOCK_END_TYPE);
 
@@ -45,18 +45,18 @@ class CaptureTokenParser extends AbstractTokenParser
     }
 
     /**
-     * @param \Twig_TokenStream $stream
+     * @param TokenStream $stream
      *
      * @return string
      * @throws SyntaxError
-     * @throws \Twig_Error_Syntax
      */
-    private function getAttributeName(\Twig_TokenStream $stream): string
+    private function getAttributeName(TokenStream $stream): string
     {
-        $attributeName = $stream->expect(\Twig\Token::NAME_TYPE)->getValue();
+        $attributeName = $stream->expect(Token::NAME_TYPE)->getValue();
         if (!in_array($attributeName, $this->possibleAttributes)) {
             throw new SyntaxError("Incorrect attribute name. Possible attribute names are: 'name', 'assign' and 'append'");
         }
+
         return $attributeName;
     }
 

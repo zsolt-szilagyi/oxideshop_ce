@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\TemplateLogic\SmartWordwrapLogic;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class SmartWordwrapExtension
@@ -34,11 +35,11 @@ class SmartWordwrapExtension extends AbstractExtension
     }
 
     /**
-     * @return array|\Twig_Filter[]
+     * @return TwigFilter[]
      */
     public function getFilters()
     {
-        return [new \Twig_Filter('smart_wordwrap', [$this, 'smartWordwrap'], array('is_safe' => array('html')))];
+        return [new TwigFilter('smart_wordwrap', [$this, 'smartWordwrap'], array('is_safe' => array('html')))];
     }
 
     /**

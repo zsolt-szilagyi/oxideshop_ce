@@ -7,8 +7,8 @@
 namespace OxidEsales\EshopCommunity\Internal\Twig\Node;
 
 use OxidEsales\EshopCommunity\Internal\Twig\Extensions\IfContentExtension;
-use Twig_Node as Node;
-use Twig_Compiler as Compiler;
+use Twig\Node\Node;
+use Twig\Compiler;
 
 /**
  * Class IfContentNode
@@ -30,9 +30,9 @@ class IfContentNode extends Node
     public function __construct(Node $body, array $reference, Node $variable, int $lineno, string $tag = 'ifcontent')
     {
         $nodes = [
-            'body' => $body,
-            'variable' => $variable
-        ] + $reference;
+                     'body' => $body,
+                     'variable' => $variable
+                 ] + $reference;
 
         parent::__construct($nodes, [], $lineno, $tag);
     }
@@ -47,8 +47,7 @@ class IfContentNode extends Node
         $compiler
             ->subcompile($this->getNode('variable'), false)
             ->raw(" = ")
-            ->raw("\$this->extensions['" . IfContentExtension::class . "']->getContent(")
-        ;
+            ->raw("\$this->extensions['" . IfContentExtension::class . "']->getContent(");
 
         if ($this->hasNode('ident')) {
             $compiler->subcompile($this->getNode('ident'))->raw(', null');
@@ -60,7 +59,6 @@ class IfContentNode extends Node
 
         $compiler
             ->subcompile($this->getNode('body'))
-            ->write("unset(")->subcompile($this->getNode('variable'))->raw(");\n");
-        ;
+            ->write("unset(")->subcompile($this->getNode('variable'))->raw(");\n");;
     }
 }

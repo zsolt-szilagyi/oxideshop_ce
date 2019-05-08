@@ -11,7 +11,7 @@ use Twig\Error\SyntaxError;
 use Twig\Node\Expression\AssignNameExpression;
 use Twig\Node\Node;
 use Twig\TokenParser\AbstractTokenParser;
-use Twig_Token as Token;
+use Twig\Token;
 
 /**
  * Class IfContentNodeParser

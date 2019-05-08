@@ -6,8 +6,8 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Twig\Node;
 
-use Twig_Node as Node;
-use Twig_Compiler as Compiler;
+use Twig\Node\Node;
+use Twig\Compiler;
 
 /**
  * Class HasRightsNode

@@ -8,7 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Node;
 
 use OxidEsales\EshopCommunity\Internal\Twig\Extensions\IncludeExtension;
 use Twig\Node\IncludeNode;
-use \Twig_Compiler as Compiler;
+use Twig\Compiler;
 
 /**
  * Class IncludeDynamic

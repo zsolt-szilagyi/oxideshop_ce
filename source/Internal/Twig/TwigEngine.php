@@ -12,6 +12,7 @@ use OxidEsales\EshopCommunity\Internal\Templating\EngineInterface;
 use OxidEsales\EshopCommunity\Internal\Twig\Escaper\EscaperInterface;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
+use Twig\Extension\DebugExtension;
 
 /**
  * Class TwigEngine
@@ -36,7 +37,7 @@ class TwigEngine implements EngineInterface
         $this->engine = $engine;
 
         if ($this->engine->isDebug()) {
-            $this->engine->addExtension(new \Twig_Extension_Debug());
+            $this->engine->addExtension(new DebugExtension());
         }
     }
 
@@ -60,7 +61,7 @@ class TwigEngine implements EngineInterface
      *
      * @throws \RuntimeException if the template cannot be rendered
      */
-    public function render(string $name, array $parameters = array()): string
+    public function render(string $name, array $parameters = []): string
     {
         return $this->engine->render($name, $parameters);
     }
@@ -98,6 +99,7 @@ class TwigEngine implements EngineInterface
     public function renderFragment(string $fragment, array $parameters = []): string
     {
         $template = $this->engine->createTemplate($fragment, $this->cacheId);
+
         return $template->render($parameters);
     }
 

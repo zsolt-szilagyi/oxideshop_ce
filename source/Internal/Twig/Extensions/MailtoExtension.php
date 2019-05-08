@@ -4,6 +4,7 @@ namespace OxidEsales\EshopCommunity\Internal\Twig\Extensions;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\Error\RuntimeError;
 
 /**
  * Class MailtoExtension
@@ -40,7 +41,7 @@ class MailtoExtension extends AbstractExtension
 
         $encode = (empty($parameters['encode'])) ? 'none' : $parameters['encode'];
         if (!in_array($encode, ['javascript', 'javascript_charcode', 'hex', 'none'])) {
-            throw new \Twig_Error_Runtime("mailto: 'encode' parameter must be none, javascript or hex");
+            throw new RuntimeError("mailto: 'encode' parameter must be none, javascript or hex");
         }
 
         switch ($encode) {
@@ -157,7 +158,7 @@ class MailtoExtension extends AbstractExtension
         preg_match('!^(.*)(\?.*)$!', $address, $match);
 
         if (!empty($match[2])) {
-            throw new \Twig_Error_Runtime("mailto: hex encoding does not work with extra attributes. Try javascript.");
+            throw new RuntimeError("mailto: hex encoding does not work with extra attributes. Try javascript.");
         }
 
         $addressEncode = '';
