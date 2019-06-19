@@ -69,7 +69,7 @@
             </tr>
         {% endblock %}
         <tr><td colspan="2">&nbsp;</td></tr>
-        {% if oxid != " - 1" %}
+        {% if oxid != oViewConf.getAjaxLink()|raw %}
         <tr>
             <td class="edittext">
             </td>
@@ -89,7 +89,7 @@
     </td>
     <td valign="top" width="50%">
         {% block admin_deliveryset_main_assign_delivery %}
-            {% if oxid != " - 1" %}
+            {% if oxid != oViewConf.getAjaxLink()|raw %}
                 <input {{ readonly }} type="button" value="{{ translate({ ident: "DELIVERYSET_MAIN_ASSIGNDELIVERY" }) }}" class="edittext" onclick="JavaScript:showDialog('&cl=deliveryset_main&aoc=1&oxid={{ oxid }}');"><br>
                 <input {{ readonly }} type="button" value="{{ translate({ ident: "GENERAL_ASSIGNCOUNTRIES" }) }}" class="edittext" onclick="JavaScript:showDialog('&cl=deliveryset_payment&aoc=2&oxid={{ oxid }}');">
             {% endif %}

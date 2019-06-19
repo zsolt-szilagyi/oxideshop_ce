@@ -126,7 +126,7 @@ window.onload = function ()
                 </tr>
                 {% endif %} {# $blForeignCountry #}
             {% endblock %}
-        {% if oxid != " - 1" %}
+        {% if oxid != oViewConf.getAjaxLink()|raw %}
         <tr>
             <td class="edittext">
             </td>
