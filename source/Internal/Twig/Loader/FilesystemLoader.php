@@ -42,8 +42,7 @@ class FilesystemLoader extends TwigLoader
         string $rootPath = null,
         TemplateLoaderInterface $loader = null,
         TemplateLoaderInterface $adminLoader = null
-    )
-    {
+    ) {
         parent::__construct($paths, $rootPath);
 
         $this->config = Registry::getConfig();
