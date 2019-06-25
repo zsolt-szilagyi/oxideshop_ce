@@ -260,18 +260,11 @@ class Email extends PHPMailer
     /**
      * Smarty instance
      *
-     * @deprecated since v6.4.0 (2019-03-19);
+     * @deprecated since v6.4.0 (2019-03-19). This property will be removed at all;
      *
      * @var \Smarty
      */
     protected $_oSmarty = null;
-
-    /**
-     * Templating instance
-     *
-     * @var TemplateRendererInterface
-     */
-    private $templating;
 
     /**
      * Email view data
@@ -384,6 +377,7 @@ class Email extends PHPMailer
      * Smarty instance getter
      *
      * @deprecated since v6.4.0 (2019-03-19); For getting templating instance please use TemplateRendererInterface
+     * For getting template engine instance please use TemplateRendererInterface::getEngine()
      *
      * @return \Smarty
      */

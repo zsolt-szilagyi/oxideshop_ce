@@ -17,18 +17,18 @@ class SmartyFactory implements SmartyFactoryInterface
     private $smarty;
 
     /**
-     * @var SmartyEngineConfigurationInterface
+     * @var array
      */
     private $configuration;
 
     /**
      * SmartyFactory constructor.
      *
-     * @param SmartyEngineConfigurationInterface $configuration
+     * @param SmartyConfigurationFactoryInterface $configuration
      */
-    public function __construct(SmartyEngineConfigurationInterface $configuration)
+    public function __construct(SmartyConfigurationFactoryInterface $configuration)
     {
-        $this->configuration = $configuration;
+        $this->configuration = $configuration->getConfiguration();
     }
 
     /**
@@ -69,9 +69,9 @@ class SmartyFactory implements SmartyFactoryInterface
      */
     private function setSettings()
     {
-        $type = SmartyEngineConfigurationInterface::BASIC_SETTINGS;
-        if ($this->configuration->hasConfiguration($type)) {
-            foreach ($this->configuration->getConfiguration($type) as $key => $value) {
+        if (isset($this->configuration['settings'])) {
+            $settings = $this->configuration['settings'];
+            foreach ($settings as $key => $value) {
                 $this->smarty->$key = $value;
             }
         }
@@ -82,13 +82,16 @@ class SmartyFactory implements SmartyFactoryInterface
      */
     private function setSecuritySettings()
     {
-        $type = SmartyEngineConfigurationInterface::SECURITY_SETTINGS;
-        if ($this->configuration->hasConfiguration($type)) {
-            $settings = $this->configuration->getConfiguration($type);
+        if (isset($this->configuration['security_settings'])) {
+            $settings = $this->configuration['security_settings'];
             foreach ($settings as $key => $value) {
                 if (is_array($value)) {
-                    foreach ($value as $subValue) {
-                        $this->smarty->security_settings[$key][] = $subValue;
+                    foreach ($value as $subKey => $subValue) {
+                        if (is_array($subValue) ) {
+                            $this->smarty->{$key}[$subKey] = $this->getMergeSettings($this->smarty->{$key}[$subKey], $subValue);
+                        } else {
+                            $this->smarty->{$key}[$subKey] = $subValue;
+                        }
                     }
                 } else {
                     $this->smarty->$key = $value;
@@ -97,14 +100,18 @@ class SmartyFactory implements SmartyFactoryInterface
         }
     }
 
+    private function getMergeSettings($originalSettings, $newSettings)
+    {
+        return array_merge($originalSettings, $newSettings);
+    }
+
     /**
      * Registers a resource of smarty object.
      */
     private function registerResources()
     {
-        $type = SmartyEngineConfigurationInterface::RESOURCES;
-        if ($this->configuration->hasConfiguration($type)) {
-            $resourcesToRegister = $this->configuration->getConfiguration($type);
+        if (isset($this->configuration['resources'])) {
+            $resourcesToRegister = $this->configuration['resources'];
             foreach ($resourcesToRegister as $key => $resources) {
                 $this->smarty->register_resource($key, $resources);
             }
@@ -116,9 +123,8 @@ class SmartyFactory implements SmartyFactoryInterface
      */
     private function registerPrefilters()
     {
-        $type = SmartyEngineConfigurationInterface::PREFILTER;
-        if ($this->configuration->hasConfiguration($type)) {
-            $prefilters = $this->configuration->getConfiguration($type);
+        if (isset($this->configuration['prefilters'])) {
+            $prefilters = $this->configuration['prefilters'];
             foreach ($prefilters as $prefilter => $path) {
                 if (file_exists($path)) {
                     include_once $path;
@@ -133,10 +139,9 @@ class SmartyFactory implements SmartyFactoryInterface
      */
     private function registerPlugins()
     {
-        $type = SmartyEngineConfigurationInterface::PLUGINS;
-        if ($this->configuration->hasConfiguration($type)) {
+        if (isset($this->configuration['plugins'])) {
             $this->smarty->plugins_dir = array_merge(
-                $this->configuration->getConfiguration($type),
+                $this->configuration['plugins'],
                 $this->smarty->plugins_dir
             );
         }

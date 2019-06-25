@@ -11,10 +11,10 @@ use OxidEsales\EshopCommunity\Internal\Smarty\Extension\CacheResourcePlugin;
 use OxidEsales\EshopCommunity\Internal\Smarty\Extension\SmartyDefaultTemplateHandler;
 
 /**
- * Class SmartyEngineConfiguration
+ * Class SmartyConfigurationFactory
  * @package OxidEsales\EshopCommunity\Internal\Smarty
  */
-class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
+class SmartyConfigurationFactory implements SmartyConfigurationFactoryInterface
 {
     /**
      * @var SmartyContextInterface
@@ -27,12 +27,7 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
     private $bridge;
 
     /**
-     * @var array
-     */
-    private $configuration;
-
-    /**
-     * TemplateEngineConfiguration constructor.
+     * SmartyConfigurationFactory constructor.
      *
      * @param SmartyContextInterface            $context
      * @param ModuleSmartyPluginBridgeInterface $bridge
@@ -41,22 +36,15 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
     {
         $this->context = $context;
         $this->bridge = $bridge;
-        $this->configuration = [];
-
-        $this->setSettings();
-        $this->setSecuritySettings();
-        $this->setPlugins();
-        $this->setPrefilterPlugin();
-        $this->setResources();
     }
 
     /**
      * Define basic smarty settings
      */
-    private function setSettings()
+    private function getSettings()
     {
         $compilePath = $this->getTemplateCompilePath();
-        $this->configuration[self::BASIC_SETTINGS] = [
+        return [
             'caching' => false,
             'left_delimiter' => '[{',
             'right_delimiter' => '}]',
@@ -73,14 +61,14 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
     /**
      * Define smarty security settings.
      */
-    private function setSecuritySettings()
+    private function getSecuritySettings()
     {
-        $this->configuration[self::SECURITY_SETTINGS] = [
+        $configuration = [
             'php_handling' => (int) $this->context->getTemplatePhpHandlingMode(),
             'security' => false
         ];
         if ($this->context->getTemplateSecurityMode()) {
-            $this->configuration[self::SECURITY_SETTINGS] = [
+            $configuration = [
                 'php_handling' => SMARTY_PHP_REMOVE,
                 'security' => true,
                 'secure_dir' => $this->context->getTemplateDirectories(),
@@ -91,14 +79,15 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
                 ]
             ];
         }
+        return $configuration;
     }
 
     /**
      * Collect smarty plugins.
      */
-    private function setPlugins()
+    private function getPlugins()
     {
-        $this->configuration[self::PLUGINS] = array_merge(
+        return array_merge(
             $this->bridge->getModuleSmartyPluginPaths(),
             $this->getShopPluginPaths()
         );
@@ -107,7 +96,7 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
     /**
      * Sets an array of prefilters.
      */
-    private function setPrefilterPlugin()
+    private function getPrefilterPlugin()
     {
         $prefilterPath = $this->getPrefilterPath();
         $prefilter['smarty_prefilter_oxblock'] = $prefilterPath . '/prefilter.oxblock.php';
@@ -115,16 +104,16 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
             $prefilter['smarty_prefilter_oxtpldebug'] = $prefilterPath . '/prefilter.oxtpldebug.php';
         }
 
-        $this->configuration[self::PREFILTER] = $prefilter;
+        return $prefilter;
     }
 
     /**
      * Sets an array of resources.
      */
-    private function setResources()
+    private function getResources()
     {
         $resource = new CacheResourcePlugin($this->context);
-        $this->configuration[self::RESOURCES] = [
+        return [
             'ox' => [
                 $resource,
                 'getTemplate',
@@ -187,23 +176,25 @@ class SmartyEngineConfiguration implements SmartyEngineConfigurationInterface
     }
 
     /**
-     * @param string $type
-     * @param mixed  $default
+     * Get properties for smarty:
+     * [
+     *   'settings' => 'smartyCommonSettings',
+     *   'security_settings' => 'smartySecuritySettings',
+     *   'plugins' => 'smartyPluginsToRegister',
+     *   'prefilters' => 'smartyPreFiltersToRegister',
+     *   'resources' => 'smartyResourcesToRegister',
+     * ]
      *
-     * @return mixed|null
+     * @return array
      */
-    public function getConfiguration(string $type, $default = null)
+    public function getConfiguration()
     {
-        return array_key_exists($type, $this->configuration) ? $this->configuration[$type] : $default;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function hasConfiguration(string $type): bool
-    {
-        return isset($this->configuration[$type]);
+        return [
+            'settings' => $this->getSettings(),
+            'security_settings' => $this->getSecuritySettings(),
+            'plugins' => $this->getPlugins(),
+            'prefilters' => $this->getPrefilterPlugin(),
+            'resources' => $this->getResources()
+        ];
     }
 }

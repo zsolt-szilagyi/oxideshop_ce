@@ -6,21 +6,48 @@
 
 namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Smarty;
 
-
 use OxidEsales\EshopCommunity\Internal\Smarty\Bridge\ModuleSmartyPluginBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Smarty\Extension\CacheResourcePlugin;
 use OxidEsales\EshopCommunity\Internal\Smarty\Extension\SmartyDefaultTemplateHandler;
 use OxidEsales\EshopCommunity\Internal\Smarty\SmartyContextInterface;
-use OxidEsales\EshopCommunity\Internal\Smarty\SmartyEngineConfiguration;
-use OxidEsales\EshopCommunity\Internal\Smarty\SmartyEngineConfigurationInterface;
+use OxidEsales\EshopCommunity\Internal\Smarty\SmartyConfigurationFactory;
 
-class SmartyEngineConfigurationTest extends \PHPUnit\Framework\TestCase
+class SmartyConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGetSettings()
+    public function testGetConfigurationWithSecuritySettingsOff()
     {
         $smartyContextMock = $this->getSmartyContextMock();
         $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
-        $options = [
+
+        $factory = new SmartyConfigurationFactory($smartyContextMock, $bridgeMock);
+        $configuration = $factory->getConfiguration();
+
+        $this->assertSettings($configuration);
+        $this->assertSecuritySettingsOff($configuration);
+        $this->assertPrefilters($configuration);
+        $this->assertPlugins($configuration);
+        $this->assertResources($configuration);
+    }
+
+    public function testGetConfigurationWithSecuritySettingsOn()
+    {
+        $smartyContextMock = $this->getSmartyContextMock(true);
+        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
+
+        $factory = new SmartyConfigurationFactory($smartyContextMock, $bridgeMock);
+        $configuration = $factory->getConfiguration();
+
+        $this->assertSettings($configuration);
+        $this->assertSecuritySettingsOn($configuration);
+        $this->assertPrefilters($configuration);
+        $this->assertPlugins($configuration);
+        $this->assertResources($configuration);
+    }
+
+    private function assertSettings(array $configuration)
+    {
+        $smartyContextMock = $this->getSmartyContextMock();
+        $settings = [
             'caching' => false,
             'left_delimiter' => '[{',
             'right_delimiter' => '}]',
@@ -33,28 +60,21 @@ class SmartyEngineConfigurationTest extends \PHPUnit\Framework\TestCase
             'compile_check' => true
         ];
 
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::BASIC_SETTINGS));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::BASIC_SETTINGS));
+        $this->assertEquals($settings, $configuration['settings']);
     }
 
-    public function testGetSecuritySettingsIfOff()
+    private function assertSecuritySettingsOff(array $configuration)
     {
-        $options = [
+        $settings = [
             'php_handling' => 1,
             'security' => false
         ];
-
-        $smartyContextMock = $this->getSmartyContextMock();
-        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::SECURITY_SETTINGS));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::SECURITY_SETTINGS));
+        $this->assertEquals($settings, $configuration['security_settings']);
     }
 
-    public function testGetSecuritySettingsIfOn()
+    private function assertSecuritySettingsOn(array $configuration)
     {
-        $options = [
+        $settings = [
             'php_handling' => SMARTY_PHP_REMOVE,
             'security' => true,
             'secure_dir' => ['testTemplateDir'],
@@ -65,19 +85,14 @@ class SmartyEngineConfigurationTest extends \PHPUnit\Framework\TestCase
                 ]
             ];
 
-        $smartyContextMock = $this->getSmartyContextMock(true);
-        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::SECURITY_SETTINGS));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::SECURITY_SETTINGS));
+        $this->assertEquals($settings, $configuration['security_settings']);
     }
 
-    public function testGetResources()
+    private function assertResources(array $configuration)
     {
         $smartyContextMock = $this->getSmartyContextMock();
-        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
         $resource = new CacheResourcePlugin($smartyContextMock);
-        $options = ['ox' => [
+        $settings = ['ox' => [
             $resource,
             'getTemplate',
             'getTimestamp',
@@ -86,34 +101,24 @@ class SmartyEngineConfigurationTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::RESOURCES));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::RESOURCES));
+        $this->assertEquals($settings, $configuration['resources']);
     }
 
-    public function testGetPrefilterPlugin()
+    private function assertPrefilters(array $configuration)
     {
-        $options = [
+        $settings = [
             'smarty_prefilter_oxblock' => 'testShopPath/Core/Smarty/Plugin/prefilter.oxblock.php',
             'smarty_prefilter_oxtpldebug' => 'testShopPath/Core/Smarty/Plugin/prefilter.oxtpldebug.php',
         ];
 
-        $smartyContextMock = $this->getSmartyContextMock();
-        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::PREFILTER));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::PREFILTER));
+        $this->assertEquals($settings, $configuration['prefilters']);
     }
 
-    public function testGetPlugin()
+    private function assertPlugins(array $configuration)
     {
-        $options = ['testModuleDir', 'testShopPath/Core/Smarty/Plugin'];
+        $settings = ['testModuleDir', 'testShopPath/Core/Smarty/Plugin'];
 
-        $smartyContextMock = $this->getSmartyContextMock();
-        $bridgeMock = $this->getModuleSmartyPluginBridgeMock();
-        $configuration = new SmartyEngineConfiguration($smartyContextMock, $bridgeMock);
-        $this->assertTrue($configuration->hasConfiguration(SmartyEngineConfigurationInterface::PLUGINS));
-        $this->assertEquals($options, $configuration->getConfiguration(SmartyEngineConfigurationInterface::PLUGINS));
+        $this->assertEquals($settings, $configuration['plugins']);
     }
 
     private function getSmartyContextMock($securityMode = false): SmartyContextInterface

@@ -47,7 +47,7 @@ class SmartyEngine implements TemplateEngineInterface
      *
      * @return string The evaluated template as a string
      */
-    public function render($name, array $parameters = [])
+    public function render(string $name, array $parameters = [])
     {
         foreach ($parameters as $key => $value) {
             $this->engine->assign($key, $value);
