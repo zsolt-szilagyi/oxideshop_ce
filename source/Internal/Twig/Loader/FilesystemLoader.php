@@ -7,6 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Twig\Loader;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Templating\TemplateLoaderInterface;
 use Twig\Error\LoaderError;
@@ -68,9 +69,19 @@ class FilesystemLoader extends TwigLoader
         }
 
         if ($this->config->isAdmin()) {
-            $template = $this->adminLoader->getPath($name);
+            try{
+               $template = $this->adminLoader->getPath($name);
+            } catch (SystemComponentException $e) {
+                //let twig engine handle template loading and error throwing.
+                return null;
+            }
         } else {
-            $template = $this->loader->getPath($name);
+            try {
+                $template = $this->loader->getPath($name);
+            } catch (SystemComponentException $e) {
+                //let twig engine handle template loading and error throwing.
+                return null;
+            }
         }
 
         if (!$template && isset($error)) {
