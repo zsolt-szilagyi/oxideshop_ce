@@ -9,7 +9,6 @@ namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Module\Setup\Handler;
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\Dao\ShopConfigurationSettingDaoInterface;
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\DataObject\ShopConfigurationSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration;
-use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Setup\Handler\ClassExtensionsModuleSettingHandler;
 use PHPUnit\Framework\TestCase;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration\ClassExtension;
@@ -87,7 +86,12 @@ class ClassExtensionsModuleSettingHandlerTest extends TestCase
 
         $moduleConfiguration = new ModuleConfiguration();
         $moduleConfiguration->setId('moduleIdToDeactivate');
-        $moduleConfiguration->addClassExtension(new ClassExtension('',''));
+        $moduleConfiguration->addClassExtension(
+            new ClassExtension(
+                '',
+                ''
+            )
+        );
 
         $handler = new ClassExtensionsModuleSettingHandler($shopConfigurationSettingDao);
         $handler->handleOnModuleDeactivation($moduleConfiguration, 1);

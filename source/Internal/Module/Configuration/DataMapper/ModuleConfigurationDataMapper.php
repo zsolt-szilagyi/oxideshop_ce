@@ -77,7 +77,7 @@ class ModuleConfigurationDataMapper implements ModuleConfigurationDataMapperInte
      * @param ModuleConfiguration $moduleConfiguration
      * @param array               $settingsData
      */
-    private function setSettings(ModuleConfiguration $moduleConfiguration, array $settingsData)
+    private function setSettings(ModuleConfiguration $moduleConfiguration, array $settingsData): void
     {
         $settings = $this->getMappedSettings($settingsData);
 
@@ -123,7 +123,7 @@ class ModuleConfigurationDataMapper implements ModuleConfigurationDataMapperInte
      * @param ModuleConfiguration $moduleConfiguration
      * @param array               $extension
      */
-    private function setClassExtension(ModuleConfiguration $moduleConfiguration, array $extension)
+    private function setClassExtension(ModuleConfiguration $moduleConfiguration, array $extension): void
     {
         foreach ($extension as $shopClass => $moduleClass) {
             $moduleConfiguration->addClassExtension(new ClassExtension(
@@ -142,7 +142,7 @@ class ModuleConfigurationDataMapper implements ModuleConfigurationDataMapperInte
     {
         $extensions = [];
 
-        if ($configuration->hasClassExtensionSetting()) {
+        if ($configuration->hasClassExtensions()) {
             foreach ($configuration->getClassExtensions() as $extension) {
                 $extensions[$extension->getShopClassNamespace()] = $extension->getModuleExtensionClassNamespace();
             }

@@ -203,12 +203,14 @@ class ModuleActivationServiceTest extends TestCase
             ))
             ->addClassExtension(
                 new ClassExtension(
-                    'originalClassNamespace','moduleClassNamespace'
+                    'originalClassNamespace',
+                    'moduleClassNamespace'
                 )
             )
             ->addClassExtension(
                 new ClassExtension(
-                    'otherOriginalClassNamespace','moduleClassNamespace'
+                    'otherOriginalClassNamespace',
+                    'moduleClassNamespace'
                 )
             )
             ->addSetting(new ModuleSetting(

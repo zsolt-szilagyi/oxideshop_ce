@@ -79,7 +79,7 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
             ->getModuleConfigurations();
 
         foreach ($moduleConfigurations as $moduleConfiguration) {
-            if ($moduleConfiguration->hasClassExtensionSetting()) {
+            if ($moduleConfiguration->hasClassExtensions()) {
                 foreach ($moduleConfiguration->getClassExtensions() as $extensions) {
                     if (!isset($moduleExtensions[$extensions->getShopClassNamespace()])) {
                         $moduleExtensions[$extensions->getShopClassNamespace()] = $extensions->getModuleExtensionClassNamespace();
@@ -145,7 +145,7 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
             ->getModuleConfigurations();
 
         foreach ($moduleConfigurations as $moduleConfiguration) {
-            if ($moduleConfiguration->hasClassExtensionSetting()) {
+            if ($moduleConfiguration->hasClassExtensions()) {
                 foreach ($moduleConfiguration->getClassExtensions() as $extensions) {
                     if (!isset($extendedClasses[$extensions->getShopClassNamespace()])) {
                         $extendedClasses[$extensions->getShopClassNamespace()] = $extensions->getModuleExtensionClassNamespace();
@@ -252,7 +252,7 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
         $disabledModuleClasses = [];
 
         foreach ($disabledModules as $module) {
-            if ($module->hasClassExtensionSetting()) {
+            if ($module->hasClassExtensions()) {
                 foreach ($module->getClassExtensions() as $extensionClass) {
                     $disabledModuleClasses[] = $extensionClass->getModuleExtensionClassNamespace();
                 }
@@ -655,7 +655,7 @@ class ModuleList extends \OxidEsales\Eshop\Core\Base
         $extendedClasses = [];
 
         foreach ($this->getActiveModuleConfigurations() as $moduleConfiguration) {
-            if ($moduleConfiguration->hasClassExtensionSetting()) {
+            if ($moduleConfiguration->hasClassExtensions()) {
                 foreach ($moduleConfiguration->getClassExtensions() as $extensions) {
                     if (!isset($extendedClasses[$extensions->getShopClassNamespace()])) {
                         $extendedClasses[$extensions->getShopClassNamespace()] = $extensions->getModuleExtensionClassNamespace();

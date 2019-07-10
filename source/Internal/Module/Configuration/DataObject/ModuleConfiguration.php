@@ -315,13 +315,9 @@ class ModuleConfiguration
     /**
      * @return bool
      */
-    public function hasClassExtensionSetting(): bool
+    public function hasClassExtensions(): bool
     {
-        if (empty($this->classExtensions)) {
-            return false;
-        }
-
-        return true;
+        return !empty($this->classExtensions);
     }
 
     /**

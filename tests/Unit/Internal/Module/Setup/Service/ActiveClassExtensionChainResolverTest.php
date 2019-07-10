@@ -105,12 +105,12 @@ class ActiveClassExtensionChainResolverTest extends TestCase
     {
         $moduleConfiguration = new ModuleConfiguration();
 
-        foreach ($extensions as $classNamespace => $moduleNamespace){
-            $classExtensionSetting = new ClassExtension($classNamespace,$moduleNamespace);
+        foreach ($extensions as $classNamespace => $moduleNamespace) {
+            $classExtensions = new ClassExtension($classNamespace, $moduleNamespace);
 
             $moduleConfiguration
                 ->setId($moduleName)
-                ->addClassExtension($classExtensionSetting);
+                ->addClassExtension($classExtensions);
         }
 
         return $moduleConfiguration;

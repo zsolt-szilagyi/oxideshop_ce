@@ -10,7 +10,6 @@ use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\Dao\ShopConfigurati
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\DataObject\ShopConfigurationSetting;
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\DataObject\ShopSettingType;
 use OxidEsales\EshopCommunity\Internal\Common\Exception\EntryDoesNotExistDaoException;
-use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration;
 
 /**
@@ -38,7 +37,7 @@ class ClassExtensionsModuleSettingHandler implements ModuleConfigurationHandlerI
      */
     public function handleOnModuleActivation(ModuleConfiguration $configuration, int $shopId)
     {
-        if ($this->canHandle($configuration)) {
+        if ($configuration->hasClassExtensions()) {
             $classExtensions=[];
 
             foreach ($configuration->getClassExtensions() as $extension) {
@@ -62,7 +61,7 @@ class ClassExtensionsModuleSettingHandler implements ModuleConfigurationHandlerI
      */
     public function handleOnModuleDeactivation(ModuleConfiguration $configuration, int $shopId)
     {
-        if ($this->canHandle($configuration)) {
+        if ($configuration->hasClassExtensions()) {
             $shopConfigurationSetting = $this->getClassExtensionsShopConfigurationSetting($shopId);
 
             $shopConfigurationSettingValue = $shopConfigurationSetting->getValue();
@@ -72,15 +71,6 @@ class ClassExtensionsModuleSettingHandler implements ModuleConfigurationHandlerI
 
             $this->shopConfigurationSettingDao->save($shopConfigurationSetting);
         }
-    }
-
-    /**
-     * @param ModuleConfiguration $configuration
-     * @return bool
-     */
-    private function canHandle(ModuleConfiguration $configuration): bool
-    {
-        return $configuration->hasClassExtensionSetting();
     }
 
     /**

@@ -193,7 +193,7 @@ class Module extends \OxidEsales\Eshop\Core\Base
 
         $extensions = [];
 
-        if ($moduleConfiguration->hasClassExtensionSetting()) {
+        if ($moduleConfiguration->hasClassExtensions()) {
             foreach ($moduleConfiguration->getClassExtensions() as $extension) {
                 $extensions[$extension->getShopClassNamespace()] = $extension->getModuleExtensionClassNamespace();
             }

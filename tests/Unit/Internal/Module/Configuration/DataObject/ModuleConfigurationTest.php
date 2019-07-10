@@ -50,7 +50,8 @@ class ModuleConfigurationTest extends TestCase
 
         $moduleConfiguration->addClassExtension(
             new ClassExtension(
-                'extendedClassNamespace', 'expectedExtensionNamespace'
+                'extendedClassNamespace',
+                'expectedExtensionNamespace'
             )
         );
 
@@ -69,7 +70,8 @@ class ModuleConfigurationTest extends TestCase
 
         $moduleConfiguration->addClassExtension(
             new ClassExtension(
-                'extendedClassNamespace', 'anotherExtensionNamespace'
+                'extendedClassNamespace',
+                'anotherExtensionNamespace'
             )
         );
 

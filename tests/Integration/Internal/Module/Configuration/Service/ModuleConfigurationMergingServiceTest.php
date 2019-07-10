@@ -39,7 +39,8 @@ class ModuleConfigurationMergingServiceTest extends TestCase
         $moduleConfiguration->setId('newModule');
         $moduleConfiguration->addClassExtension(
             new ClassExtension(
-                'shopClass', 'testModuleClassExtendsShopClass'
+                'shopClass',
+                'testModuleClassExtendsShopClass'
             )
         );
 
@@ -122,7 +123,8 @@ class ModuleConfigurationMergingServiceTest extends TestCase
         foreach ($classExtension as $namespace => $moduleExtension) {
             $moduleConfiguration->addClassExtension(
                 new ClassExtension(
-                    $namespace, $moduleExtension
+                    $namespace,
+                    $moduleExtension
                 )
             );
         }
@@ -261,7 +263,8 @@ class ModuleConfigurationMergingServiceTest extends TestCase
         foreach ($classExtension as $namespace => $moduleExtension) {
             $moduleConfiguration->addClassExtension(
                 new ClassExtension(
-                    $namespace, $moduleExtension
+                    $namespace,
+                    $moduleExtension
                 )
             );
         }
