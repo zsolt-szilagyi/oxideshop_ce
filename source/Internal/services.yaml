@@ -9,5 +9,7 @@ imports:
     - { resource: Console/services.yaml }
     - { resource: Module/services.yaml }
     - { resource: Authentication/services.yaml }
+    - { resource: Templating/services.yaml }
+    - { resource: Twig/services.yaml }
     - { resource: Smarty/services.yaml }
     - { resource: Templating/services.yaml }
