@@ -97,8 +97,18 @@ class ChainTest extends TestCase
                 ]
             ]
         );
-        $chain->removeExtension('extendedClass1', 'extension1');
-        $chain->removeExtension('extendedClass2', 'extension3');
+        $chain->removeExtension(
+            new ClassExtension(
+                'extendedClass1',
+                'extension1'
+            )
+        );
+        $chain->removeExtension(
+            new ClassExtension(
+                'extendedClass2',
+                'extension3'
+            )
+        );
 
         $this->assertEquals(
             [
@@ -117,8 +127,12 @@ class ChainTest extends TestCase
      * @expectedException \OxidEsales\EshopCommunity\Internal\Module\Configuration\Exception\ExtensionNotInChainException
      *
      * @dataProvider invalidExtensionProvider
+     *
+     * @param ClassExtension[] $extensions
+     *
+     * @throws \OxidEsales\EshopCommunity\Internal\Module\Configuration\Exception\ExtensionNotInChainException
      */
-    public function testRemoveExtensionThrowsExceptionIfClassNotExistsInChain($extended, $extension)
+    public function testRemoveExtensionThrowsExceptionIfClassNotExistsInChain(array $extensions)
     {
         $chain = new ClassExtensionsChain();
         $chain->setChain(
@@ -129,14 +143,23 @@ class ChainTest extends TestCase
                 ]
             ]
         );
-        $chain->removeExtension($extended, $extension);
+
+        foreach ($extensions as $extension) {
+            $chain->removeExtension($extension);
+        }
     }
 
     public function invalidExtensionProvider()
     {
         return [
-            ['notExistingExtended', 'notExistingExtension'],
-            ['extendedClass1', 'notExistingExtension']
+            new ClassExtension(
+                'notExistingExtended',
+                'notExistingExtension'
+            ),
+            new ClassExtension(
+                'extendedClass1',
+                'notExistingExtension'
+            ),
         ];
     }
 }

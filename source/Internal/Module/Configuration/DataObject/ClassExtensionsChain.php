@@ -60,13 +60,15 @@ class ClassExtensionsChain implements \IteratorAggregate
     }
 
     /**
-     * @param string $extended
-     * @param string $extension
+     * @param ClassExtension $classExtension
      *
      * @throws ExtensionNotInChainException
      */
-    public function removeExtension(string $extended, string $extension)
+    public function removeExtension(ClassExtension $classExtension): void
     {
+        $extended = $classExtension->getShopClassNamespace();
+        $extension = $classExtension->getModuleExtensionClassNamespace();
+        
         if (false === array_key_exists($extended, $this->chain) ||
             false === \array_search($extension, $this->chain[$extended], true)) {
             throw new ExtensionNotInChainException(

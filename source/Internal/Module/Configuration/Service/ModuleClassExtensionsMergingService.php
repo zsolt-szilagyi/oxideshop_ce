@@ -83,7 +83,7 @@ class ModuleClassExtensionsMergingService implements ModuleClassExtensionsMergin
                         $chain->setChain($classExtensionChain);
                     }
                 } else {
-                    $chain->removeExtension($extension->getShopClassNamespace(), $extension->getModuleExtensionClassNamespace());
+                    $chain->removeExtension($extension);
                 }
                 unset($classExtensionsToMerge[$extension->getShopClassNamespace()]);
             }
