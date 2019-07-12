@@ -6,8 +6,10 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Module\Setup\Handler;
 
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSettingDaoInterface;
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSetting;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingDaoInterface;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingInterface;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\ShopModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration;
 
@@ -17,17 +19,23 @@ use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleCon
 class ShopModuleSettingModuleSettingHandler implements ModuleConfigurationHandlerInterface
 {
     /**
-     * @var ShopModuleSettingDaoInterface
+     * @var SettingDaoInterface
      */
-    private $shopModuleSettingDao;
+    private $settingDao;
 
     /**
-     * ShopModuleSettingModuleSettingHandler constructor.
-     * @param ShopModuleSettingDaoInterface $shopModuleSettingDao
+     * @var SettingFactoryInterface
      */
-    public function __construct(ShopModuleSettingDaoInterface $shopModuleSettingDao)
+    private $settingFactory;
+
+    /**
+     * @param SettingDaoInterface $settingDao
+     * @param SettingFactoryInterface $settingFactory
+     */
+    public function __construct(SettingDaoInterface $settingDao, SettingFactoryInterface $settingFactory)
     {
-        $this->shopModuleSettingDao = $shopModuleSettingDao;
+        $this->settingDao = $settingDao;
+        $this->settingFactory = $settingFactory;
     }
 
     /**
@@ -40,14 +48,9 @@ class ShopModuleSettingModuleSettingHandler implements ModuleConfigurationHandle
             $setting = $configuration->getSetting(ModuleSetting::SHOP_MODULE_SETTING);
 
             foreach ($setting->getValue() as $shopModuleSettingData) {
-                $shopModuleSetting = new ShopModuleSetting();
-                $shopModuleSetting
-                    ->setShopId($shopId)
-                    ->setModuleId($configuration->getId());
+                $moduleSetting = $this->mapDataToShopModuleSetting($shopModuleSettingData);
 
-                $shopModuleSetting = $this->mapDataToShopModuleSetting($shopModuleSetting, $shopModuleSettingData);
-
-                $this->shopModuleSettingDao->save($shopModuleSetting);
+                $this->settingDao->save($moduleSetting, $configuration->getId(), $shopId);
             }
         }
     }
@@ -62,14 +65,9 @@ class ShopModuleSettingModuleSettingHandler implements ModuleConfigurationHandle
             $setting = $configuration->getSetting(ModuleSetting::SHOP_MODULE_SETTING);
 
             foreach ($setting->getValue() as $shopModuleSettingData) {
-                $shopModuleSetting = new ShopModuleSetting();
-                $shopModuleSetting
-                    ->setShopId($shopId)
-                    ->setModuleId($configuration->getId());
+                $moduleSetting = $this->mapDataToShopModuleSetting($shopModuleSettingData);
 
-                $shopModuleSetting = $this->mapDataToShopModuleSetting($shopModuleSetting, $shopModuleSettingData);
-
-                $this->shopModuleSettingDao->delete($shopModuleSetting);
+                $this->settingDao->delete($moduleSetting, $configuration->getId(), $shopId);
             }
         }
     }
@@ -84,29 +82,29 @@ class ShopModuleSettingModuleSettingHandler implements ModuleConfigurationHandle
     }
 
     /**
-     * @param ShopModuleSetting $shopModuleSetting
      * @param array             $data
-     * @return ShopModuleSetting
+     * @return SettingInterface
      */
-    private function mapDataToShopModuleSetting(ShopModuleSetting $shopModuleSetting, array $data): ShopModuleSetting
+    private function mapDataToShopModuleSetting(array $data): SettingInterface
     {
-        $shopModuleSetting
-            ->setName($data['name'])
-            ->setType($data['type'])
-            ->setValue($data['value']);
+        $setting = $this->settingFactory->create(
+            $data['type'],
+            $data['name'],
+            $data['value']
+        );
 
         if (isset($data['constraints'])) {
-            $shopModuleSetting->setConstraints($data['constraints']);
+            $setting->setConstraints($data['constraints']);
         }
 
         if (isset($data['group'])) {
-            $shopModuleSetting->setGroupName($data['group']);
+            $setting->setGroupName($data['group']);
         }
 
         if (isset($data['position'])) {
-            $shopModuleSetting->setPositionInGroup($data['position']);
+            $setting->setPositionInGroup($data['position']);
         }
 
-        return $shopModuleSetting;
+        return $setting;
     }
 }

@@ -55,6 +55,9 @@ class ShopSettingEncoder implements ShopSettingEncoderInterface
             case ShopSettingType::BOOLEAN:
                 $decodedValue = ($value === 'true' || $value === '1');
                 break;
+            case ShopSettingType::INTEGER:
+                $decodedValue = (int) $value;
+                break;
             default:
                 $decodedValue = $value;
         }

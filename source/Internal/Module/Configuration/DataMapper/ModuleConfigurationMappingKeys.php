@@ -8,6 +8,6 @@ namespace OxidEsales\EshopCommunity\Internal\Module\Configuration\DataMapper;
 
 class ModuleConfigurationMappingKeys
 {
-
-    const CLASS_EXTENSIONS = 'classExtensions';
+    const CLASS_EXTENSIONS      = 'classExtensions';
+    const MODULE_SETTINGS       = 'moduleSettings';
 }

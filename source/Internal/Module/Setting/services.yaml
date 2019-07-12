@@ -1,0 +1,10 @@
+services:
+
+  OxidEsales\EshopCommunity\Internal\Module\Setting\SettingDaoInterface:
+    class: OxidEsales\EshopCommunity\Internal\Module\Setting\SettingDao
+    autowire: true
+    public: false
+  OxidEsales\EshopCommunity\Internal\Module\Setting\SettingFactoryInterface:
+    class: OxidEsales\EshopCommunity\Internal\Module\Setting\SettingFactory
+    autowire: true
+    public: false

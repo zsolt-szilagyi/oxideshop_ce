@@ -4,10 +4,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting;
+namespace OxidEsales\EshopCommunity\Internal\Module\Setting;
 
 use function is_string;
 
+use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\DataObject\ShopSettingType;
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\Utility\ShopSettingEncoderInterface;
 use OxidEsales\EshopCommunity\Internal\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
@@ -18,7 +19,7 @@ use OxidEsales\EshopCommunity\Internal\Utility\ContextInterface;
 /**
  * @internal
  */
-class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
+class SettingDao implements SettingDaoInterface
 {
     /**
      * @var QueryBuilderFactoryInterface
@@ -46,33 +47,36 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
     private $transactionService;
 
     /**
-     * ShopModuleSettingDao constructor.
+     * @var SettingFactoryInterface
+     */
+    private $settingFactory;
+
+    /**
+     * SettingDao constructor.
      * @param QueryBuilderFactoryInterface $queryBuilderFactory
-     * @param ContextInterface             $context
-     * @param ShopSettingEncoderInterface  $shopSettingEncoder
-     * @param ShopAdapterInterface         $shopAdapter
-     * @param TransactionServiceInterface  $transactionService
+     * @param ContextInterface $context
+     * @param ShopSettingEncoderInterface $shopSettingEncoder
+     * @param ShopAdapterInterface $shopAdapter
+     * @param TransactionServiceInterface $transactionService
+     * @param SettingFactoryInterface $settingFactory
      */
     public function __construct(
-        QueryBuilderFactoryInterface    $queryBuilderFactory,
-        ContextInterface                $context,
-        ShopSettingEncoderInterface     $shopSettingEncoder,
-        ShopAdapterInterface            $shopAdapter,
-        TransactionServiceInterface     $transactionService
+        QueryBuilderFactoryInterface $queryBuilderFactory,
+        ContextInterface $context,
+        ShopSettingEncoderInterface $shopSettingEncoder,
+        ShopAdapterInterface $shopAdapter,
+        TransactionServiceInterface $transactionService,
+        SettingFactoryInterface $settingFactory
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
         $this->shopSettingEncoder = $shopSettingEncoder;
         $this->shopAdapter = $shopAdapter;
         $this->transactionService = $transactionService;
+        $this->settingFactory = $settingFactory;
     }
 
-    /**
-     * @param ShopModuleSetting $shopModuleSetting
-     *
-     * @throws \Throwable
-     */
-    public function save(ShopModuleSetting $shopModuleSetting)
+    public function save(SettingInterface $setting, string $moduleId, int $shopId): void
     {
         $this->transactionService->begin();
 
@@ -81,11 +85,11 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
              * The same entity was splitted between two tables.
              * Till we can't refactor tables we have to save data in both.
              */
-            $this->deleteFromOxConfigTable($shopModuleSetting);
-            $this->deleteFromOxConfigDisplayTable($shopModuleSetting);
+            $this->deleteFromOxConfigTable($setting, $moduleId, $shopId);
+            $this->deleteFromOxConfigDisplayTable($setting, $moduleId);
 
-            $this->saveDataToOxConfigTable($shopModuleSetting);
-            $this->saveDataToOxConfigDisplayTable($shopModuleSetting);
+            $this->saveDataToOxConfigTable($setting, $moduleId, $shopId);
+            $this->saveDataToOxConfigDisplayTable($setting, $moduleId, $shopId);
 
             $this->transactionService->commit();
         } catch (\Throwable $throwable) {
@@ -97,9 +101,9 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
     /**
      * @param ShopModuleSetting $shopModuleSetting
      */
-    public function delete(ShopModuleSetting $shopModuleSetting)
+    public function delete(SettingInterface $setting, string $moduleId, int $shopId): void
     {
-        $this->deleteFromOxConfigTable($shopModuleSetting);
+        $this->deleteFromOxConfigTable($setting, $moduleId, $shopId);
     }
 
     /**
@@ -110,7 +114,7 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
      * @return ShopModuleSetting
      * @throws EntryDoesNotExistDaoException
      */
-    public function get(string $name, string $moduleId, int $shopId): ShopModuleSetting
+    public function get(string $name, string $moduleId, int $shopId): SettingInterface
     {
         /**
          * The same entity was splitted between two tables.
@@ -121,13 +125,11 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
             $this->getDataFromOxConfigDisplayTable($name, $moduleId)
         );
 
-        $setting = new ShopModuleSetting();
-        $setting
-            ->setName($name)
-            ->setValue($this->shopSettingEncoder->decode($settingsData['type'], $settingsData['value']))
-            ->setShopId($shopId)
-            ->setModuleId($moduleId)
-            ->setType($settingsData['type']);
+        $setting = $this->settingFactory->create(
+            $settingsData['type'],
+            $name,
+            $this->shopSettingEncoder->decode($settingsData['type'], $settingsData['value'])
+        );
 
         if (isset($settingsData['oxvarconstraint'])
             && is_string($settingsData['oxvarconstraint'])
@@ -151,10 +153,7 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
         return $setting;
     }
 
-    /**
-     * @param ShopModuleSetting $shopModuleSetting
-     */
-    private function saveDataToOxConfigTable(ShopModuleSetting $shopModuleSetting)
+    private function saveDataToOxConfigTable(SettingInterface $setting, string $moduleId, int $shopId)
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -169,13 +168,13 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
             ])
             ->setParameters([
                 'id'        => $this->shopAdapter->generateUniqueId(),
-                'moduleId'  => $this->getPrefixedModuleId($shopModuleSetting->getModuleId()),
-                'shopId'    => $shopModuleSetting->getShopId(),
-                'name'      => $shopModuleSetting->getName(),
-                'type'      => $shopModuleSetting->getType(),
+                'moduleId'  => $this->getPrefixedModuleId($moduleId),
+                'shopId'    => $shopId,
+                'name'      => $setting->getName(),
+                'type'      => $this->getSettingType($setting),
                 'value'     => $this->shopSettingEncoder->encode(
-                    $shopModuleSetting->getType(),
-                    $shopModuleSetting->getValue()
+                    $this->getSettingType($setting),
+                    $setting->getValue()
                 ),
                 'key'       => $this->context->getConfigurationEncryptionKey(),
             ]);
@@ -186,7 +185,7 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
     /**
      * @param ShopModuleSetting $shopModuleSetting
      */
-    private function saveDataToOxConfigDisplayTable(ShopModuleSetting $shopModuleSetting)
+    private function saveDataToOxConfigDisplayTable(SettingInterface $setting, string $moduleId, int $shopId)
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -201,11 +200,11 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
             ])
             ->setParameters([
                 'id'            => $this->shopAdapter->generateUniqueId(),
-                'moduleId'      => $this->getPrefixedModuleId($shopModuleSetting->getModuleId()),
-                'name'          => $shopModuleSetting->getName(),
-                'groupName'     => $shopModuleSetting->getGroupName(),
-                'position'      => $shopModuleSetting->getPositionInGroup(),
-                'constraints'   => implode('|', $shopModuleSetting->getConstraints()),
+                'moduleId'      => $this->getPrefixedModuleId($moduleId),
+                'name'          => $setting->getName(),
+                'groupName'     => $setting->getGroupName(),
+                'position'      => $setting->getPositionInGroup(),
+                'constraints'   => implode('|', $setting->getConstraints()),
             ]);
 
         $queryBuilder->execute();
@@ -267,10 +266,7 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
         return $result ?? [];
     }
 
-    /**
-     * @param ShopModuleSetting $shopModuleSetting
-     */
-    private function deleteFromOxConfigTable(ShopModuleSetting $shopModuleSetting)
+    private function deleteFromOxConfigTable(SettingInterface $setting, string $moduleId, int $shopId): void
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -279,18 +275,15 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
             ->andWhere('oxvarname = :name')
             ->andWhere('oxmodule = :moduleId')
             ->setParameters([
-                'shopId'    => $shopModuleSetting->getShopId(),
-                'name'      => $shopModuleSetting->getName(),
-                'moduleId'  => $this->getPrefixedModuleId($shopModuleSetting->getModuleId()),
+                'shopId'    => $shopId,
+                'name'      => $setting->getName(),
+                'moduleId'  => $this->getPrefixedModuleId($moduleId),
             ]);
 
         $queryBuilder->execute();
     }
 
-    /**
-     * @param ShopModuleSetting $shopModuleSetting
-     */
-    private function deleteFromOxConfigDisplayTable(ShopModuleSetting $shopModuleSetting)
+    private function deleteFromOxConfigDisplayTable(SettingInterface $setting, string $moduleId): void
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -298,8 +291,8 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
             ->where('oxcfgmodule = :moduleId')
             ->andWhere('oxcfgvarname = :name')
             ->setParameters([
-                'moduleId'  => $this->getPrefixedModuleId($shopModuleSetting->getModuleId()),
-                'name'      => $shopModuleSetting->getName(),
+                'moduleId'  => $this->getPrefixedModuleId($moduleId),
+                'name'      => $setting->getName(),
             ]);
 
         $queryBuilder->execute();
@@ -312,5 +305,32 @@ class ShopModuleSettingDao implements ShopModuleSettingDaoInterface
     private function getPrefixedModuleId(string $moduleId): string
     {
         return 'module:' . $moduleId;
+    }
+
+    private function getSettingType(SettingInterface $setting): string
+    {
+        if ($setting instanceof BooleanSetting) {
+            return ShopSettingType::BOOLEAN;
+        }
+
+        if ($setting instanceof IntegerSetting) {
+            return ShopSettingType::INTEGER;
+        }
+
+        if ($setting instanceof StringSetting) {
+            return ShopSettingType::STRING;
+        }
+
+        if ($setting instanceof ArraySetting) {
+            return ShopSettingType::ASSOCIATIVE_ARRAY;
+        }
+
+        if ($setting instanceof PasswordSetting) {
+            return ShopSettingType::PASSWORD;
+        }
+
+        if ($setting instanceof SelectSetting) {
+            return ShopSettingType::SELECT;
+        }
     }
 }

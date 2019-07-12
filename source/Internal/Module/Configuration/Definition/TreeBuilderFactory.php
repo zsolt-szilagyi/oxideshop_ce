@@ -61,6 +61,8 @@ class TreeBuilderFactory implements TreeBuilderFactoryInterface
                             ->arrayNode(ModuleConfigurationMappingKeys::CLASS_EXTENSIONS)
                                 ->scalarPrototype()->end()
                             ->end()
+                            ->variableNode(ModuleConfigurationMappingKeys::MODULE_SETTINGS)
+                            ->end()
                             ->arrayNode('settings')
                                 ->children()
                                     ->arrayNode(ModuleSetting::CONTROLLERS)

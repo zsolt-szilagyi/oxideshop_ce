@@ -72,7 +72,7 @@ class ShopConfigurationSettingDaoTest extends TestCase
 
         $settingDao->save($shopConfigurationSetting);
 
-        $this->assertSame(
+        $this->assertEquals(
             $settingDao->get($name, 1)->getValue(),
             Registry::getConfig()->getShopConfVar($name, 1)
         );

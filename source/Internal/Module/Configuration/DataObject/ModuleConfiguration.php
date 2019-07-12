@@ -8,6 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject;
 
 use function in_array;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration\ClassExtension;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingInterface;
 
 /**
  * @internal
@@ -71,6 +72,11 @@ class ModuleConfiguration
      * @var ClassExtension[]
      */
     private $classExtensions = [];
+
+    /**
+     * @var SettingInterface[]
+     */
+    private $moduleSettings = [];
 
     /**
      * @return string
@@ -378,5 +384,23 @@ class ModuleConfiguration
         }
 
         return false;
+    }
+
+    /**
+     * @return SettingInterface[]
+     */
+    public function getModuleSettings(): array
+    {
+        return $this->moduleSettings;
+    }
+
+    /**
+     * @param SettingInterface $setting
+     * @return ModuleConfiguration
+     */
+    public function addModuleSetting(SettingInterface $setting): ModuleConfiguration
+    {
+        $this->moduleSettings[] = $setting;
+        return $this;
     }
 }

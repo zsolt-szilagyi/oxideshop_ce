@@ -17,6 +17,8 @@ use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\Environme
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ProjectConfiguration;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\ArraySetting;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\BooleanSetting;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\ContainerTrait;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use PHPUnit\Framework\TestCase;
@@ -191,6 +193,11 @@ class ProjectConfigurationDaoTest extends TestCase
                 'en' => 'no',
             ]);
 
+        $moduleSetting = new ArraySetting('array', [1, 2]);
+        $moduleSetting->setGroupName('group');
+        $moduleSetting->setPositionInGroup(7);
+        $moduleSetting->setConstraints([5, 6]);
+
         $moduleConfiguration
             ->addSetting(new ModuleSetting(
                 ModuleSetting::CONTROLLERS,
@@ -234,19 +241,9 @@ class ProjectConfigurationDaoTest extends TestCase
                 new ClassExtension('otherOriginalClassNamespace',
                     'moduleClassNamespace')
             )
-            ->addSetting(new ModuleSetting(
-                ModuleSetting::SHOP_MODULE_SETTING,
-                [
-                    [
-                        'group'         => 'frontend',
-                        'name'          => 'sGridRow',
-                        'type'          => 'str',
-                        'value'         => 'row',
-                        'position'      => '2',
-                        'constraints'   => ['first', 'second'],
-                    ],
-                ]
-            ))
+            ->addModuleSetting(
+                $moduleSetting
+            )
             ->addSetting(new ModuleSetting(
                 ModuleSetting::EVENTS,
                 [

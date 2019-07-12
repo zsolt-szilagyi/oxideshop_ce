@@ -7,9 +7,12 @@
 namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Module\Setup\Handler;
 
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleConfiguration;
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSettingDaoInterface;
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Configuration\DataObject\ModuleSetting;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\BooleanSetting;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingDaoInterface;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingFactory;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingInterface;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\StringSetting;
 use OxidEsales\EshopCommunity\Internal\Module\Setup\Handler\ShopModuleSettingModuleSettingHandler;
 use PHPUnit\Framework\TestCase;
 
@@ -28,13 +31,13 @@ class ShopModuleSettingModuleSettingHandlerTest extends TestCase
 
         $shopModuleSetting = $this->getTestShopModuleSetting();
 
-        $shopModuleSettingDao = $this->getMockBuilder(ShopModuleSettingDaoInterface::class)->getMock();
+        $shopModuleSettingDao = $this->getMockBuilder(SettingDaoInterface::class)->getMock();
         $shopModuleSettingDao
             ->expects($this->once())
             ->method('save')
             ->with($shopModuleSetting);
 
-        $handler = new ShopModuleSettingModuleSettingHandler($shopModuleSettingDao);
+        $handler = new ShopModuleSettingModuleSettingHandler($shopModuleSettingDao, new SettingFactory());
         $handler->handleOnModuleActivation($moduleConfiguration, 1);
     }
 
@@ -48,13 +51,13 @@ class ShopModuleSettingModuleSettingHandlerTest extends TestCase
 
         $shopModuleSetting = $this->getTestShopModuleSetting();
 
-        $shopModuleSettingDao = $this->getMockBuilder(ShopModuleSettingDaoInterface::class)->getMock();
+        $shopModuleSettingDao = $this->getMockBuilder(SettingDaoInterface::class)->getMock();
         $shopModuleSettingDao
             ->expects($this->once())
             ->method('delete')
             ->with($shopModuleSetting);
 
-        $handler = new ShopModuleSettingModuleSettingHandler($shopModuleSettingDao);
+        $handler = new ShopModuleSettingModuleSettingHandler($shopModuleSettingDao, new SettingFactory());
         $handler->handleOnModuleDeactivation($moduleConfiguration, 1);
     }
 
@@ -65,8 +68,8 @@ class ShopModuleSettingModuleSettingHandlerTest extends TestCase
             [
                 [
                     'name'          => 'blCustomGridFramework',
-                    'type'          => 'bool',
-                    'value'         => 'false',
+                    'type'          => 'str',
+                    'value'         => 'string',
                     'constraints'   => ['1', '2', '3',],
                     'group'         => 'frontend',
                     'position'      => 5,
@@ -75,19 +78,13 @@ class ShopModuleSettingModuleSettingHandlerTest extends TestCase
         );
     }
 
-    private function getTestShopModuleSetting(): ShopModuleSetting
+    private function getTestShopModuleSetting(): SettingInterface
     {
-        $shopModuleSetting = new ShopModuleSetting();
-        $shopModuleSetting
-            ->setName('blCustomGridFramework')
-            ->setValue('false')
-            ->setType('bool')
-            ->setShopId(1)
-            ->setModuleId('testModule')
-            ->setConstraints(['1', '2', '3',])
-            ->setGroupName('frontend')
-            ->setPositionInGroup(5);
+        $setting = new StringSetting('blCustomGridFramework', 'string');
+        $setting->setConstraints(['1', '2', '3',]);
+        $setting->setGroupName('frontend');
+        $setting->setPositionInGroup(5);
 
-        return $shopModuleSetting;
+        return $setting;
     }
 }

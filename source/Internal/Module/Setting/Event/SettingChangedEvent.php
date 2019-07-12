@@ -1,21 +1,17 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
-
-namespace OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\Event;
+namespace OxidEsales\EshopCommunity\Internal\Module\Setting\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class ShopModuleSettingChangedEvent
- *
- * @package OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\Event
  */
-class ShopModuleSettingChangedEvent extends Event
+class SettingChangedEvent extends Event
 {
     const NAME = self::class;
 

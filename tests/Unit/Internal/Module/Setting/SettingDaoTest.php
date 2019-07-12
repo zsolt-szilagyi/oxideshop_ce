@@ -4,21 +4,22 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Module\ShopModuleSetting;
+namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Module\Setting;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\Configuration\Utility\ShopSettingEncoderInterface;
 use OxidEsales\EshopCommunity\Internal\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Common\Database\TransactionServiceInterface;
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSetting;
-use OxidEsales\EshopCommunity\Internal\Module\ShopModuleSetting\ShopModuleSettingDao;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\BooleanSetting;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingDao;
+use OxidEsales\EshopCommunity\Internal\Module\Setting\SettingFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Utility\ContextInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-class ShopModuleSettingDaoTest extends TestCase
+class SettingDaoTest extends TestCase
 {
     /**
      * @expectedException \Exception
@@ -35,14 +36,15 @@ class ShopModuleSettingDaoTest extends TestCase
             ->expects($this->once())
             ->method('rollback');
 
-        $shopModuleSettingDao = new ShopModuleSettingDao(
+        $settingDao = new SettingDao(
             $queryBuilderFactory,
             $this->getMockBuilder(ContextInterface::class)->getMock(),
             $this->getMockBuilder(ShopSettingEncoderInterface::class)->getMock(),
             $this->getMockBuilder(ShopAdapterInterface::class)->getMock(),
-            $transactionService
+            $transactionService,
+            $this->getMockBuilder(SettingFactoryInterface::class)->getMock()
         );
 
-        $shopModuleSettingDao->save(new ShopModuleSetting());
+        $settingDao->save(new BooleanSetting('name', true), 'moduleId', 1);
     }
 }
