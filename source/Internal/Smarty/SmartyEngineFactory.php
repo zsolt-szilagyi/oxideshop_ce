@@ -42,7 +42,7 @@ class SmartyEngineFactory implements TemplateEngineFactoryInterface
     /**
      * @return TemplateEngineInterface
      */
-    public function getEngine(): TemplateEngineInterface
+    public function getTemplateEngine(): TemplateEngineInterface
     {
         $smarty = $this->smartyBuilder
             ->setSettings($this->smartyConfiguration->getSettings())

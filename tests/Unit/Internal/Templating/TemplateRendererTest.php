@@ -42,9 +42,9 @@ class TemplateRendererTest extends \PHPUnit\Framework\TestCase
     {
         $engine = $this->getEngineMock();
 
-        $delegatingEngine = new TemplateRenderer($engine);
+        $renderer= new TemplateRenderer($engine);
 
-        $this->assertSame($engine, $delegatingEngine->getEngine());
+        $this->assertSame($engine, $renderer->getTemplateEngine());
     }
 
     public function testExists()

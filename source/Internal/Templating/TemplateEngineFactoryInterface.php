@@ -15,5 +15,5 @@ interface TemplateEngineFactoryInterface
     /**
      * @return TemplateEngineInterface
      */
-    public function getEngine(): TemplateEngineInterface;
+    public function getTemplateEngine(): TemplateEngineInterface;
 }

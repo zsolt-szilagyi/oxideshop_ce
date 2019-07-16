@@ -33,7 +33,7 @@ interface TemplateRendererInterface
     /**
      * @return TemplateEngineInterface
      */
-    public function getEngine(): TemplateEngineInterface;
+    public function getTemplateEngine(): TemplateEngineInterface;
 
     /**
      * Returns true if the template exists.

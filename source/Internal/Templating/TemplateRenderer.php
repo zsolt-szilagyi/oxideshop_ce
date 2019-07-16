@@ -14,14 +14,14 @@ class TemplateRenderer implements TemplateRendererInterface
     /**
      * @var TemplateEngineInterface
      */
-    private $engine;
+    private $templateEngine;
 
     /**
-     * @param TemplateEngineInterface $engine
+     * @param TemplateEngineInterface $templateEngine
      */
-    public function __construct(TemplateEngineInterface $engine)
+    public function __construct(TemplateEngineInterface $templateEngine)
     {
-        $this->engine = $engine;
+        $this->templateEngine = $templateEngine;
     }
 
     /**
@@ -32,7 +32,7 @@ class TemplateRenderer implements TemplateRendererInterface
      */
     public function renderTemplate(string $template, array $context = []): string
     {
-        return $this->getEngine()->render($template, $context);
+        return $this->getTemplateEngine()->render($template, $context);
     }
 
     /**
@@ -46,7 +46,7 @@ class TemplateRenderer implements TemplateRendererInterface
      */
     public function renderFragment(string $fragment, string $fragmentId, array $context = []): string
     {
-        return $this->getEngine()->renderFragment($fragment, $fragmentId, $context);
+        return $this->getTemplateEngine()->renderFragment($fragment, $fragmentId, $context);
     }
 
     /**
@@ -54,9 +54,9 @@ class TemplateRenderer implements TemplateRendererInterface
      *
      * @return TemplateEngineInterface
      */
-    public function getEngine(): TemplateEngineInterface
+    public function getTemplateEngine(): TemplateEngineInterface
     {
-        return $this->engine;
+        return $this->templateEngine;
     }
 
     /**
@@ -68,6 +68,6 @@ class TemplateRenderer implements TemplateRendererInterface
      */
     public function exists(string $name): bool
     {
-        return $this->getEngine()->exists($name);
+        return $this->getTemplateEngine()->exists($name);
     }
 }
