@@ -4,11 +4,14 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Internal\Smarty;
+namespace OxidEsales\EshopCommunity\Internal\Smarty\Bridge;
 
 use OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Templating\TemplateRendererInterface;
 
+/**
+ * Class SmartyTemplateRendererBridge
+ */
 class SmartyTemplateRendererBridge implements TemplateRendererBridgeInterface
 {
     /**
@@ -29,7 +32,7 @@ class SmartyTemplateRendererBridge implements TemplateRendererBridgeInterface
     /**
      * @return TemplateRendererInterface
      */
-    public function getTemplateRenderer()
+    public function getTemplateRenderer(): TemplateRendererInterface
     {
         return $this->renderer;
     }

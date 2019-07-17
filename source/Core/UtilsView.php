@@ -451,6 +451,10 @@ class UtilsView extends \OxidEsales\Eshop\Core\Base
     {
         $config = $this->getConfig();
         $smarty->compile_check = $config->getConfigParam('blCheckTemplates');
+        if ($config->isProductiveMode()) {
+            // override in any case
+            $smarty->compile_check = false;
+        }
     }
 
     /**

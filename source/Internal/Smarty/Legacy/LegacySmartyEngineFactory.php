@@ -4,7 +4,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Internal\Smarty;
+namespace OxidEsales\EshopCommunity\Internal\Smarty\Legacy;
 
 use OxidEsales\EshopCommunity\Internal\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Smarty\Bridge\SmartyEngineBridgeInterface;
@@ -13,7 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Templating\TemplateEngineInterface;
 
 /**
  * Class LegacySmartyEngineFactory
- * @package OxidEsales\EshopCommunity\Internal\Smarty
+ * @internal
  */
 class LegacySmartyEngineFactory implements TemplateEngineFactoryInterface
 {

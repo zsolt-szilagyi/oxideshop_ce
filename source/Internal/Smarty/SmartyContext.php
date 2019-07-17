@@ -100,7 +100,12 @@ class SmartyContext implements SmartyContextInterface
      */
     public function getTemplateCompileCheckMode(): bool
     {
-        return (bool) $this->getConfigParameter('blCheckTemplates');
+        $compileCheck = (bool) $this->getConfigParameter('blCheckTemplates');
+        if ($this->config->isProductiveMode()) {
+            // override in any case
+            $compileCheck = false;
+        }
+        return $compileCheck;
     }
 
     /**

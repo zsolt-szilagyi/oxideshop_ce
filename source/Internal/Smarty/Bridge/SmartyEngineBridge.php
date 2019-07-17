@@ -8,7 +8,7 @@ namespace OxidEsales\EshopCommunity\Internal\Smarty\Bridge;
 
 /**
  * Class SmartyEngineBridge
- * @package OxidEsales\EshopCommunity\Internal\Smarty\Bridge
+ * @internal
  */
 class SmartyEngineBridge implements SmartyEngineBridgeInterface
 {

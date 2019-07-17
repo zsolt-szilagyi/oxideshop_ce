@@ -30,7 +30,7 @@ class SmartyRenderer
             ->get(TemplateRendererBridgeInterface::class)
             ->getTemplateRenderer();
         return $renderer->renderTemplate($sTemplateName, $aViewData);
-        }
+    }
 
     /**
      * @internal

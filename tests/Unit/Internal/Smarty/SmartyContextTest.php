@@ -102,6 +102,21 @@ class SmartyContextTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(true, $smartyContext->getTemplateCompileCheckMode());
     }
 
+    public function testGetTemplateCompileCheckModeInProductiveMode()
+    {
+        $config = $this->getConfigMock();
+        $config->method('getConfigParam')
+            ->with('blCheckTemplates')
+            ->will($this->returnValue(true));
+        $config->method('isProductiveMode')
+            ->will($this->returnValue(true));
+
+        $utilsView = $this->getUtilsViewMock();
+
+        $smartyContext = new SmartyContext(new BasicContextStub(), $config, $utilsView);
+        $this->assertFalse($smartyContext->getTemplateCompileCheckMode());
+    }
+
     public function testGetTemplatePhpHandlingMode()
     {
         $config = $this->getConfigMock();

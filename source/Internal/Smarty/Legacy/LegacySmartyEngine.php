@@ -4,14 +4,14 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Internal\Smarty;
+namespace OxidEsales\EshopCommunity\Internal\Smarty\Legacy;
 
 use OxidEsales\EshopCommunity\Internal\Smarty\Bridge\SmartyEngineBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Templating\TemplateEngineInterface;
 
 /**
  * Class SmartyEngine
- * @package OxidEsales\EshopCommunity\Internal\Smarty
+ * @internal
  */
 class LegacySmartyEngine implements LegacySmartyEngineInterface, TemplateEngineInterface
 {
@@ -149,7 +149,7 @@ class LegacySmartyEngine implements LegacySmartyEngineInterface, TemplateEngineI
     /**
      * @return \Smarty
      */
-    public function getSmarty()
+    public function getSmarty(): \Smarty
     {
         return $this->engine;
     }
@@ -157,7 +157,7 @@ class LegacySmartyEngine implements LegacySmartyEngineInterface, TemplateEngineI
     /**
      * @param \Smarty $smarty
      */
-    public function setSmarty($smarty)
+    public function setSmarty(\Smarty $smarty)
     {
         $this->engine = $smarty;
     }

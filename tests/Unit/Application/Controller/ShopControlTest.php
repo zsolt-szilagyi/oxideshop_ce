@@ -343,10 +343,10 @@ class ShopControlTest extends \OxidTestCase
      */
     public function testProcess()
     {
-        ContainerFactory::resetContainer();
         if ($this->getTestConfig()->getShopEdition() == 'EE') {
             $this->markTestSkipped('This test is for Community/Professional edition only.');
         }
+        ContainerFactory::resetContainer();
         $this->getConfig()->setConfigParam('sTheme', 'azure');
 
         $controllerClassName = 'content';
@@ -386,10 +386,10 @@ class ShopControlTest extends \OxidTestCase
 
     public function testProcessJson()
     {
-        ContainerFactory::resetContainer();
         if ($this->getTestConfig()->getShopEdition() == 'EE') {
             $this->markTestSkipped('This test is for Community/Professional edition only.');
         }
+        ContainerFactory::resetContainer();
         $this->getConfig()->setConfigParam('sTheme', 'azure');
 
         $controllerClassName = 'content';
@@ -433,10 +433,10 @@ class ShopControlTest extends \OxidTestCase
 
     public function testProcessJsonWithErrors()
     {
-        ContainerFactory::resetContainer();
         if ($this->getTestConfig()->getShopEdition() == 'EE') {
             $this->markTestSkipped('This test is for Community/Professional edition only.');
         }
+        ContainerFactory::resetContainer();
         $this->getConfig()->setConfigParam('sTheme', 'azure');
 
         $controllerClassName = 'content';

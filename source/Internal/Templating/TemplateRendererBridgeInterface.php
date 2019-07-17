@@ -6,13 +6,15 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Templating;
 
-
+/**
+ * Interface TemplateRendererBridgeInterface
+ */
 interface TemplateRendererBridgeInterface
 {
     /**
      * @return TemplateRendererInterface
      */
-    public function getTemplateRenderer();
+    public function getTemplateRenderer(): TemplateRendererInterface;
 
     /**
      * @param mixed $engine

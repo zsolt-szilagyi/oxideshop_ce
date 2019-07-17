@@ -4,22 +4,21 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Internal\Smarty;
+namespace OxidEsales\EshopCommunity\Internal\Smarty\Legacy;
 
 /**
  * Class LegacySmartyEngineInterface
- *
- * @package OxidEsales\EshopCommunity\Internal\Smarty
+ * @internal
  */
 interface LegacySmartyEngineInterface
 {
     /**
      * @return \Smarty
      */
-    public function getSmarty();
+    public function getSmarty(): \Smarty;
 
     /**
      * @param \Smarty $smarty
      */
-    public function setSmarty($smarty);
+    public function setSmarty(\Smarty $smarty);
 }
