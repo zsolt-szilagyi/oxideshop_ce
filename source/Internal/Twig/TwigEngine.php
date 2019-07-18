@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
- *
- * @author Jędrzej Skoczek & Tomasz Kowalewski
  */
 
 namespace OxidEsales\EshopCommunity\Internal\Twig;
@@ -55,6 +53,8 @@ class TwigEngine implements TemplateEngineInterface
      * @param array  $context An array of parameters to pass to the template
      *
      * @return string The evaluated template as a string
+     *
+     * @throws \RuntimeException if the template cannot be rendered
      */
     public function render(string $name, array $context = []): string
     {
@@ -67,6 +67,8 @@ class TwigEngine implements TemplateEngineInterface
      * @param string $name A template name
      *
      * @return bool true if the template exists, false otherwise
+     *
+     * @throws \RuntimeException if the engine cannot handle the template name
      */
     public function exists(string $name): bool
     {

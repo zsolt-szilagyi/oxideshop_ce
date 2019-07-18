@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
@@ -57,7 +57,7 @@ class AssignAdvancedExtension extends AbstractExtension
     public function assignAdvanced(string $value): string
     {
         /** @var AssignAdvancedLogic $oxgetseourlLogic */
-        $assignAdvancedLogic = new AssignAdvancedLogic();
+        $assignAdvancedLogic = ContainerFactory::getInstance()->getContainer()->get(AssignAdvancedLogic::class);
         $formattedValue = $assignAdvancedLogic->formatValue($value);
 
         return $formattedValue;

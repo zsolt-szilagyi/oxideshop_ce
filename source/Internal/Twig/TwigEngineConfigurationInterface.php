@@ -1,15 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
- *
- * @author Jędrzej Skoczek & Tomasz Kowalewski
  */
 
 namespace OxidEsales\EshopCommunity\Internal\Twig;
 
 /**
- * Interface TemplateEngineConfigurationInterface
+ * Interface TwigEngineConfigurationInterface
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig
  */
