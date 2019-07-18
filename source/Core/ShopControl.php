@@ -462,9 +462,14 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
         // render it
         $templateName = $view->render();
 
-        // check if template dir exists
-        $templateFile = $this->getConfig()->getTemplatePath($templateName, $this->isAdmin());
-        if (!file_exists($templateFile)) {
+        // check if template exists
+        /** @var TemplateLoaderInterface $templateLoader */
+        $templateLoader = $this->getContainer()->get('oxid_esales.templating.template.loader');
+        if ($this->isAdmin()) {
+            $templateLoader = $this->getContainer()->get('oxid_esales.templating.admin.template.loader');
+        }
+
+        if (!$templateLoader->exists($templateName)) {
             $ex = oxNew(\OxidEsales\Eshop\Core\Exception\SystemComponentException::class);
             $ex->setMessage('EXCEPTION_SYSTEMCOMPONENT_TEMPLATENOTFOUND' . ' ' . $templateName);
             $ex->setComponent($templateName);

@@ -6,7 +6,7 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Smarty\Extension;
 
-use OxidEsales\EshopCommunity\Internal\Smarty\SmartyContextInterface;
+use OxidEsales\EshopCommunity\Internal\Templating\TemplateLoaderInterface;
 
 /**
  * Default Template Handler
@@ -16,16 +16,16 @@ use OxidEsales\EshopCommunity\Internal\Smarty\SmartyContextInterface;
 class SmartyDefaultTemplateHandler
 {
     /**
-     * @var SmartyContextInterface
+     * @var TemplateLoaderInterface
      */
-    private static $context;
+    private static $loader;
 
     /**
-     * @param SmartyContextInterface $context
+     * @param TemplateLoaderInterface $loader
      */
-    public function __construct(SmartyContextInterface $context)
+    public function __construct(TemplateLoaderInterface $loader)
     {
-        self::$context = $context;
+        self::$loader = $loader;
     }
 
     /**
@@ -41,9 +41,9 @@ class SmartyDefaultTemplateHandler
      */
     public function handleTemplate($resourceType, $resourceName, &$resourceContent, &$resourceTimestamp, $smarty)
     {
-        $config = self::$context;
+        $loader = self::$loader;
         if ($resourceType === 'file' && !is_readable($resourceName)) {
-            $resourceName = $config->getTemplatePath($resourceName);
+            $resourceName = $loader->getPath($resourceName);
             $fileLoaded = is_file($resourceName) && is_readable($resourceName);
             if ($fileLoaded) {
                 $resourceContent = $smarty->_read_file($resourceName);
