@@ -59,7 +59,7 @@ class TwigContext implements TwigContextInterface
      */
     public function getIsDebug(): bool
     {
-        return $this->config->getConfigParam('iDebug', false);
+        return (bool) $this->config->getConfigParam('iDebug', false);
     }
 
     /**
