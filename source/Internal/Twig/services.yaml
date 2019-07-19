@@ -36,6 +36,12 @@ services:
       - '@twig'
     public: false
 
+  OxidEsales\EshopCommunity\Internal\Templating\TemplateEngineInterface:
+    class: OxidEsales\EshopCommunity\Internal\Twig\TwigEngine
+    arguments:
+      - '@twig'
+    public: false
+
   OxidEsales\EshopCommunity\Internal\Twig\TemplateLoaderNameParser:
     class: OxidEsales\EshopCommunity\Internal\Twig\TemplateLoaderNameParser
     public: false

@@ -79,8 +79,9 @@ class DateFormatExtension extends AbstractExtension
         if (empty($string)) {
             // use "now":
             $time = time();
-        } elseif (preg_match('/^\d{14}$/', $string)) {
+        } elseif (is_numeric($string) && strlen((string)$string) === 14) {
             // it is mysql timestamp format of YYYYMMDDHHMMSS?
+            $string = (string)$string;
             $time = mktime(
                 substr($string, 8, 2),
                 substr($string, 10, 2),

@@ -55,11 +55,13 @@ class ContainerBuilder
         $symfonyContainer->addCompilerPass(new GraphQlTypePass());
         $symfonyContainer->addCompilerPass(new AddConsoleCommandPass());
 
-        if (class_exists(\OxidEsales\EshopCommunity\Internal\Twig\DependencyInjection\Compiler\TwigEnvironmentPass::class)) {
+        try {
             $symfonyContainer
                 ->addCompilerPass(new \OxidEsales\EshopCommunity\Internal\Twig\DependencyInjection\Compiler\TwigEnvironmentPass())
                 ->addCompilerPass(new \OxidEsales\EshopCommunity\Internal\Twig\DependencyInjection\Compiler\TwigLoaderPass())
                 ->addCompilerPass(new \OxidEsales\EshopCommunity\Internal\Twig\DependencyInjection\Compiler\TwigEscaperPass());
+        } catch (\Exception $exception) {
+            // Skip loading Twig compilers if there are any problems
         }
 
         $this->loadServiceFiles($symfonyContainer);
