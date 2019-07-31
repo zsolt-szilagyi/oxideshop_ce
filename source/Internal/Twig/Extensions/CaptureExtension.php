@@ -14,7 +14,6 @@ use Twig\TokenParser\TokenParserInterface;
  * Class CaptureExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Extensions
- * @author  Jędrzej Skoczek
  */
 class CaptureExtension extends AbstractExtension
 {

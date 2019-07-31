@@ -13,8 +13,6 @@ use Twig\Environment;
 
 /**
  * Class HexEntityEscaperTest
- *
- * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
 class HexEntityEscaperTest extends UnitTestCase
 {

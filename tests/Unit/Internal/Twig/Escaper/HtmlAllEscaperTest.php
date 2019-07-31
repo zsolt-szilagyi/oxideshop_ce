@@ -13,8 +13,6 @@ use Twig\Environment;
 
 /**
  * Class HtmlAllEscaperTest
- *
- * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
 class HtmlAllEscaperTest extends UnitTestCase
 {

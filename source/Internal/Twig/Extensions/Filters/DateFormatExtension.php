@@ -14,7 +14,6 @@ use Twig\TwigFilter;
  * Class DateFormatExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters
- * @author  Jędrzej Skoczek
  */
 class DateFormatExtension extends AbstractExtension
 {

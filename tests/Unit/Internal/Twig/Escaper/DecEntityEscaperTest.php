@@ -13,8 +13,6 @@ use Twig\Environment;
 
 /**
  * Class DecEntityEscaperTest
- *
- * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
 class DecEntityEscaperTest extends UnitTestCase
 {

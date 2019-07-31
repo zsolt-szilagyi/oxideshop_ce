@@ -14,8 +14,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class TwigEscaperPass
- *
- * @author Tomasz Kowalewski (t.kowalewski@createit.pl)
  */
 class TwigEscaperPass implements CompilerPassInterface
 {

@@ -13,7 +13,6 @@ use Twig\TwigFunction;
  * Class PhpFunctionsExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Extensions
- * @author  Jędrzej Skoczek
  * @deprecated
  */
 class PhpFunctionsExtension extends AbstractExtension

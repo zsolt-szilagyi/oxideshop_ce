@@ -14,7 +14,6 @@ use Twig\TwigFilter;
  * Class FormatTimeExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Filters
- * @author  Jędrzej Skoczek
  */
 class FormatTimeExtension extends AbstractExtension
 {

@@ -13,7 +13,6 @@ use Twig\TwigFilter;
  * Class PhpFunctionsExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Extensions\Filters
- * @author  Jędrzej Skoczek
  * @deprecated
  */
 class PhpFunctionsExtension extends AbstractExtension

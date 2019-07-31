@@ -15,7 +15,6 @@ use Twig\TwigFunction;
  * Class TranslateExtension
  *
  * @package OxidEsales\EshopCommunity\Internal\Twig\Extensions
- * @author  Jędrzej Skoczek
  */
 class TranslateExtension extends AbstractExtension
 {
