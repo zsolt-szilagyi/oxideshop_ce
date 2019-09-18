@@ -1,0 +1,35 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerFactoryInterface:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerFactory
+    public: true
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerFactory:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerFactory
+    arguments:
+       $context: '@OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContextInterface'
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContextInterface:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\PsrLoggerFactoryInterface:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\PsrLoggerFactory
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\PsrLoggerFactory:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\PsrLoggerFactory
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\AdminLogger:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\AdminLogger
+    arguments:
+      $queryFilter: '@OxidEsales\EshopCommunity\Internal\Database\Logger\QueryFilter'
+      $context: '@OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContextInterface'
+      $psrLogger: '@Monolog\Logger'
+
+  OxidEsales\EshopCommunity\Internal\Database\Logger\QueryFilter:
+    class: OxidEsales\EshopCommunity\Internal\Database\Logger\QueryFilter
