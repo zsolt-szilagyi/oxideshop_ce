@@ -8,7 +8,8 @@ services:
     class: OxidEsales\EshopCommunity\Internal\Logger\Configuration\MonologConfiguration
     arguments:
       $loggerName: 'OXID Logger'
-      $context: '@OxidEsales\EshopCommunity\Internal\Utility\ContextInterface'
+      $logFilePath: '@utility.context.get_log_file_path'
+      $logLevel: '@utility.context.get_log_level'
   OxidEsales\EshopCommunity\Internal\Logger\Factory\LoggerFactoryInterface:
     class: OxidEsales\EshopCommunity\Internal\Logger\Factory\MonologLoggerFactory
   Monolog\Logger:
@@ -19,3 +20,9 @@ services:
     arguments:
       $logger: '@Monolog\Logger'
     public: true
+  utility.context.get_log_file_path:
+    class: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface
+    factory: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface:getLogFilePath
+  utility.context.get_log_level:
+    class: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface
+    factory: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface:getLogLevel
