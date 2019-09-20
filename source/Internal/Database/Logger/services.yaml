@@ -14,6 +14,7 @@ services:
 
   OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContextInterface:
     class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext
+    public: true
 
   OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext:
     class: OxidEsales\EshopCommunity\Internal\Database\Logger\DatabaseLoggerContext
