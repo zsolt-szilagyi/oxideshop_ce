@@ -1097,7 +1097,7 @@ class ViewConfig extends \OxidEsales\Eshop\Core\Base
     public function getShowBasketTimeout()
     {
         return Registry::getConfig()->getConfigParam('blPsBasketReservationEnabled')
-               && (Registry::getSession()->getBasketReservations()->getTimeLeft() > 0);
+               && ($this->getSession()->getBasketReservations()->getTimeLeft() > 0);
     }
 
     /**
