@@ -43,6 +43,16 @@ class QueryBuilderFactoryTest extends \PHPUnit\Framework\TestCase
                 $this->equalTo(PDO::FETCH_ASSOC)
             );
 
+        $queryBuilder = $this
+            ->getMockBuilder(QueryBuilder::class)
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $connection
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
         $queryBuilderFactory = new QueryBuilderFactory($connection);
         $queryBuilderFactory->create();
     }
