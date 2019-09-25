@@ -4,6 +4,7 @@ services:
     public: false
   OxidEsales\EshopCommunity\Internal\Logger\Validator\LoggerConfigurationValidatorInterface:
     class: OxidEsales\EshopCommunity\Internal\Logger\Validator\PsrLoggerConfigurationValidator
+    public: true
   OxidEsales\EshopCommunity\Internal\Logger\Configuration\MonologConfigurationInterface:
     class: OxidEsales\EshopCommunity\Internal\Logger\Configuration\MonologConfiguration
     arguments:
