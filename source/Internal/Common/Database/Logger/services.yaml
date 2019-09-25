@@ -1,0 +1,44 @@
+services:
+  _defaults:
+    autowire: true
+    public: true
+
+  OxidEsales\EshopCommunity\Internal\Common\Database\Logger\DatabaseLoggerFactoryInterface:
+    class: OxidEsales\EshopCommunity\Internal\Common\Database\Logger\DatabaseLoggerFactory
+    arguments:
+      $queryLogger: '@OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryLogger'
+      $nullLogger: '@OxidEsales\EshopCommunity\Internal\Common\Database\Logger\NullLogger'
+
+  OxidEsales\EshopCommunity\Internal\Common\Database\Logger\NullLogger:
+    class: OxidEsales\EshopCommunity\Internal\Common\Database\Logger\NullLogger
+
+  OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryLogger:
+    class: OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryLogger
+    arguments:
+      $queryFilter: '@OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryFilterInterface'
+      $psrLogger: '@database.psr_logger'
+
+  OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryFilterInterface:
+    class: OxidEsales\EshopCommunity\Internal\Common\Database\Logger\QueryFilter
+
+  OxidEsales\EshopCommunity\Internal\Logger\Factory\MonologLoggerFactory:
+    class: OxidEsales\EshopCommunity\Internal\Logger\Factory\MonologLoggerFactory
+    arguments:
+      $configuration: '@database.logger.monolog_configuration'
+      $configurationValidator: '@OxidEsales\EshopCommunity\Internal\Logger\Validator\LoggerConfigurationValidatorInterface'
+
+  database.logger.monolog_configuration:
+    class: OxidEsales\EshopCommunity\Internal\Logger\Configuration\MonologConfiguration
+    arguments:
+      $loggerName: 'OXID Admin Logger'
+      $logFilePath: '@utility.context.get_admin_log_file_path'
+      $logLevel: !php/const Psr\Log\LogLevel::DEBUG
+
+  database.psr_logger:
+    class: OxidEsales\EshopCommunity\Internal\Logger\Factory\MonologLoggerFactory
+    factory: OxidEsales\EshopCommunity\Internal\Logger\Factory\MonologLoggerFactory:create
+
+  utility.context.get_admin_log_file_path:
+    class: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface
+    factory: OxidEsales\EshopCommunity\Internal\Utility\ContextInterface:getAdminLogFilePath
+
