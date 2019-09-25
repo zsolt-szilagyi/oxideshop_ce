@@ -12,6 +12,7 @@ use OxidEsales\EshopCommunity\Internal\Application\Utility\BasicContext;
 use PDO;
 use Psr\Log\LogLevel;
 use Webmozart\PathUtil\Path;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * @internal
@@ -19,17 +20,9 @@ use Webmozart\PathUtil\Path;
 class Context extends BasicContext implements ContextInterface
 {
     /**
-     * @var Config
+     * @var FactsConfigFile
      */
-    private $config;
-
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
+    private $factsConfigFile;
 
     /**
      * @return string
@@ -44,7 +37,7 @@ class Context extends BasicContext implements ContextInterface
      */
     public function getLogFilePath(): string
     {
-        return Path::join($this->config->getLogsDir(), 'oxideshop.log');
+        return Path::join(Registry::getConfig()->getLogsDir(), 'oxideshop.log');
     }
 
     /**
@@ -62,7 +55,12 @@ class Context extends BasicContext implements ContextInterface
      */
     public function getCurrentShopId(): int
     {
-        return $this->config->getShopId();
+        $return = 1;
+        if (Registry::instanceExists(\OxidEsales\Eshop\Core\Config::class)) {
+            $return = Registry::getConfig()->getShopId();
+        }
+
+        return $return;
     }
 
     /**
@@ -72,7 +70,7 @@ class Context extends BasicContext implements ContextInterface
     {
         $integerShopIds = [];
 
-        foreach ($this->config->getShopIds() as $shopId) {
+        foreach (Registry::getConfig()->getShopIds() as $shopId) {
             $integerShopIds[] = (int) $shopId;
         }
 
@@ -95,7 +93,7 @@ class Context extends BasicContext implements ContextInterface
      */
     private function getConfigParameter($name, $default = null)
     {
-        $value = $this->config->getConfigParam($name, $default);
+        $value = Registry::getConfig()->getConfigParam($name, $default);
         DatabaseProvider::getDb()->setFetchMode(PDO::FETCH_ASSOC);
         return $value;
     }
