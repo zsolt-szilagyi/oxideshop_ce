@@ -111,7 +111,13 @@ class Context extends BasicContext implements ContextInterface
      */
     public function isEnabledAdminQueryLog(): bool
     {
-        return $this->getFactsConfigFile()->getVar('blLogChangesInAdmin');
+        if (Registry::instanceExists(\OxidEsales\Eshop\Core\Config::class)) {
+            $isEnabled = Registry::getConfig()->getConfigParam('blLogChangesInAdmin');
+        } else {
+            $isEnabled = $this->getFactsConfigFile()->getVar('blLogChangesInAdmin');
+        }
+
+        return $isEnabled;
     }
 
     /**
