@@ -65,7 +65,9 @@ class QueryLoggerTest extends AdminTestCase
         $logged = $this->adminLogHelper->getExceptionLogFileContent();
 
         $this->assertNotEmpty($logged);
-        $this->assertTrue(false !== stripos($logged, 'query:'));
+
+        $this->assertContains('query:', strtolower($logged));
+
         $this->assertTrue(false !== stripos($logged, 'function:'));
         $this->assertTrue(false !== stripos($logged, 'aLogSkipTags'));
     }

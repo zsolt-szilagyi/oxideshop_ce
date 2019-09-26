@@ -37,13 +37,6 @@ class QueryLogger implements SQLLogger
     private $queryFilter;
 
     /**
-     * True if query should be logged.
-     *
-     * @var bool
-     */
-    private $queryPassedFilter = false;
-
-    /**
      * @var ContextInterface
      */
     private $context;
@@ -78,7 +71,7 @@ class QueryLogger implements SQLLogger
     {
         $this->startTime = microtime(true);
 
-        if ($this->queryPassedFilter = $this->filterPass($query)) {
+        if ($this->filterPass($query)) {
             $this->setQueryData($query, (array) $params);
         }
     }
@@ -90,13 +83,10 @@ class QueryLogger implements SQLLogger
      */
     public function stopQuery(): void
     {
-        if (!$this->queryPassedFilter) {
-            return;
+        if ($this->filterPass($this->query)) {
+            $this->query['executionMS'] = microtime(true) - $this->startTime;
+            $this->psrLogger->debug($this->getLogMessage());
         }
-
-        $this->query['executionMS'] = microtime(true) - $this->startTime;
-
-        $this->psrLogger->debug($this->getLogMessage());
     }
 
     /**
@@ -107,18 +97,18 @@ class QueryLogger implements SQLLogger
      */
     private function getBackTraceItem(): array
     {
-        $exception = new \Exception;
-        $item = [];
+        $queryTraceItem = [];
 
-        foreach (($trace = $exception->getTrace()) as $item) {
+        foreach ((new \Exception)->getTrace() as $item) {
             if ((false === stripos($item['class'], get_class($this))) &&
                 (false === stripos($item['class'], 'Doctrine'))
             ) {
+                $queryTraceItem = $item;
                 break;
             }
         }
 
-        return $item;
+        return $queryTraceItem;
     }
 
     /**
@@ -131,9 +121,9 @@ class QueryLogger implements SQLLogger
     {
         $backTraceInfo = $this->getBackTraceItem();
         $this->query = [
-            'userid'      => $this->context->getUserId(),
-            'shopid'      => $this->context->getCurrentShopId(),
-            'class'       => isset($backTraceInfo['class']) ? $backTraceInfo['class'] : '',
+            'userId'      => $this->context->getAdminUserId(),
+            'shopId'      => $this->context->getCurrentShopId(),
+            'class'       => $backTraceInfo['class'] ?? '',
             'function'    => isset($backTraceInfo['function']) ? $backTraceInfo['function'] : '',
             'file'        => isset($backTraceInfo['file']) ? $backTraceInfo['file'] : '',
             'line'        => isset($backTraceInfo['line']) ? $backTraceInfo['line'] : '',
