@@ -6,9 +6,11 @@
 
 namespace OxidEsales\EshopCommunity\Application\Controller\Admin;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\FormConfiguration\FieldConfigurationInterface;
 use OxidEsales\EshopCommunity\Internal\Domain\Contact\Form\ContactFormBridgeInterface;
 use Exception;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Setting\Bridge\ModuleSettingBridgeInterface;
 
 /**
  * Admin shop config manager.
@@ -132,18 +134,15 @@ class ShopConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin\A
 
         $this->resetContentCache();
 
-        $shopId = $this->getEditObjectId();
-        $module = $this->_getModuleForConfigVars();
-
         $configValidator = oxNew(\OxidEsales\Eshop\Core\NoJsValidator::class);
         foreach ($this->_aConfParams as $existingConfigType => $existingConfigName) {
             $requestValue = \OxidEsales\Eshop\Core\Registry::getConfig()
                 ->getRequestParameter($existingConfigName, true);
             if (is_array($requestValue)) {
-                foreach ($requestValue as $configName => $configValue) {
+                foreach ($requestValue as $configName => $newConfigValue) {
                     $oldValue = $config->getConfigParam($configName);
-                    if ($configValue !== $oldValue) {
-                        $sValueToValidate = is_array($configValue) ? join(', ', $configValue) : $configValue;
+                    if ($newConfigValue !== $oldValue) {
+                        $sValueToValidate = is_array($newConfigValue) ? join(', ', $newConfigValue) : $newConfigValue;
                         if (!$configValidator->isValid($sValueToValidate)) {
                             $error = oxNew(\OxidEsales\Eshop\Core\DisplayError::class);
                             $error->setFormatParameters(htmlspecialchars($sValueToValidate));
@@ -151,13 +150,7 @@ class ShopConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin\A
                             \OxidEsales\Eshop\Core\Registry::getUtilsView()->addErrorToDisplay($error);
                             continue;
                         }
-                        $config->saveShopConfVar(
-                            $existingConfigType,
-                            $configName,
-                            $this->_serializeConfVar($existingConfigType, $configName, $configValue),
-                            $shopId,
-                            $module
-                        );
+                        $this->saveSetting($configName, $existingConfigType, $newConfigValue);
                     }
                 }
             }
@@ -483,5 +476,27 @@ class ShopConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin\A
         }
 
         return $editId;
+    }
+
+    /**
+     * @param string $configName
+     * @param string $existingConfigType
+     * @param mixed $configValue
+     */
+    private function saveSetting(string $configName, string $existingConfigType, $configValue): void
+    {
+        $shopId = $this->getEditObjectId();
+        $module = $this->_getModuleForConfigVars();
+        $config = $this->getConfig();
+        $preparedConfigValue = $this->_serializeConfVar($existingConfigType, $configName, $configValue);
+        if (strpos($module, 'module:') !== false) {
+            $moduleId = explode(':', $module)[1];
+            $moduleSettingBridge = ContainerFactory::getInstance()
+                ->getContainer()
+                ->get(ModuleSettingBridgeInterface::class);
+            $moduleSettingBridge->save($configName, $preparedConfigValue, $moduleId);
+        } else {
+            $config->saveShopConfVar($existingConfigType, $configName, $preparedConfigValue, $shopId, $module);
+        }
     }
 }
