@@ -9,9 +9,10 @@ namespace OxidEsales\EshopCommunity\Application\Controller\Admin;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Str;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleConfigurationDaoBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Setting\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setting\Setting;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Bridge\ModuleActivationBridgeInterface;
 
 /**
  * Admin article main deliveryset manager.
@@ -173,22 +174,10 @@ class ModuleConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin
         $this->resetContentCache();
 
         $moduleId = $this->getSelectedModuleId();
-        $shopId = Registry::getConfig()->getShopId();
         $this->_sModuleId = $moduleId;
 
         try {
-            $moduleActivationBridge = $this->getContainer()->get(ModuleActivationBridgeInterface::class);
-            $moduleWasActiveBeforeSaving = $moduleActivationBridge->isActive($moduleId, $shopId);
-
-            if ($moduleWasActiveBeforeSaving) {
-                $moduleActivationBridge->deactivate($moduleId, $shopId);
-            }
-
             $this->saveModuleConfigVariables($moduleId, $this->getConfigVariablesFromRequest());
-
-            if ($moduleWasActiveBeforeSaving) {
-                $moduleActivationBridge->activate($moduleId, $shopId);
-            }
         } catch (\Throwable $throwable) {
             Registry::getUtilsView()->addErrorToDisplay($throwable);
             Registry::getLogger()->error($throwable->getMessage());
@@ -215,10 +204,14 @@ class ModuleConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin
      * @param string $moduleId
      * @param array  $variables
      */
-    private function saveModuleConfigVariables(string $moduleId, array $variables)
+    private function saveModuleConfigVariables(string $moduleId, array $variables): void
     {
         $moduleConfigurationDaoBridge = $this->getContainer()->get(ModuleConfigurationDaoBridgeInterface::class);
         $moduleConfiguration = $moduleConfigurationDaoBridge->get($moduleId);
+
+        $moduleSettingBridge = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettingBridgeInterface::class);
 
         if (!empty($moduleConfiguration->getModuleSettings())) {
             foreach ($variables as $name => $value) {
@@ -233,12 +226,10 @@ class ModuleConfiguration extends \OxidEsales\Eshop\Application\Controller\Admin
                         if ($moduleSetting->getType() === 'bool') {
                             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                         }
-                        $moduleSetting->setValue($value);
+                        $moduleSettingBridge->save($name, $value, $moduleId);
                     }
                 }
             }
-
-            $moduleConfigurationDaoBridge->save($moduleConfiguration);
         }
     }
 
