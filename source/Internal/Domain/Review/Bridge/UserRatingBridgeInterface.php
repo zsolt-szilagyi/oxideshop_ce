@@ -7,8 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Domain\Review\Bridge;
 
 /**
- * Interface UserRatingBridgeInterface
- * @internal
+ * @stable
  */
 interface UserRatingBridgeInterface
 {

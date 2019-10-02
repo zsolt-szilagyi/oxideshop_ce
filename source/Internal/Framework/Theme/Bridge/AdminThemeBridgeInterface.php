@@ -7,7 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Framework\Theme\Bridge;
 
 /**
- * @internal
+ * @stable
  */
 interface AdminThemeBridgeInterface
 {

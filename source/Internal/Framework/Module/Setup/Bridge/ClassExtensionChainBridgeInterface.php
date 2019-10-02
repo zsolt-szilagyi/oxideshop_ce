@@ -7,7 +7,7 @@
 namespace OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Bridge;
 
 /**
- * @internal
+ * @stable
  */
 interface ClassExtensionChainBridgeInterface
 {

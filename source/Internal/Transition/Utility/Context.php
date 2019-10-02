@@ -13,9 +13,6 @@ use PDO;
 use Psr\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
-/**
- * @internal
- */
 class Context extends BasicContext implements ContextInterface
 {
     /**

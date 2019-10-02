@@ -6,9 +6,6 @@
 
 namespace OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge;
 
-/**
- * @internal
- */
 interface PasswordServiceBridgeInterface
 {
     /**
