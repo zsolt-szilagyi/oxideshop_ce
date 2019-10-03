@@ -10,7 +10,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ShopCo
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ModuleConfiguration;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ShopConfiguration;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Service\ModuleActivationServiceInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\State\ModuleStateServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,25 +26,25 @@ class ActivateConfiguredModulesCommand extends Command
     private $shopConfigurationDao;
 
     /**
-     * @var ContextInterface
-     */
-    private $context;
-
-    /**
      * @var ModuleActivationServiceInterface
      */
     private $moduleActivationService;
 
+    /**
+     * @var ModuleStateServiceInterface
+     */
+    private $moduleStateService;
+
     public function __construct(
         ShopConfigurationDaoInterface $shopConfigurationDao,
-        ContextInterface $context,
-        ModuleActivationServiceInterface $moduleActivationService
+        ModuleActivationServiceInterface $moduleActivationService,
+        ModuleStateServiceInterface $moduleStateService
     ) {
         parent::__construct();
 
         $this->shopConfigurationDao = $shopConfigurationDao;
-        $this->context = $context;
         $this->moduleActivationService = $moduleActivationService;
+        $this->moduleStateService = $moduleStateService;
     }
 
     protected function configure()
@@ -82,28 +82,15 @@ class ActivateConfiguredModulesCommand extends Command
         ShopConfiguration $shopConfiguration,
         int $shopId
     ): void {
-        if (!$this->hasConfiguredModules($shopConfiguration)) {
-            $output->writeln('<info>The shop with id ' . $shopId . ' doesn\'t have configured modules.</info>');
-        } else {
-            $output->writeln('<info>Activating modules for the shop with id ' . $shopId . ':</info>');
+        $output->writeln('<info>Activating modules for the shop with id ' . $shopId . ':</info>');
 
-            foreach ($shopConfiguration->getModuleConfigurations() as $moduleConfiguration) {
-                if ($moduleConfiguration->isConfigured()) {
-                    $this->activateModule($output, $moduleConfiguration, $shopId);
-                }
-            }
-        }
-    }
-
-    private function hasConfiguredModules(ShopConfiguration $shopConfiguration): bool
-    {
         foreach ($shopConfiguration->getModuleConfigurations() as $moduleConfiguration) {
             if ($moduleConfiguration->isConfigured()) {
-                return true;
+                $this->activateModule($output, $moduleConfiguration, $shopId);
+            } elseif ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
+                $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
             }
         }
-
-        return false;
     }
 
     private function activateModule(
@@ -113,7 +100,12 @@ class ActivateConfiguredModulesCommand extends Command
     ): void {
         $output->writeln('<info>Activating module with id ' . $moduleConfiguration->getId() . '</info>');
         try {
-            $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
+            if ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
+                $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
+                $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
+            } else {
+                $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
+            }
         } catch (\Exception $exception) {
             $this->showErrorMessage($output, $exception);
         }
