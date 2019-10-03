@@ -20,4 +20,4 @@ services:
   OxidEsales\EshopCommunity\Internal\Framework\Module\Command\ActivateConfiguredModulesCommand:
     class: OxidEsales\EshopCommunity\Internal\Framework\Module\Command\ActivateConfiguredModulesCommand
     tags:
-      - { name: 'console.command', command: 'oe:module:activate-configured-modules' }
+      - { name: 'console.command', command: 'oe:module:apply-configuration' }

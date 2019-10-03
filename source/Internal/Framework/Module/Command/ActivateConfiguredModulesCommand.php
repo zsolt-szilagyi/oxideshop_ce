@@ -49,7 +49,7 @@ class ActivateConfiguredModulesCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Activates configured modules.');
+        $this->setDescription('Applies configuration for installed modules.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -82,32 +82,33 @@ class ActivateConfiguredModulesCommand extends Command
         ShopConfiguration $shopConfiguration,
         int $shopId
     ): void {
-        $output->writeln('<info>Activating modules for the shop with id ' . $shopId . ':</info>');
+        $output->writeln('<info>Applying modules configuration for the shop with id ' . $shopId . ':</info>');
 
         foreach ($shopConfiguration->getModuleConfigurations() as $moduleConfiguration) {
-            if ($moduleConfiguration->isConfigured()) {
-                $this->activateModule($output, $moduleConfiguration, $shopId);
-            } elseif ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
-                $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
+            $output->writeln(
+                '<info>Applying configuration for module with id '
+                . $moduleConfiguration->getId()
+                . '</info>'
+            );
+            try {
+                if ($moduleConfiguration->isConfigured()) {
+                    $this->activateModule($moduleConfiguration, $shopId);
+                } elseif ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
+                    $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
+                }
+            } catch (\Exception $exception) {
+                $this->showErrorMessage($output, $exception);
             }
         }
     }
 
-    private function activateModule(
-        OutputInterface $output,
-        ModuleConfiguration $moduleConfiguration,
-        int $shopId
-    ): void {
-        $output->writeln('<info>Activating module with id ' . $moduleConfiguration->getId() . '</info>');
-        try {
-            if ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
-                $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
-                $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
-            } else {
-                $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
-            }
-        } catch (\Exception $exception) {
-            $this->showErrorMessage($output, $exception);
+    private function activateModule(ModuleConfiguration $moduleConfiguration, int $shopId): void
+    {
+        if ($this->moduleStateService->isActive($moduleConfiguration->getId(), $shopId)) {
+            $this->moduleActivationService->deactivate($moduleConfiguration->getId(), $shopId);
+            $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
+        } else {
+            $this->moduleActivationService->activate($moduleConfiguration->getId(), $shopId);
         }
     }
 
@@ -115,7 +116,7 @@ class ActivateConfiguredModulesCommand extends Command
     {
         $output->writeln(
             '<error>'
-            . 'Module wasn\'t activated. An exception occurred: '
+            . 'Module configuration wasn\'t applied. An exception occurred: '
             . \get_class($exception) . ' '
             . $exception->getMessage()
             . '</error>'
